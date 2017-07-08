@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd"
+    >
+<html lang="en">
+<head>
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
+    <script type="text/javascript" language="Javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script src={{ url_for('static', filename='js/scrabble.js') }} language="Javascript" type="text/javascript"></script>
+    
+    <title> </title>
+</head>
+
+<body>
+    <div id='background'>
+        
+
+        {% if v %}        
+        <div id='entertextprompt'>Please enter your subject number.</div> 
+        {% endif %}
+
+        {% if not v %}
+        <div id='entertextprompt'>Please enter a valid subject number.</div> 
+        {% endif %}
+
+<form method='POST' enctype='multipart/form-data' action='/wait_for_first_round'>
+    <input type="text" autocomplete="off" autofocus="autofocus"
+    name="subject_id" id="word-input"><input type="submit" value="Submit"
+    class=submit id=submit>
+</form>
+
+
+<!--<form method='POST' enctype='multipart/form-data' action='/risk_e_1'>
+    <input type="text" autocomplete="off" autofocus="autofocus"
+    name="subject_id" id="word-input"><input type="submit" value="Submit"
+    class=submit id=submit>
+    <input type="hidden" name="gamble" value=0>
+</form>-->
+
+
+
+        
+    </div>
+</body>
+</html>
