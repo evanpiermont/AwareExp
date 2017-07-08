@@ -1,0 +1,115 @@
+@font-face {
+font-family: Inconsolata;
+src: url(/static/fonts/Inconsolata.otf);
+}
+
+@font-face {
+font-family: Lato;
+src: url(/static/fonts/Lato.ttf);
+}
+
+
+*{
+    padding: 0;
+    margin: 0;
+    font-family: Lato;
+}
+
+td {
+    height: 100%;
+    vertical-align: center;
+    font-family: Inconsolata;
+}
+
+#background{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+}
+
+input:focus{
+    outline: none;
+    border-bottom: 2px solid #b58900;
+}
+
+input{
+    position: absolute;
+    text-transform: uppercase;
+    border: none;
+    font-size: 50%
+}
+
+
+#entertextprompt{
+    width: 70%;
+    height: 15%;
+    top: 15%;
+    left: 15%;
+    text-align: center;
+    position: fixed;
+    font-size: 40%;
+}
+
+
+.submit{
+    color:rgb(132,188,232);
+    position: fixed;
+    border: none;
+    font-size: 30%;
+    cursor: pointer;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+
+}
+
+.endform{
+    border-radius: 5px;
+	position: fixed;
+	width: 20%;
+	height: 4%;
+	top: 90%;
+	left: 40%;
+}
+
+
+#subject_id_box{
+    position: fixed;
+    bottom: 2%;
+    right: 2%;
+    font-size: 35%;
+    text-align: left;
+}
+
+
+#results1{
+	width: 80%;
+    height: 15%;
+    top: 15%;
+    left: 10%;
+    text-align: center;
+    position: fixed;
+    font-size: 40%;
+}	
+
+.realizedUrn{
+	width: 70%;
+    height: 15%;
+    top: 55%;
+    left: 15%;
+    position: fixed;
+}
+
+.redtext{
+    color: rgb(242,76,67);
+    text-transform: uppercase;
+}
+
+#continue_part_2{
+	width: 20%;
+    height: 5%;
+    top: 75%;
+    left: 40%;
+    border-radius: 2px;
+    position: fixed;	
+}
+

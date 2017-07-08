@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd"
+    >
+<html lang="en">
+<head>
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/scrabble.css') }} />
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/admin.css') }} />
+    <script type="text/javascript" language="Javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script src={{ url_for('static', filename='js/scrabble.js') }} language="Javascript" type="text/javascript"></script>
+        
+    <title> </title>
+</head>
+
+<body>
+    <div id='background'>
+
+<form method='POST' name='adminCreate' enctype='multipart/form-data' action='/admin_create'>
+    <div id='adminenter'>
+        Enter Session Number: <input type="text" name="session_no" required></input>
+    </div>
+    <input type="submit" value="Update" class='submit endform' id=submit-bdm>
+</form>
+    
+
+
+<div id=subject_id_box>#ADMiN</div>
+
+    </div>
+</body>
+</html>
