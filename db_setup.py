@@ -64,7 +64,7 @@ class Subject(Base):
 #sets that hae been found
 
 class FoundSets(Base):
-    __tablename__ = 'subject' 
+    __tablename__ = 'found_sets' 
     id = Column(Integer, primary_key=True)
     sets = Column(Integer, ForeignKey("sets.id"))
     subject = Column(Integer, ForeignKey("subject.id"))

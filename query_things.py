@@ -5,11 +5,11 @@ from sqlalchemy.orm import sessionmaker
 
 import os
 import datetime, time
-from db_setup import Base, FoundWords, LetterBank, WordBank, Subject, Contracts, SubjectLetterBank, TimeStarted, DataBDM, ChosenOnes, BDMLines
+from db_setup import Base, engine, Deck, Hand, Subject, Sets, FoundSets
  
  
 filePath = os.getcwd()
-engine = create_engine('sqlite:///'+ filePath + '/restaurantmenu.db')
+engine = create_engine('sqlite:///'+ filePath + '/set_am_turk.db')
 
 
 # Bind the engine to the metadata of the Base class so that the
@@ -26,12 +26,14 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
-name = "01usr8m"
 
 q = session.query(Subject).all()
 
 for i in q:
-	print i.wait_end_session
+	h = session.query(Hand).filter(Hand.id == Subject.hand).one()
+	h.join(Deck)
+	print handarray
+
 
 
 
