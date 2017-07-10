@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker
 
 from random import randint
 
-from db_setup import Base, Deck, Hand, Subject, Sets, FoundSets
+from db_setup import Base, DeckSQL, Hand, Subject, SType, Sets, Found
 
 import cgi
 import collections
@@ -63,30 +63,27 @@ def CreateSets():
 
             j = session.query(Subject).filter(Subject.idCode == subject_id).one() 
 
-            h = session.query(Hand).filter(Hand.id == j.hand).one()
-            
+            k = session.query(Hand).filter(Hand.s_type == j.s_type).all()
+
             handarray = []
-            c = session.query(Deck).filter(Deck.id == h.card1).one()
-            handarray.append([c.color, c.symbol, c.number])
-            c = session.query(Deck).filter(Deck.id == h.card2).one()
-            handarray.append([c.color, c.symbol, c.number])
-            c = session.query(Deck).filter(Deck.id == h.card3).one()
-            handarray.append([c.color, c.symbol, c.number])
-            c = session.query(Deck).filter(Deck.id == h.card4).one()
-            handarray.append([c.color, c.symbol, c.number])
-            c = session.query(Deck).filter(Deck.id == h.card5).one()
-            handarray.append([c.color, c.symbol, c.number])
-            c = session.query(Deck).filter(Deck.id == h.card6).one()
-            handarray.append([c.color, c.symbol, c.number])
-            c = session.query(Deck).filter(Deck.id == h.card7).one()
-            handarray.append([c.color, c.symbol, c.number])
-            c = session.query(Deck).filter(Deck.id == h.card8).one()
-            handarray.append([c.color, c.symbol, c.number])
-            c = session.query(Deck).filter(Deck.id == h.card9).one()
-            handarray.append([c.color, c.symbol, c.number])
+
+            for i in k:
+                handarray.append([i.color,i.symbol,i.number])
+
+            foundarray = []
+
+            found = session.query(Found).filter(Found.subject == j.id).all()
+
+            for s in found:
+                setX = session.query(Sets).filter(Sets.id == s.sets).one()
+                card1 = session.query(DeckSQL).filter(DeckSQL.id == setX.card1).one()
+                card2 = session.query(DeckSQL).filter(DeckSQL.id == setX.card2).one()
+                card3 = session.query(DeckSQL).filter(DeckSQL.id == setX.card3).one()
+                foundarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number]])
 
 
-            return render_template('set.html', subject_id = subject_id, handarray=handarray)
+
+            return render_template('set.html', subject_id = subject_id, handarray=handarray, foundarray=foundarray)
 
         else:
             return render_template('login.html', v=False)

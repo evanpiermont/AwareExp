@@ -5,8 +5,8 @@ from sqlalchemy.orm import sessionmaker
 
 import os
 import datetime, time
-from db_setup import Base, engine, Deck, Hand, Subject, Sets, FoundSets
- 
+from db_setup import Base, engine, DeckSQL, Hand, Subject, SType, Sets, Found
+from setGame import Deck, getCards, isSetThreeCards
  
 filePath = os.getcwd()
 engine = create_engine('sqlite:///'+ filePath + '/set_am_turk.db')
@@ -26,13 +26,20 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
+foundarray = []
 
-q = session.query(Subject).all()
+found = session.query(Found).all()
+print found
+# for s in found:
+#     sets = session.query(Sets).filter(Sets.id == s.sets).one
+#     card1 = session.query(DeckSQL).filter(DeckSQL.id == sets.card1)
+#     card1 = session.query(DeckSQL).filter(DeckSQL.id == sets.card2)
+#     card1 = session.query(DeckSQL).filter(DeckSQL.id == sets.card3)
+#     # foundarray.append[[card1.color,card1.symbol,carcard2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number]]
+#     foundarray.append['df']
 
-for i in q:
-	h = session.query(Hand).filter(Hand.id == Subject.hand).one()
-	h.join(Deck)
-	print handarray
+# print foundarray
+
 
 
 

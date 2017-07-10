@@ -10,8 +10,8 @@ Created on Thu May  4 09:22:04 2017
 ###              UNAWARENESS EXPERIMENT: CODE FOR SET GAME                  ###
 ###############################################################################
 
-import itertools, time, pylab, random
-import matplotlib.pyplot as plt
+import itertools, time, random
+#import matplotlib.pyplot as plt
 
 class Deck(object):
     """

@@ -7,12 +7,6 @@ src: url(/static/fonts/Inc.otf);
 *{
     padding: 0;
     margin: 0;
-    font-family: Lato;
-}
-
-td {
-    height: 100%;
-    vertical-align: center;
     font-family: Inconsolata;
 }
 
@@ -57,15 +51,6 @@ input{
 
 }
 
-.endform{
-    border-radius: 5px;
-	position: fixed;
-	width: 20%;
-	height: 4%;
-	top: 90%;
-	left: 40%;
-}
-
 
 #subject_id_box{
     position: fixed;
@@ -78,11 +63,22 @@ input{
 #hand{
 	position: fixed;
 	width: 80%;
-	height: 90%;
-	top: 0%;
+	height: 80%;
+	top: 10%;
 }
 
-.card{
+#foundsets{
+	position: fixed;
+	width: 20%;
+	height: 80%;
+	top: 10%;
+	right:1%;
+    overflow-x: hidden;
+    font-size: 25%;
+    text-align: center;
+}
+
+.display_card{
 	position: absolute;
 	width: 20%;
 	height: 20%;
@@ -92,18 +88,23 @@ input{
 	border-radius: 5px;
 }
 
+.clicked{
+  border: 3px solid #d33682;
+  background: #657b83;
+} 
+
 #card0{
-	top: 10%;
+	top: 0%;
 	left: 10%;
 }
 
 #card1{
-	top: 10%;
+	top: 0%;
 	left: 40%;
 }
 
 #card2{
-	top: 10%;
+	top: 0%;
 	left: 70%;
 }
 
@@ -123,16 +124,51 @@ input{
 }
 
 #card6{
-	top: 70%;
+	top: 80%;
 	left: 10%;
 }
 
 #card7{
-	top: 70%;
+	top: 80%;
 	left: 40%;
 }
 
 #card8{
-	top: 70%;
+	top: 80%;
 	left: 70%;
+}
+
+
+#output-table{ 
+	position: absolute;
+	top: 70px;
+    left: 0%;
+    width: 100%;
+	}
+
+#output-table td{ 
+		height: 50px;
+	}
+
+#output-table tr{ 
+	background: #839496;
+	}
+
+
+#output-table-header{
+	position: absolute;
+    left: 0%;
+    height: 70px;
+    width: 100%;
+    z-index: +1;
+    border-bottom: 2px solid #fdf6e3;
+    background-color: #fdf6e3;
+
+}
+
+
+SVG {
+	position: relative;
+	height: 50px;
+	max-width: 100%;
 }

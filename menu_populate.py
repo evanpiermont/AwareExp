@@ -3,11 +3,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
  
-import os
+import itertools, os
 
 import db_setup
 
-from db_setup import Base, engine, Deck, Hand, Subject, Sets, FoundSets
+from db_setup import Base, engine, DeckSQL, Hand, SType, Subject, Sets, Found
+from setGame import Deck, getCards, isSetThreeCards
  
 filePath = os.getcwd()
 os.remove(filePath + '/set_am_turk.db')
@@ -29,37 +30,75 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
-for i in range(0,3):
-    for j in range(0,3):
-        for k in range(0,3):
-            deck = Deck(
-            color = i,
-            symbol = j,
-            number = k)
 
-            session.add(deck)
-            session.commit()
+currentdeck = Deck({'number':[0,1,2],'symbol':[0,1,2], 'color':[0,1,2]})
 
-hand = Hand(
-    card1 = 1,
-    card2 = 2,
-    card3 = 3,
-    card4 = 4,
-    card5 = 5,
-    card6 = 6,
-    card7 = 7,
-    card8 = 8,
-    card9 = 9)
+allCards = getCards(currentdeck)
 
-session.add(hand)
+def cardFromIndex(index): #need to subtract 1 becuase SQL starts counting at 1
+    return allCards[index-1]
+
+for i in allCards:
+    deck = DeckSQL(
+    color = i[0],
+    symbol = i[1],
+    number = i[2])
+
+    session.add(deck)
+    session.commit()
+
+s_type1 = SType()
+session.add(s_type1)
 session.commit()
 
-subject = Subject(
+s_type1 = 1
+
+for i in range(1,10):
+    q = session.query(DeckSQL).filter(DeckSQL.id == i).one()
+    hand = Hand(
+        card = i,
+        color = q.color,
+        symbol = q.symbol,
+        number = q.number,
+        s_type = s_type1,
+        )
+    session.add(hand)
+    session.commit()
+
+k = session.query(Hand).filter(Hand.s_type == 1).all()
+
+handarrayindex = []
+
+for i in k:
+    handarrayindex.append(i.card)
+
+C = list(itertools.combinations(handarrayindex, 3))
+for i in C:
+    cards = map(cardFromIndex, i)
+    if isSetThreeCards(cards):
+        sets = Sets(
+            s_type = s_type1,
+            card1 = i[0],
+            card2 = i[1],
+            card3 = i[2])
+        session.add(sets)
+        session.commit()
+
+found = Found(
+    sets = 3,
+    subject = 1)
+session.add(found)
+session.commit 
+
+sub = Subject(
     idCode = 1,
-    hand = 1)
+    s_type = 1)
 
-session.add(subject)
+session.add(sub)
 session.commit()
+
+
+
 
 
 print "added stuff!"

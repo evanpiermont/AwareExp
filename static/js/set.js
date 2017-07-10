@@ -51,21 +51,28 @@ window.location.hash="iLSTxs";
 window.location.hash="iLSTxs3";//again because google chrome don't insert first hash into history
 window.onhashchange=function(){window.location.hash="iLSTxs";}
 
+$(document).ready(function() { //we need to re aqquire the window sizes
+$("#foundsets").scroll(function() {
+      
+    var $inscroll = document.getElementById("foundsets").scrollTop;
+    $('#output-table-header').css('top', $inscroll)   
+});
+});
+
 
 renderCard = function(){
 
     d3.selectAll(".card").each(function() {
 
-    var $id   = this.id; // or other selector like querySelector()
     var rect = this.getBoundingClientRect(); // get the bounding rectangle
     var cardW = rect.width;
     var cardH = rect.height;
     var radius = Math.min(cardW,cardH)/8;
 
-    var $pos = [[cardW/5,cardH/4],[cardW/2,cardH/2],[4*cardW/5,3*cardH/4]]; // defult for #2
+    var $pos = [[cardW/5,cardH/2],[cardW/2,cardH/2],[4*cardW/5,cardH/2]]; // defult for #2
     var color = 'green'; // defult for 2
 
-    cardSpec = $('#' +$id).data('card'); //get data for the specification of the cards
+    var cardSpec = $(this).data('card'); //get data for the specification of the cards
 
 
     // chagne color accordingly 
@@ -85,22 +92,22 @@ renderCard = function(){
 
 
     if (cardSpec[1] == 0){
-        renderTri($id, color, radius, $pos);
+        renderTri(this, color, radius, $pos);
     } else if (cardSpec[1] == 1){
-        renderSq($id, color, radius, $pos);
+        renderSq(this, color, radius, $pos);
     } else if (cardSpec[1] == 2){
-        renderCir($id, color, radius, $pos);
+        renderCir(this, color, radius, $pos);
     }
 
 });
 
 }
 
-renderCir = function($id, color, radius, pos){
+renderCir = function(element, color, radius, pos){
 
     for (i in pos){
 
-        d3.select('#' + $id).append('circle')
+        d3.select(element).append('circle')
                         .attr("cx", pos[i][0])
                         .attr("cy", pos[i][1])
                         .attr("r", radius)
@@ -111,11 +118,11 @@ renderCir = function($id, color, radius, pos){
 
 }
 
-renderSq = function($id, color, radius, pos){
+renderSq = function(element, color, radius, pos){
 
     for (i in pos){
 
-        d3.select('#' + $id).append('rect')
+        d3.select(element).append('rect')
                         .attr("x", pos[i][0]-radius)
                         .attr("y", pos[i][1]-radius)
                         .attr("width", radius*2)
@@ -127,12 +134,12 @@ renderSq = function($id, color, radius, pos){
 
 }
 
-renderTri = function($id, color, radius, pos){
+renderTri = function(element, color, radius, pos){
 
     for (i in pos){
 
         points = [[pos[i][0],pos[i][1]-radius],[pos[i][0]+(radius*1.2),pos[i][1]+radius],[pos[i][0]-(radius*1.2),pos[i][1]+radius]].join(" ")
-        d3.select('#' + $id).append('polygon')
+        d3.select(element).append('polygon')
                         .attr("points", points)
                         .attr('stroke', '#073642')
                         .attr('fill', color)
@@ -142,15 +149,59 @@ renderTri = function($id, color, radius, pos){
 }
 
 
-renderCards = function(){
-    renderCard();
+$(document).ready(renderCard);
+
+
+// Create sets function
+
+var clicked = ['card1']
+
+
+clickCard = function(){
+
+    $(".display_card").click(function() {
+        $id = $(this).attr('id');
+        var index = clicked.indexOf($id);
+        if (index != -1){
+            clicked.splice(index, 1);
+            $(this).removeClass("clicked");
+        } else {
+            $(this).addClass("clicked")
+            clicked.push($id)
+        }
+
+        if (clicked.length > 2){
+        var clickedSpec = clicked.map(function(x) {
+        return $('#' + x).data('card');
+        });
+        console.log(clickedSpec);
+        isSetThreeCards(clickedSpec);
+        }
+
+
+});
+
 }
 
-$(document).ready(renderCards);
+$(document).ready(clickCard);
 
 
+isSetThreeCards = function(cards){
 
-
+    var result = true
+    for (i = 0; i < 3; i++){
+        if (( cards[0][i] == cards[1][i] ) && ( cards[0][i] != cards[2][i] )){
+            result = false
+        }
+        else if (( cards[0][i] != cards[1][i] ) && ( cards[0][i] == cards[2][i] )){
+            result = false
+        }
+        else if (( cards[0][i] != cards[1][i] ) && ( cards[1][i] == cards[2][i] )){
+            result = false
+        }
+        }
+    console.log(result);
+}
 
 
 

@@ -4,10 +4,9 @@
 <html lang="en">
 <head>
     <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
-    <script type="text/javascript" language="Javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
     <script src={{ url_for('static', filename='js/set.js') }} language="Javascript" type="text/javascript"></script>
     <script type="text/javascript" src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-        
     <title> </title>
 </head>
 
@@ -16,11 +15,52 @@
 
     <div id=hand>
         {% for i in range(9) %}
-        <svg id="card{{i|string}}" class="card" data-card="{{handarray[i]}}"></svg>
+        <svg id="card{{i|string}}" class="card display_card" data-card="{{handarray[i]}}"></svg>
         {% endfor %}
     </div>
 
-    <div id=foundsets></div>
+    <div id=foundsets>
+    <table  id=output-table-header>
+                    <col width="33%" />
+                    <col width="33%" />
+                    <col width="33%" />
+                    <tr>
+                        <td> Card 1 </td>
+                        <td> Card 2</td>
+                        <td> Card 3</td>
+                    </tr>
+  </table>
+
+
+<table class=fixed_header_table id=output-table data-foundarray='{{foundarray[0]}}'>
+                    <col width="33%" />
+                    <col width="33%" />
+                    <col width="33%" />
+    {% for sets in foundarray %}
+    <tr id=x>
+            <td class='foundcard'>
+                <svg class='card'  data-card='{{sets[0]}}'></svg>
+            </td>
+            <td class='foundcard'>
+                <svg class='card' data-card='{{sets[1]}}'></svg>
+            </td>
+            <td class='foundcard'>
+                <svg class='card'  data-card='{{sets[2]}}'></svg>
+            </td>
+    </tr>
+
+    {% endfor %}
+    
+    {% for i in range(20) %}
+    <tr>
+        <td> </td>
+        <td> </td>
+        <td> </td>
+    </tr>
+    {% endfor %}
+</table>
+    </div>
+
     
 
 

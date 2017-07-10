@@ -15,7 +15,7 @@ Base = declarative_base()
 
 # deck is the set of all cards for all hands
 
-class Deck(Base):
+class DeckSQL(Base):
     __tablename__ = "deck"
 
     id = Column(Integer, primary_key=True)
@@ -24,29 +24,26 @@ class Deck(Base):
     number = Column(Integer)
 
 
-# pick some hands from the deck, store them below.
+# pick some hands from the deck, store them below. every card/type pair
 
 
 class Hand(Base):
     __tablename__ = 'hand'
 
     id = Column(Integer, primary_key=True)
-    card1 = Column(Integer, ForeignKey("deck.id"))
-    card2 = Column(Integer, ForeignKey("deck.id"))
-    card3 = Column(Integer, ForeignKey("deck.id"))
-    card4 = Column(Integer, ForeignKey("deck.id"))
-    card5 = Column(Integer, ForeignKey("deck.id"))
-    card6 = Column(Integer, ForeignKey("deck.id"))
-    card7 = Column(Integer, ForeignKey("deck.id"))
-    card8 = Column(Integer, ForeignKey("deck.id"))
-    card9 = Column(Integer, ForeignKey("deck.id"))
+    card = Column(Integer, ForeignKey("deck.id"))
+    color = Column(Integer)
+    symbol = Column(Integer)
+    number = Column(Integer)
+    s_type = Column(Integer, ForeignKey("s_type.id"))
+
 
 #returns all sets, stores which hand the sets are in, what are the three cards
 
 class Sets(Base):
     __tablename__ = 'sets' 
     id = Column(Integer, primary_key=True)
-    hand = Column(Integer, ForeignKey("hand.id"))
+    s_type = Column(Integer, ForeignKey("hand.id"))
     card1 = Column(Integer, ForeignKey("deck.id"))
     card2 = Column(Integer, ForeignKey("deck.id"))
     card3 = Column(Integer, ForeignKey("deck.id"))
@@ -57,18 +54,23 @@ class Subject(Base):
     __tablename__ = 'subject' 
     id = Column(Integer, primary_key=True)
     idCode = Column(Integer)
-    hand = Column(Integer, ForeignKey("hand.id"))
+    s_type = Column(Integer, ForeignKey("s_type.id"))
     startTime = Column(DateTime, default=datetime.datetime.utcnow)
+
+# types are non-unique by subject, encode the hand, lazy way of getting around problems with encoding
+
+class SType(Base):
+    __tablename__ = 's_type' 
+    id = Column(Integer, primary_key=True)
 
 
 #sets that hae been found
 
-class FoundSets(Base):
-    __tablename__ = 'found_sets' 
+class Found(Base):
+    __tablename__ = 'found' 
     id = Column(Integer, primary_key=True)
     sets = Column(Integer, ForeignKey("sets.id"))
     subject = Column(Integer, ForeignKey("subject.id"))
-
 
 
 
