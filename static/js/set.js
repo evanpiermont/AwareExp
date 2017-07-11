@@ -24,8 +24,10 @@ $green='#859900';
 $cBG = $base3;
 $cInputBG = $base02;
 $cInputText = $cyan;
-$cBodyText = $green;
-$cOutline = $magenta;
+$cBodyText = $base03;
+$shape1 = $red;
+$shape2 = $yellow;
+$shape3 = $cyan;
 
 
 fontsize = function () {
@@ -60,26 +62,23 @@ $("#foundsets").scroll(function() {
 });
 
 
-renderCard = function(){
+renderCard = function(object){
 
-    d3.selectAll(".card").each(function() {
-
-    var rect = this.getBoundingClientRect(); // get the bounding rectangle
+    var rect = object.getBoundingClientRect(); // get the bounding rectangle
     var cardW = rect.width;
     var cardH = rect.height;
     var radius = Math.min(cardW,cardH)/8;
 
     var $pos = [[cardW/5,cardH/2],[cardW/2,cardH/2],[4*cardW/5,cardH/2]]; // defult for #2
-    var color = 'green'; // defult for 2
+    var color = $shape1; // defult for 2
 
-    var cardSpec = $(this).data('card'); //get data for the specification of the cards
-
+    var cardSpec = $(object).data('card'); //get data for the specification of the cards
 
     // chagne color accordingly 
     if (cardSpec[0] == 0){
-        var color = 'red';
+        var color = $shape2;
     } else if (cardSpec[0] == 1){
-        var color = 'blue';
+        var color = $shape3;
     }
     // change number accordingly
     if (cardSpec[2] == 0){
@@ -92,14 +91,12 @@ renderCard = function(){
 
 
     if (cardSpec[1] == 0){
-        renderTri(this, color, radius, $pos);
+        renderTri(object, color, radius, $pos);
     } else if (cardSpec[1] == 1){
-        renderSq(this, color, radius, $pos);
+        renderSq(object, color, radius, $pos);
     } else if (cardSpec[1] == 2){
-        renderCir(this, color, radius, $pos);
+        renderCir(object, color, radius, $pos);
     }
-
-});
 
 }
 
@@ -148,19 +145,28 @@ renderTri = function(element, color, radius, pos){
 
 }
 
+renderCards = function(){
+    d3.selectAll(".card").each(function() {
+        renderCard(this)
+    });
+}
 
-$(document).ready(renderCard);
+
+$(document).ready(renderCards);
 
 
 // Create sets function
 
-var clicked = ['card1']
+var clicked = [];
 
+function sortNumber(a,b) { //helper function to sort number, we will short the cards by id
+    return a - b;
+}
 
 clickCard = function(){
 
     $(".display_card").click(function() {
-        $id = $(this).attr('id');
+        $id = $(this).attr('id').slice(4);
         var index = clicked.indexOf($id);
         if (index != -1){
             clicked.splice(index, 1);
@@ -171,11 +177,53 @@ clickCard = function(){
         }
 
         if (clicked.length > 2){
-        var clickedSpec = clicked.map(function(x) {
-        return $('#' + x).data('card');
+
+        //clicked.sort(sortNumber);
+
+        cardsID = clicked.map(function(x) {
+        return $('#card' + x).data('cardid');
         });
-        console.log(clickedSpec);
-        isSetThreeCards(clickedSpec);
+
+        cardsID.sort(sortNumber);
+
+
+        var clickedSpec = clicked.map(function(x) {
+        return $('#card' + x).data('card');
+        });
+
+        if (isSetThreeCards(clickedSpec) == false){
+            $('#entertextprompt').text("Thats not a set.");
+            $('#set_prompt').fadeIn('fast', function(){
+                count = 200;
+                counter = setInterval(timer, 10)
+                timer();
+            });
+        } else {
+            var foundalready = false
+            for (var i = 0; i < foundSets.length; i++) {
+                if (foundSets[i][0] == cardsID[0] && foundSets[i][1] == cardsID[1] && foundSets[i][2] == cardsID[2]) {
+                    foundalready = true;   // Found it
+                }
+            }
+            if (foundalready) {
+            $('#entertextprompt').text("You already found that set.");
+            $('#set_prompt').fadeIn('fast', function(){
+                count = 200;
+                counter = setInterval(timer, 10);
+                timer();
+            });
+            } else {
+                foundSets.push(cardsID);
+                sendSets(cardsID);
+                var clickedSpec = clicked.map(function(x) {
+                return '[' + $('#card' + x).data('card')+ ']';
+                });
+                appendset(clickedSpec);
+            }
+        }
+
+        $(".display_card").removeClass("clicked");
+        clicked = [];
         }
 
 
@@ -184,6 +232,21 @@ clickCard = function(){
 }
 
 $(document).ready(clickCard);
+
+var count = 200;
+var counter;
+
+function timer(){
+    if (count <= 0)
+    {
+        clearInterval(counter);
+        $('#set_prompt').hide();
+        document.getElementById('time_penalty').innerHTML=2.00
+        return;
+     }
+     count--;
+     document.getElementById('time_penalty').innerHTML=count /100; 
+}
 
 
 isSetThreeCards = function(cards){
@@ -200,9 +263,43 @@ isSetThreeCards = function(cards){
             result = false
         }
         }
-    console.log(result);
+    return result;
 }
 
+// enter sets, send new set of sets
+
+
+appendset = function(cardsX){
+    document.getElementById("output-table").innerHTML +=
+
+        `<tr>
+            <td class='foundcard'>
+                <svg class='card'  data-card='`+cardsX[0]+`'></svg>
+            </td>
+            <td class='foundcard'>
+                <svg class='card' data-card='`+cardsX[1]+`'></svg>
+            </td>
+            <td class='foundcard'>
+                <svg class='card' data-card='`+cardsX[2]+`'></svg>
+            </td>
+        </tr>`;
+
+    d3.selectAll("tr .card").each(function() {
+        renderCard(this)
+    });
+       
+
+}
+
+sendSets = function(cardsID){
+    
+    cardsID = JSON.stringify(cardsID);
+    formdata = '&cardsX=' + cardsID;
+    formdata = formdata += '&subject_id=' + $subject;
+    $.post('/_add_set', formdata, function(json){
+        console.log(json);
+    });
+}
 
 
 

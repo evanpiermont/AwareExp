@@ -28,17 +28,11 @@ session = DBSession()
 
 foundarray = []
 
-found = session.query(Found).all()
-print found
-# for s in found:
-#     sets = session.query(Sets).filter(Sets.id == s.sets).one
-#     card1 = session.query(DeckSQL).filter(DeckSQL.id == sets.card1)
-#     card1 = session.query(DeckSQL).filter(DeckSQL.id == sets.card2)
-#     card1 = session.query(DeckSQL).filter(DeckSQL.id == sets.card3)
-#     # foundarray.append[[card1.color,card1.symbol,carcard2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number]]
-#     foundarray.append['df']
+found = session.query(Sets).all()
 
-# print foundarray
+for s in found:
+	print s.card1, s.card2, s.card3
+
 
 
 

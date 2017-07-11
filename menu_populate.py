@@ -53,7 +53,7 @@ session.commit()
 
 s_type1 = 1
 
-for i in range(1,10):
+for i in [4,5,2,3,1,8,6,9,12]:
     q = session.query(DeckSQL).filter(DeckSQL.id == i).one()
     hand = Hand(
         card = i,
@@ -76,11 +76,13 @@ C = list(itertools.combinations(handarrayindex, 3))
 for i in C:
     cards = map(cardFromIndex, i)
     if isSetThreeCards(cards):
+        j = list(i)
+        j.sort()
         sets = Sets(
             s_type = s_type1,
-            card1 = i[0],
-            card2 = i[1],
-            card3 = i[2])
+            card1 = j[0],
+            card2 = j[1],
+            card3 = j[2])   
         session.add(sets)
         session.commit()
 

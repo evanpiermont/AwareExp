@@ -7,6 +7,10 @@
     <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
     <script src={{ url_for('static', filename='js/set.js') }} language="Javascript" type="text/javascript"></script>
     <script type="text/javascript" src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        var $subject = {{subject_id}};
+        var foundSets = {{foundIDarray}};
+    </script>
     <title> </title>
 </head>
 
@@ -15,7 +19,7 @@
 
     <div id=hand>
         {% for i in range(9) %}
-        <svg id="card{{i|string}}" class="card display_card" data-card="{{handarray[i]}}"></svg>
+        <svg id="card{{i|string}}" class="card display_card" data-cardID="{{handIDarray[i]}}" data-card="{{handarray[i]}}"></svg>
         {% endfor %}
     </div>
 
@@ -32,12 +36,12 @@
   </table>
 
 
-<table class=fixed_header_table id=output-table data-foundarray='{{foundarray[0]}}'>
+<table class=fixed_header_table id=output-table>
                     <col width="33%" />
                     <col width="33%" />
                     <col width="33%" />
     {% for sets in foundarray %}
-    <tr id=x>
+    <tr>
             <td class='foundcard'>
                 <svg class='card'  data-card='{{sets[0]}}'></svg>
             </td>
@@ -48,23 +52,14 @@
                 <svg class='card'  data-card='{{sets[2]}}'></svg>
             </td>
     </tr>
-
     {% endfor %}
     
-    {% for i in range(20) %}
-    <tr>
-        <td> </td>
-        <td> </td>
-        <td> </td>
-    </tr>
-    {% endfor %}
 </table>
     </div>
-
     
+<div id=set_prompt><div id=entertextprompt>That was not a set!</div><div id=time_penalty>00</div></div>
 
-
-<div id=subject_id_box></div>
+<div id=subject_id_box> Subject#: {{subject_id}}</div>
 
     </div>
 </body>
