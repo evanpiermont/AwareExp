@@ -10,6 +10,7 @@
     <script type="text/javascript">
         var $subject = {{subject_id}};
         var foundSets = {{foundIDarray}};
+        var diff_seconds = {{diff_seconds}};;
     </script>
     <title> </title>
 </head>
@@ -59,7 +60,12 @@
     
 <div id=set_prompt><div id=entertextprompt>That was not a set!</div><div id=time_penalty>00</div></div>
 
-<div id=subject_id_box> Subject#: {{subject_id}}</div>
+<div id=subject_id_box> Subject#: {{subject_id}}; Time: <span id=timer></span></div>
+
+<form method='POST' enctype='multipart/form-data' action='/end' name=endform>
+    <input type="hidden" value={{subject_id}} class=submit name="subject_id">
+    <input type="hidden" value={{found_sets_num}} id="found_count_inuput" class=submit name="found_num">
+</form>
 
     </div>
 </body>

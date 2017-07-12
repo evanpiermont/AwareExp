@@ -3,6 +3,7 @@ app = Flask(__name__)
 
 import os
 import datetime, time, json
+from datetime import datetime, timedelta
 from os import curdir, sep
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 
@@ -34,6 +35,7 @@ session = DBSession()
 ####
 
 handsize = 9
+rndtime = 35 #time in seconds
 
 
 ####
@@ -47,7 +49,7 @@ handsize = 9
 @app.route('/')
 @app.route('/login')
 def Login():
-    return render_template('login.html', v=True)
+    return render_template('login.html', v="Please enter a subject number.")
 
 ####
 #####
@@ -60,8 +62,7 @@ def Login():
 @app.route('/createsets', methods=['POST', 'GET'])
 def CreateSets():
 
- 
-        subject_id=request.form['subject_id']
+        subject_id=int(request.form['subject_id'])
 
         sub = session.query(Subject).all()
         subjectnames = []
@@ -73,36 +74,61 @@ def CreateSets():
 
         if subject_id not in subjectnames:
 
-            j = session.query(Subject).filter(Subject.idCode == subject_id).one() 
-
-            k = session.query(Hand).filter(Hand.s_type == j.s_type).limit(handsize).all()
-
-            handarray = []
-            handIDarray = []
-
-            for i in k:
-                handarray.append([i.color,i.symbol,i.number])
-                handIDarray.append(i.card)
-
-            foundarray = []
-            foundIDarray = []
-
-            found = session.query(Found).filter(Found.subject == j.id).all()
-
-            for s in found:
-                setX = session.query(Sets).filter(Sets.id == s.sets).one()
-                card1 = session.query(DeckSQL).filter(DeckSQL.id == setX.card1).one()
-                card2 = session.query(DeckSQL).filter(DeckSQL.id == setX.card2).one()
-                card3 = session.query(DeckSQL).filter(DeckSQL.id == setX.card3).one()
-                foundarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number]])
-                foundIDarray.append([setX.card1,setX.card2,setX.card3])
-
-
-
-            return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=handIDarray, foundarray=foundarray, foundIDarray=foundIDarray)
+            return render_template('login.html', text='Enter a valid subject number.', v=True)
 
         else:
-            return render_template('login.html', v=False)
+
+            j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+
+            diff_seconds = rndtime
+
+            if j.exptime:
+
+                diff = j.exptime - datetime.now()
+                diff = diff - timedelta(microseconds=diff.microseconds)
+                diff_seconds= diff.total_seconds()
+
+            else:
+
+                time = datetime.now()
+                exptime = time + timedelta(seconds=+rndtime)
+                j.exptime = exptime
+                session.add(j)
+                session.commit
+
+
+            if diff_seconds < 0:
+                
+                return render_template('login.html', text='Sorry, you have already played', v=True)
+
+            else:
+
+                k = session.query(Hand).filter(Hand.s_type == j.s_type).limit(handsize).all()
+    
+                handarray = []
+                handIDarray = []
+    
+                for i in k:
+                    handarray.append([i.color,i.symbol,i.number])
+                    handIDarray.append(i.card)
+    
+                foundarray = []
+                foundIDarray = []
+    
+                found = session.query(Found).filter(Found.subject == j.id).all()
+    
+                for s in found:
+                    setX = session.query(Sets).filter(Sets.id == s.sets).one()
+                    card1 = session.query(DeckSQL).filter(DeckSQL.id == setX.card1).one()
+                    card2 = session.query(DeckSQL).filter(DeckSQL.id == setX.card2).one()
+                    card3 = session.query(DeckSQL).filter(DeckSQL.id == setX.card3).one()
+                    foundarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number   ],[card3.color,card3.symbol,card3.number]])
+                    foundIDarray.append([setX.card1,setX.card2,setX.card3])
+    
+                found_sets_num = len(foundIDarray)
+    
+                return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=   handIDarray, foundarray=foundarray, foundIDarray=foundIDarray, diff_seconds=diff_seconds, found_sets_num=found_sets_num)
+
 
 @app.route('/_add_set', methods=['POST'])
 def AddSetJSON():
@@ -122,6 +148,24 @@ def AddSetJSON():
     session.commit()
  
     return jsonify(foundarray = setX.id)
+
+
+####
+#####
+######
+####### LOGIN PAGE
+######
+#####
+####
+
+@app.route('/end', methods=['POST'])
+def End():
+
+    found_num=str(request.form['found_num'])
+    subject_id=str(request.form['subject_id'])
+
+    paycode = subject_id + ".." + found_num
+    return render_template('login.html', text="Thank you; your paycode is: " + paycode, v=False)
 
 
 if __name__ == '__main__':

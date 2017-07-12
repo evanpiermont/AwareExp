@@ -214,6 +214,7 @@ clickCard = function(){
             });
             } else {
                 foundSets.push(cardsID);
+                $('#found_count_inuput').val(foundSets.length)
                 sendSets(cardsID);
                 var clickedSpec = clicked.map(function(x) {
                 return '[' + $('#card' + x).data('card')+ ']';
@@ -291,6 +292,8 @@ appendset = function(cardsX){
 
 }
 
+// sends found sets to server, gets json, but right now the json does nothing
+
 sendSets = function(cardsID){
     
     cardsID = JSON.stringify(cardsID);
@@ -300,6 +303,25 @@ sendSets = function(cardsID){
         console.log(json);
     });
 }
+
+// time out the page
+
+pageTimer = function(){
+    if (diff_seconds <= 0)
+    {
+        clearInterval(counter_out);
+        document.endform.submit();
+        return;
+     }
+     diff_seconds--;
+     document.getElementById('timer').innerHTML=diff_seconds; 
+}
+
+var counter_out = setInterval(pageTimer, 1000);
+
+$(document).ready(pageTimer);
+
+
 
 
 

@@ -13,21 +13,16 @@
 <body>
     <div id='background'>
         
+        
+        <div id='entertextprompt'>{{text}}</div>
 
-        {% if v %}        
-        <div id='entertextprompt'>Please enter your subject number.</div> 
-        {% endif %}
-
-        {% if not v %}
-        <div id='entertextprompt'>Please enter a valid subject number.</div> 
-        {% endif %}
-
+{%if v%}
 <form method='POST' enctype='multipart/form-data' action='/createsets'>
     <input type="text" autocomplete="off" autofocus="autofocus"
-    name="subject_id" id="word-input"><input type="submit" value="Submit"
-    class=submit id=submit>
+    name="subject_id" id="word-input">
+    <input type="submit" value="Submit" class=submit id=submit>
 </form>
-
+{%endif%}
 
         
     </div>

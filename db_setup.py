@@ -55,7 +55,7 @@ class Subject(Base):
     id = Column(Integer, primary_key=True)
     idCode = Column(Integer)
     s_type = Column(Integer, ForeignKey("s_type.id"))
-    startTime = Column(DateTime, default=datetime.datetime.utcnow)
+    exptime = Column(DateTime)
 
 # types are non-unique by subject, encode the hand, lazy way of getting around problems with encoding
 

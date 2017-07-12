@@ -83,7 +83,7 @@ input{
 #subject_id_box{
     position: fixed;
     bottom: 1%;
-    right: 20%;
+    left: 70%;
     font-size: 25%;
     text-align: left;
 }

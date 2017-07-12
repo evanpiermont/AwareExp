@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 import os
 import datetime, time
+from datetime import datetime, timedelta
 from db_setup import Base, engine, DeckSQL, Hand, Subject, SType, Sets, Found
 from setGame import Deck, getCards, isSetThreeCards
  
@@ -26,12 +27,11 @@ DBSession = sessionmaker(bind=engine)
 # session.rollback()
 session = DBSession()
 
-foundarray = []
 
-found = session.query(Sets).all()
+j = session.query(Subject).all() 
 
-for s in found:
-	print s.card1, s.card2, s.card3
+for k in j:
+	print k.exptime, k.id
 
 
 

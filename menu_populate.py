@@ -84,13 +84,7 @@ for i in C:
             card2 = j[1],
             card3 = j[2])   
         session.add(sets)
-        session.commit()
-
-found = Found(
-    sets = 3,
-    subject = 1)
-session.add(found)
-session.commit 
+        session.commit() 
 
 sub = Subject(
     idCode = 1,
