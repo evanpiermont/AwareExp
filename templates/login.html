@@ -4,8 +4,9 @@
 <html lang="en">
 <head>
     <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
-    <script type="text/javascript" language="Javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
-    <script src={{ url_for('static', filename='js/set.js') }} language="Javascript" type="text/javascript"></script>
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/login.css') }} />
+    <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
+    <script src={{ url_for('static', filename='js/bg.js') }} language="Javascript" type="text/javascript"></script>
     
     <title> </title>
 </head>
@@ -17,7 +18,7 @@
         <div id='entertextprompt'>{{text}}</div>
 
 {%if v%}
-<form method='POST' enctype='multipart/form-data' action='/createsets'>
+<form method='POST' enctype='multipart/form-data' action='/user_manual'>
     <input type="text" autocomplete="off" autofocus="autofocus"
     name="subject_id" id="word-input">
     <input type="submit" value="Submit" class=submit id=submit>

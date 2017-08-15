@@ -31,7 +31,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-currentdeck = Deck({'number':[0,1,2],'symbol':[0,1,2], 'color':[0,1,2]})
+currentdeck = Deck({'number':[0,1,2,3],'symbol':[0,1,2,3], 'color':[0,1,2,3]})
 
 allCards = getCards(currentdeck)
 
@@ -53,7 +53,7 @@ session.commit()
 
 s_type1 = 1
 
-for i in [4,5,2,3,1,8,6,9,12]:
+for i in [1,7,34,42,41,51,55,17,9]:
     q = session.query(DeckSQL).filter(DeckSQL.id == i).one()
     hand = Hand(
         card = i,
@@ -74,7 +74,7 @@ for i in k:
 
 C = list(itertools.combinations(handarrayindex, 3))
 for i in C:
-    cards = map(cardFromIndex, i)
+    cards = list(map(cardFromIndex, i))
     if isSetThreeCards(cards):
         j = list(i)
         j.sort()
@@ -86,17 +86,49 @@ for i in C:
         session.add(sets)
         session.commit() 
 
-sub = Subject(
-    idCode = 1,
-    s_type = 1)
 
-session.add(sub)
-session.commit()
+#### do this more efficently in the future
+
+s_type1 = 2
+
+for i in [27,26,25,24,23,22,21,20,19]:
+    q = session.query(DeckSQL).filter(DeckSQL.id == i).one()
+    hand = Hand(
+        card = i,
+        color = q.color,
+        symbol = q.symbol,
+        number = q.number,
+        s_type = s_type1,
+        )
+    session.add(hand)
+    session.commit()
+
+k = session.query(Hand).filter(Hand.s_type == 2).all()
+
+handarrayindex = []
+
+for i in k:
+    handarrayindex.append(i.card)
+
+C = list(itertools.combinations(handarrayindex, 3))
+for i in C:
+    cards = list(map(cardFromIndex, i))
+    if isSetThreeCards(cards):
+        j = list(i)
+        j.sort()
+        sets = Sets(
+            s_type = s_type1,
+            card1 = j[0],
+            card2 = j[1],
+            card3 = j[2])   
+        session.add(sets)
+        session.commit() 
 
 
 
 
 
-print "added stuff!"
+
+print("added stuff!")   
 
 

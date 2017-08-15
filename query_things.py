@@ -28,10 +28,10 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-j = session.query(Subject).all() 
+j = session.query(Hand).all() 
 
 for k in j:
-	print k.exptime, k.id
+	print k.s_type
 
 
 

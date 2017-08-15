@@ -1,0 +1,39 @@
+
+
+#entertextprompt{
+    width: 70%;
+    height: 15%;
+    top: 25%;
+    left: 15%;
+    text-align: center;
+    position: fixed;
+    font-size: 40%;
+}
+
+#word-input{
+    width: 38%;
+    height: 5%;
+    top: 35%;
+    right: 35.5%;
+    text-align: center;
+    position: fixed;
+    font-size: 40%;
+}
+
+.submit{
+    color:rgb(132,188,232);
+    position: fixed;
+    border: none;
+    font-size: 30%;
+    cursor: pointer;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    width: 10%;
+    height: 5%;
+    top:35%;
+    left:65%;
+}
+
+
+
+

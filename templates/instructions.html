@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd"
+    >
+<html lang="en">
+<head>
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/instructions.css') }} />
+     <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
+    <script src={{ url_for('static', filename='js/bg.js') }} language="Javascript" type="text/javascript"></script>   
+    <script src={{ url_for('static', filename='js/instructions.js') }} language="Javascript" type="text/javascript"></script>
+
+    <script src={{ url_for('static', filename='js/render.js') }} language="Javascript" type="text/javascript"></script>
+    <script type="text/javascript" src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        var $subject = '{{subject_id}}';
+    </script>
+    
+    <title> </title>
+</head>
+
+<body>
+    <div id='background'>
+        
+        <div id=wrap>
+        <div class="inst" id=pane-1>
+            This is an experiment in decision making. Your payment will be determined in part by your preformance on the following task.
+
+            <br><br>
+
+            You will be shown {{handsize}} cards. The task invloves identifing sets of cards.
+        </div>
+
+        <div class="inst" id=pane-2>
+             Each card has 3 properties: (i) a symbol, (ii) a number, and, (iii) a color.  
+
+            <div id=cards_for_instructions>
+                <svg class="card display_card" data-card="[0,0,0]"></svg>
+                <svg class="card display_card" data-card="[1,1,1]"></svg>
+                <svg class="card display_card" data-card="[2,2,2]"></svg>
+                <svg class="card display_card" data-card="[3,3,3]"></svg>
+            </div>
+
+            Each property takes 4 values. Symbol: Triangle, Square, Circle, or Star. Number: 1, 2, 3, or 4. Color: Purple, Red, Orange, or Blue.
+
+        </div>
+
+        <div class="inst" id=pane-3>
+             A <span class=hl>set</span> is any 3 cards in which all 3 properties are either all the same or all different. The next pages have some examples.
+        </div>
+
+        <div class="inst" id=pane-4>
+             For example, the following 3 cards form a set:  
+
+            <div id=cards_for_instructions>
+                <svg class="card display_card" data-card="[2,0,3]"></svg>
+                <svg class="card display_card" data-card="[2,1,3]"></svg>
+                <svg class="card display_card" data-card="[2,2,3]"></svg>
+            </div>
+
+            Symbol: each card has a differnt symbol. Number: each card has the same number, 4. Color: each card has the same color, orange.
+
+        </div>
+
+
+        <div class="inst" id=pane-5>
+             The following 3 cards also form a set:  
+
+            <div id=cards_for_instructions>
+                <svg class="card display_card" data-card="[2,0,2]"></svg>
+                <svg class="card display_card" data-card="[1,0,3]"></svg>
+                <svg class="card display_card" data-card="[3,0,0]"></svg>
+            </div>
+
+            Symbol: each card has the same symbol, a triangle. Number: each card has a different number. Color: each card has a different color.
+
+        </div>
+
+                <div class="inst" id=pane-6>
+             On the other hand, the following 3 cards do <span class="hl">not</span> form a set:  
+
+            <div id=cards_for_instructions>
+                <svg class="card display_card" data-card="[1,0,0]"></svg>
+                <svg class="card display_card" data-card="[3,2,0]"></svg>
+                <svg class="card display_card" data-card="[2,2,2]"></svg>
+            </div>
+
+            This is becuase 2 of the cards have a number of 1, but the third card has a number of 3. (Also, the second and third cards have circles, where the first has a triangle.)
+
+        </div>
+
+        <div class="inst" id=pane-7>
+             You will be shown 9 cards; you will have {{rndtime}} seconds to click on the cards to form sets. The order the cards are clicked does not matter. You can click a selected card to un-select it. If you select 3 cards that form a set, the set will be registered on the side bar. 
+        </div>
+
+        <div class="inst" id=pane-8>
+              If the 3 cards do not form a set, you will incur a 2 second penalty. If you select the same set more than once, you will incur a 2 second pelanty. 
+        </div>
+
+        <div class="inst" id=pane-9>
+              You will receive {{payment}} cents per set found. After the time ends, you will be asked some survey questions. After these have been completed, you will receive an M-TURK code to enter on your M-TURK account.
+
+              <br><br>
+
+              Good Luck.
+        </div>
+
+        <div class="submit" id=prev>Prev</div>
+        <div class="submit" id=next>Next</div>
+        </div>
+
+        <div id=subject_id_box> Subject#: {{subject_id}}</div>
+    </div>
+</body>
+</html>

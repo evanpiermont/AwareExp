@@ -53,9 +53,17 @@ class Sets(Base):
 class Subject(Base):
     __tablename__ = 'subject' 
     id = Column(Integer, primary_key=True)
-    idCode = Column(Integer)
+    idCode = Column(String(100))
+    hashed_id = Column(String(100))
     s_type = Column(Integer, ForeignKey("s_type.id"))
     exptime = Column(DateTime)
+    gender = Column(Integer)
+    race = Column(Integer)
+    degree = Column(Integer)
+    percent = Column(Integer)
+    half = Column(Integer)
+    bet = Column(Integer)
+    star = Column(Integer)
 
 # types are non-unique by subject, encode the hand, lazy way of getting around problems with encoding
 

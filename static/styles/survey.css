@@ -1,0 +1,50 @@
+#submit{
+    top: 105%;
+    right: 10%;
+    width: 20%;
+    height: 5%;
+    padding-top: 3px;
+    border-radius: 4px;
+}
+
+input[type="radio"] {
+    opacity: 0;
+}
+
+input[type="radio"] + label span {
+    cursor:pointer;
+    display: inline-block;
+    border-radius:  5px;
+    color:#b58900;
+    background-color:#002b36;
+    padding: 4px;
+    text-align: center;
+}
+
+#adminenter{
+  position: fixed;
+  left: 10%;
+  top: 10%;
+  font-size: 30%
+}
+
+
+input[type="radio"]:checked + label span{
+     background-color:#b58900;
+     color: #002b36;
+}
+
+
+input[type="number"]{
+    display: inline-block;
+    border-radius:  5px;
+    margin-left: 10px;
+    color:#b58900;
+    padding: 4px;
+    text-align: center;
+    font-size: 100%
+}
+
+.submit{
+  font-size: 100%;
+}

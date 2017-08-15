@@ -4,13 +4,16 @@
 <html lang="en">
 <head>
     <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/set.css') }} />
     <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
     <script src={{ url_for('static', filename='js/set.js') }} language="Javascript" type="text/javascript"></script>
+    <script src={{ url_for('static', filename='js/bg.js') }} language="Javascript" type="text/javascript"></script>
+    <script src={{ url_for('static', filename='js/render.js') }} language="Javascript" type="text/javascript"></script>
     <script type="text/javascript" src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript">
-        var $subject = {{subject_id}};
+        var $subject = '{{subject_id}}';
         var foundSets = {{foundIDarray}};
-        var diff_seconds = {{diff_seconds}};;
+        var diff_seconds = {{diff_seconds}};
     </script>
     <title> </title>
 </head>
@@ -62,7 +65,7 @@
 
 <div id=subject_id_box> Subject#: {{subject_id}}; Time: <span id=timer></span></div>
 
-<form method='POST' enctype='multipart/form-data' action='/end' name=endform>
+<form method='POST' enctype='multipart/form-data' action='/survey' name=endform>
     <input type="hidden" value={{subject_id}} class=submit name="subject_id">
     <input type="hidden" value={{found_sets_num}} id="found_count_inuput" class=submit name="found_num">
 </form>

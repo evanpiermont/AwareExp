@@ -2,10 +2,11 @@ from flask import Flask, request, redirect, url_for, render_template, jsonify
 app = Flask(__name__)
 
 import os
+import hashlib
 import datetime, time, json
 from datetime import datetime, timedelta
 from os import curdir, sep
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -35,7 +36,9 @@ session = DBSession()
 ####
 
 handsize = 9
-rndtime = 35 #time in seconds
+rndtime = 120 #time in seconds
+payment = 10
+stype_max = 2 #number of s_types
 
 
 ####
@@ -49,7 +52,77 @@ rndtime = 35 #time in seconds
 @app.route('/')
 @app.route('/login')
 def Login():
+
+
     return render_template('login.html', v="Please enter a subject number.")
+
+####
+#####
+######
+####### User information page
+######
+#####
+####
+
+@app.route('/user_manual', methods=['POST', 'GET'])
+def Manual():
+
+    subject_id=request.form['subject_id']
+
+    return redirect(url_for('newUser', workerID=subject_id), code=302)
+
+
+@app.route('/user/', methods=['POST', 'GET'])
+def newUser():
+
+    subject_id = request.args.get('workerID')
+
+    if not subject_id or len(subject_id) < 5:
+
+        return render_template('login.html', text='Enter a valid subject number.', v=True)
+
+    else:
+        sub = session.query(Subject).all()
+        subjectnames = []
+        for i in sub:
+               subjectnames.append(i.idCode)
+    
+            #get list of valid subject names, next we test the input name to
+            #sure the imput is valid
+    
+        if subject_id not in subjectnames:
+
+            hashed_id = hashlib.sha1(subject_id.encode("UTF-8")).hexdigest()[:8]
+            s_type = randint(1,stype_max)
+        
+            subject = Subject(
+                idCode= subject_id,
+                hashed_id = hashed_id,
+                s_type = s_type)
+            session.add(subject)
+            session.commit()
+    
+        return Instructions(subject_id) 
+
+
+@app.route('/instructions/<subject_id>', methods=['POST', 'GET'])
+def Instructions(subject_id):
+
+        sub = session.query(Subject).all()
+        subjectnames = []
+        for i in sub:
+           subjectnames.append(i.idCode)
+
+        #get list of valid subject names, next we test the input name to
+        #sure the imput is valid
+
+        if subject_id not in subjectnames:
+
+            return render_template('login.html', text='Enter a valid subject number.', v=True)
+
+        else:
+            return render_template('instructions.html', subject_id = subject_id, handsize=handsize, rndtime=rndtime)
+
 
 ####
 #####
@@ -59,10 +132,8 @@ def Login():
 #####
 ####
 
-@app.route('/createsets', methods=['POST', 'GET'])
-def CreateSets():
-
-        subject_id=int(request.form['subject_id'])
+@app.route('/createsets/<subject_id>', methods=['POST', 'GET'])
+def CreateSets(subject_id):
 
         sub = session.query(Subject).all()
         subjectnames = []
@@ -149,11 +220,27 @@ def AddSetJSON():
  
     return jsonify(foundarray = setX.id)
 
+####
+#####
+######
+####### Surevey PAGE
+######
+#####
+####
+
+@app.route('/survey', methods=['POST'])
+def Survey():
+
+    subject_id=str(request.form['subject_id'])
+
+    return render_template('survey.html', subject_id=subject_id)
+
+
 
 ####
 #####
 ######
-####### LOGIN PAGE
+####### END PAGE
 ######
 #####
 ####
@@ -161,11 +248,27 @@ def AddSetJSON():
 @app.route('/end', methods=['POST'])
 def End():
 
-    found_num=str(request.form['found_num'])
     subject_id=str(request.form['subject_id'])
 
-    paycode = subject_id + ".." + found_num
-    return render_template('login.html', text="Thank you; your paycode is: " + paycode, v=False)
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+
+    j.gender = request.form['gender']
+    j.race = request.form['race']
+    j.degree = request.form['degree']
+    j.percent = request.form['percent']
+    j.half = request.form['half']
+    j.bet = request.form['bet']
+    j.star = request.form['star']
+
+    session.add(j)
+    session.commit()
+
+    found_num = session.query(Found).filter(Found.subject == j.id).count()
+
+    hashed_id = j.hashed_id
+
+    paycode = subject_id + ".." + str(found_num)
+    return render_template('login.html', text="Thank you; your paycode is: " + hashed_id, v=False)
 
 
 if __name__ == '__main__':
