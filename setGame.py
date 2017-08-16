@@ -10,8 +10,8 @@ Created on Thu May  4 09:22:04 2017
 ###              UNAWARENESS EXPERIMENT: CODE FOR SET GAME                  ###
 ###############################################################################
 
-import itertools, time, random
-#import matplotlib.pyplot as plt
+import itertools, time, pylab, random
+import matplotlib.pyplot as plt
 
 class Deck(object):
     """
@@ -244,6 +244,19 @@ def getSetsSimulation(deck, handSize, trials, setSize, randomSeed):
         listTotal.append(total)
     return finalResult            
 
+#def selectLowHigh(deck, handSize, trials, setSize, randomSeed, numLow, numHigh):
+#    smallDeckSets = []
+#    largeDeckSets = []
+#    dicSets = getSetsSimulation(deck, handSize, trials, setSize, randomSeed).copy()
+##    for key in dicSets:
+##        print(str(key), str(len(dicSets[key])))
+#    return dicSets
+#    # find out lowest key with at least numLow number of subDecks
+#    # randomly select numLow out of possible subDecks
+#    # add subDecks smallDeckSets together with the corresponding list of sets
+#    # find out highest key with at least numHigh number of subDecks
+#    # randomly select numHigh out of possible subDecks
+#    # add subDecks together with list of sets
     
 ###############################################################################
 ###              SIMULATION: ORIGINAL AND THREEPROPERTIES DECKS             ###
@@ -254,8 +267,11 @@ original = Deck({'number':[1,2,3],'symbol':['diamond', 'squiggle', 'oval'],
 
 threeProperties = Deck({'number':[1,2,3,4],'color':['cyan','magenta','yellow','red']
                    ,'shape':['square','triangle','circle','squiggle']})
+    
+threeValues = Deck({'number':[1,2,3],'color':['cyan','magenta','yellow']
+                   ,'shape':['square','triangle','circle']})
 
-listOfDecks = [original,threeProperties]
+listOfDecks = [original,threeProperties, threeValues]
 
 listOfHands = [9,10,11,12]
 
@@ -269,7 +285,7 @@ listOfHands = [9,10,11,12]
 
 # We want to choose a subDeck of 10 cards, with a low number of possible sets
 
-# The function 'getSetsSimulation' generates a dictionary where each is the 
+# The function 'getSetsSimulation' generates a dictionary where eachkey  is the 
 #   number of sets that could be formed, and the values are lists of subDekcs
 #   and sets formed with each subDeck. For example, say I want a subDeck that 
 #   has 7 sets. Let's call the function with the key equal to 7:
@@ -304,4 +320,39 @@ listOfHands = [9,10,11,12]
 # Which is, of course, a list of length 7, where each element is a tuple with
 #   thee cards that form a seet. And you can go through this list to both 
 #   generate images for the experiment and to check people's answers. 
+
+###############################################################################
+###         SELECTING 5 SUBDECKS OF FEW SETS AND 5 WITH A LOT OF SET        ###
+###############################################################################
+
+# Let's first do the simulations for each of the combinations of decks and
+#   hand sizes
+
+dic1 = getSetsSimulation(threeProperties, 9, 20000, 3, 0).copy()
+dic2 = getSetsSimulation(threeProperties, 12, 20000, 3, 0).copy()
+dic3 = getSetsSimulation(threeValues, 9, 20000, 3, 0).copy()
+dic4 = getSetsSimulation(threeValues, 12, 20000, 3, 0).copy()
+
+listDics = [dic1, dic2, dic3, dic4]
+
+#for dic in listDics:
+#    for key in dic:
+#        print(str(key), str(len(dic[key])))
+    
+random.seed(0)
+
+threePropertiesNineCardsLow = random.sample(dic1[1],5)
+threePropertiesNineCardsHigh = random.sample(dic1[17],5)
+threePropertiesTwelveCardsLow = random.sample(dic2[6],5)
+threePropertiesTwelveCardsHigh = random.sample(dic2[34],5)
+threeValuesNineCardsLow = random.sample(dic3[1],5)
+threeValuesNineCardsHigh = random.sample(dic3[8],5)
+threeValuesTwelveCardsLow = random.sample(dic4[4],5)
+threeValuesTwelveCardsHigh = random.sample(dic4[14],5)
+
+
+
+
+
+
 
