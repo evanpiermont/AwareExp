@@ -223,7 +223,7 @@ def AddSetJSON():
 ####
 #####
 ######
-####### Surevey PAGE
+####### Survey PAGE
 ######
 #####
 ####
