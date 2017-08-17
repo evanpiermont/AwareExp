@@ -23,85 +23,120 @@
         
         <div id=wrap>
         <div class="inst" id=pane-1>
-            This is an experiment (again)! Your payment will be determined in part by your preformance on the following task.
-
-            <br><br>
-
-            You will be shown {{handsize}} cards. The task invloves identifing sets of cards.
+            <header><h4>Thank you for participating!</h4></header>
+            <br>
+            <p>This is an experiment about decision making. Besides the $0.25 for completing the study,
+            you could get additional payment based partly on your performance, and partly
+            on chance. In the next pages we'll explain (i) the experimental task, (ii) how you
+            make decisions, and (iii) how the extra payment is determined.</p>
+            <br>
+            <p>Any extra payment will be deposited as a bonus on MTurk within 3 days.</p>
         </div>
-
+        
+        
         <div class="inst" id=pane-2>
-             Each card has 3 properties: (i) a symbol, (ii) a number, and, (iii) a color.  
-
-            <div id=cards_for_instructions>
-                <svg class="card display_card" data-card="[0,0,0]"></svg>
-                <svg class="card display_card" data-card="[1,1,1]"></svg>
-                <svg class="card display_card" data-card="[2,2,2]"></svg>
-                <svg class="card display_card" data-card="[3,3,3]"></svg>
-            </div>
-
-            Each property takes 4 values. Symbol: Triangle, Square, Circle, or Star. Number: 1, 2, 3, or 4. Color: Purple, Red, Orange, or Blue.
-
-        </div>
-
+            <p>The experiment will use cards containing a certain number (1, 2, 3, or 4) of a particular symbol
+            (triangle, square, circle, or star) of a particular color (purple, orange, red, or blue). Considering all
+            possible combinations of the attributes number, symbol, and color, we end up with 4x4x4=64 unique cards.</p>
+            <br>
+            <p>As an example, four of those cards are shown below:</p>
+            
+                <div id=cards_for_instructions>
+                    <svg class="card display_card" data-card="[0,0,0]"></svg>
+                    <svg class="card display_card" data-card="[1,1,1]"></svg>
+                    <svg class="card display_card" data-card="[2,2,2]"></svg>
+                    <svg class="card display_card" data-card="[3,3,3]"></svg>
+                </div>
+                
+        </div> 
+        
+        
         <div class="inst" id=pane-3>
-             A <span class=hl>set</span> is any 3 cards in which all 3 properties are either all the same or all different. The next pages have some examples.
+            <p>From the deck of 64 cards, the computer will randomly select 9 cards. Your objective
+            will be to use those 9 cards to form groups of 3 cards satisfying a specific property, which
+            we'll explain soon. A combination of 3 cards satisfying the property is called a
+            <span class=hl>SET</span>.</p>
+            <br>
+            <p>For today's experiment, you will be paid an additional <b>$0.20</b> for each <span class=hl>SET</span>
+            that you can form.</p>
         </div>
 
         <div class="inst" id=pane-4>
-             For example, the following 3 cards form a set:  
+             <p>The property that defines a <span class=hl>SET</span> is this: A <span class=hl>SET</span> is any
+             combination of 3 cards such that each attribute (number, symbol, and color) is either all the
+             same or all different among the 3 cards.</p>
+             <br>
+            <p>The next pages will show you a few examples.</p>
+        </div>
+
+        <div class="inst" id=pane-5>
+             <header><h4>Example 1</h4></header>
+             <br>
+             <p>The following 3 cards form a <span class=hl>SET</span>:</p>  
 
             <div id=cards_for_instructions>
                 <svg class="card display_card" data-card="[2,0,3]"></svg>
                 <svg class="card display_card" data-card="[2,1,3]"></svg>
                 <svg class="card display_card" data-card="[2,2,3]"></svg>
             </div>
-
-            Symbol: each card has a differnt symbol. Number: each card has the same number, 4. Color: each card has the same color, orange.
-
+            <p>That's because all cards have the <b>same</b> color (orange), the <b>same</b> number of symbols
+            (4), and <b>different</b> symbols (from left to right: triangle, square, and circle).</p>
         </div>
 
 
-        <div class="inst" id=pane-5>
-             The following 3 cards also form a set:  
+        <div class="inst" id=pane-6>
+             <header><h4>Example 2</h4></header>
+             <br>
+             <p>The following 3 cards also form a <span class=hl>SET</span>:</p>  
 
             <div id=cards_for_instructions>
                 <svg class="card display_card" data-card="[2,0,2]"></svg>
                 <svg class="card display_card" data-card="[1,0,3]"></svg>
                 <svg class="card display_card" data-card="[3,0,0]"></svg>
             </div>
+            <p>And that's because all cards have the <b>same</b> symbol (triangle), <b>different</b> colors
+            (from left to right: orange, red, and purple), and <b>different</b> number of symbols
+            (from left to right: 3, 4, and 1).</p>
+        </div> 
 
-            Symbol: each card has the same symbol, a triangle. Number: each card has a different number. Color: each card has a different color.
-
-        </div>
-
-                <div class="inst" id=pane-6>
-             On the other hand, the following 3 cards do <span class="hl">not</span> form a set:  
+                <div class="inst" id=pane-7>
+             <header><h4>Example 3</h4></header>
+             <br>
+             <p>The following 3 cards, on the other hand, do NOT form a <span class=hl>SET</span>:</p>  
 
             <div id=cards_for_instructions>
                 <svg class="card display_card" data-card="[1,0,0]"></svg>
                 <svg class="card display_card" data-card="[3,2,0]"></svg>
                 <svg class="card display_card" data-card="[2,2,2]"></svg>
             </div>
-
-            This is becuase 2 of the cards have a number of 1, but the third card has a number of 3. (Also, the second and third cards have circles, where the first has a triangle.)
-
-        </div>
-
-        <div class="inst" id=pane-7>
-             You will be shown 9 cards; you will have {{rndtime}} seconds to click on the cards to form sets. The order the cards are clicked does not matter. You can click a selected card to un-select it. If you select 3 cards that form a set, the set will be registered on the side bar. 
-        </div>
+            <p>Note that while the middle and right-most cards have circles, the left-most card has a triangle.
+            Hence, for the attribute symbol, the cards are neither all the same nor all different. Note 
+            that the cards are different in respect to color and number.</p>
+        </div> 
 
         <div class="inst" id=pane-8>
-              If the 3 cards do not form a set, you will incur a 2 second penalty. If you select the same set more than once, you will incur a 2 second pelanty. 
+             <p>You will be shown the 9 cards drawn from the deck of 64, and you be given {{rndtime}} seconds
+             to click on the cards to form <span class=hl>SETs</span>. The order the cards are clicked does not matter,
+             and you can click a selected card to un-select it.</p>
+             <br>
+             <p>If you select 3 cards that form a <span class=hl>SET</span>, it will be registered on the side bar. If
+                you select 3 cards that do not form a <span class=hl>SET</span>, you will incur a 2-second penalty. If
+                you select the same <span class=hl>SET</span> more than once, you will also incur a 2-second penalty.
+                Therefore, you should not randomly click on cards in the hopes of finding a <span class=hl>SET</span>.
+             </p>
         </div>
 
         <div class="inst" id=pane-9>
-              You will receive {{payment}} cents per set found. After the time ends, you will be asked some survey questions. After these have been completed, you will receive an M-TURK code to enter on your M-TURK account.
-
-              <br><br>
-
-              Good Luck.
+            <header><h4>Review and Payment</h4></header>
+            <br>
+            <p>If you complete the study, you will receive $0.25 for your participation, and an extra $0.20
+            per <span class=hl>SET</span> found. This extra payment will be deposited via a bonus on MTurk
+            and deposited within 3 days.</p>
+            <br>
+            <p>After the 120 seconds expire, you will be asked to complete a brief survey. After you complete
+            the survey, you will receive your Mturk completion code.</p>
+            <br><br>
+            Good luck!
         </div>
 
         <div class="submit" id=prev>Prev</div>
