@@ -69,11 +69,7 @@
 
     <br><br><br><br>
 
-    On a scale of 1 to 100:
-
-   <br><br>
-
-    Of all Sets possible, what percentage do you believe you found?:  <input name="percent" id="percent" type="number" min="0" max="100" required />
+    Of all possible <span class=hl>SETs</span>, what percentage do you believe you found?:  <input name="percent" id="percent" type="number" min="0" max="100" required />
 
     <br><br>
 
@@ -81,11 +77,13 @@
 
     <br><br>
 
-    Would you rather receive $0.10 for each set you found, or have one of all possible sets drawn at random, and receive $2.00 if you found that set?:  <input name="bet" id="bet" type="number" min="0" max="100" required />
+    Would you rather receive $0.10 for each set you found, or have one of all possible sets drawn at random,
+    and receive $2.00 if you found that particular set?:  <input name="bet" id="bet" type="number" min="0" max="100" required />
 
     <br><br>
 
-    If a one Set was drawn randomly, what is the probability it would have a star?:  <input name="star" id="star" type="number" min="0" max="100" required />    
+    Suppose one <span class=hl>SET</span> is drawn randomly out of all possible <span class=hl>SETs</span>.
+    What is the probability it would contain at least one star symbol?:  <input name="star" id="star" type="number" min="0" max="100" required />    
 
     <input type="hidden" name="subject_id" value={{ subject_id }}>
     <input type="submit" value="Continue" class=submit id=submit>

@@ -48,3 +48,7 @@ input[type="number"]{
 .submit{
   font-size: 100%;
 }
+
+.hl{
+    color: #dc322f;
+}
