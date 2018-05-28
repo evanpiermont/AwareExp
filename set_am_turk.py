@@ -20,7 +20,7 @@ import collections
 
 
 filePath = os.getcwd()
-engine = create_engine('sqlite:///'+ filePath + '/set_am_turk.db')
+engine = create_engine('postgres://kmwdsiybqohzkr:48c78dc82321c614a1f2058afdcf74987c7765b22a92be753f2a156d5299ad07@ec2-54-204-39-46.compute-1.amazonaws.com:5432/d40rkj7aib44id')
 
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
