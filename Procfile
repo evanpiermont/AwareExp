@@ -1,1 +1,1 @@
-web: python set_am_turk.py
+web: gunicorn set_am_turk:app
