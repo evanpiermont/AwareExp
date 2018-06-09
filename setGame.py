@@ -10,8 +10,8 @@ Created on Thu May  4 09:22:04 2017
 ###              UNAWARENESS EXPERIMENT: CODE FOR SET GAME                  ###
 ###############################################################################
 
-import itertools, time, pylab, random
-import matplotlib.pyplot as plt
+import itertools, time, random
+#import matplotlib.pyplot as plt
 
 class Deck(object):
     """
@@ -262,18 +262,18 @@ def getSetsSimulation(deck, handSize, trials, setSize, randomSeed):
 ###              SIMULATION: ORIGINAL AND THREEPROPERTIES DECKS             ###
 ###############################################################################
 
-original = Deck({'number':[1,2,3],'symbol':['diamond', 'squiggle', 'oval'], 
-        'shading':['solid', 'striped', 'open'], 'color':['red','green','purple']})
+# original = Deck({'number':[1,2,3],'symbol':['diamond', 'squiggle', 'oval'], 
+#         'shading':['solid', 'striped', 'open'], 'color':['red','green','purple']})
 
-threeProperties = Deck({'number':[1,2,3,4],'color':['cyan','magenta','yellow','red']
-                   ,'shape':['square','triangle','circle','squiggle']})
+# threeProperties = Deck({'number':[1,2,3,4],'color':['cyan','magenta','yellow','red']
+#                    ,'shape':['square','triangle','circle','squiggle']})
     
-threeValues = Deck({'number':[1,2,3],'color':['cyan','magenta','yellow']
-                   ,'shape':['square','triangle','circle']})
+# threeValues = Deck({'number':[1,2,3],'color':['cyan','magenta','yellow']
+#                    ,'shape':['square','triangle','circle']})
 
-listOfDecks = [original,threeProperties, threeValues]
+# listOfDecks = [original,threeProperties, threeValues]
 
-listOfHands = [9,10,11,12]
+# listOfHands = [9,10,11,12]
 
 #for deck in listOfDecks:
 #    for handSize in listOfHands:
@@ -328,27 +328,27 @@ listOfHands = [9,10,11,12]
 # Let's first do the simulations for each of the combinations of decks and
 #   hand sizes
 
-dic1 = getSetsSimulation(threeProperties, 9, 20000, 3, 0).copy()
-dic2 = getSetsSimulation(threeProperties, 12, 20000, 3, 0).copy()
-dic3 = getSetsSimulation(threeValues, 9, 20000, 3, 0).copy()
-dic4 = getSetsSimulation(threeValues, 12, 20000, 3, 0).copy()
+# dic1 = getSetsSimulation(threeProperties, 9, 20000, 3, 0).copy()
+# dic2 = getSetsSimulation(threeProperties, 12, 20000, 3, 0).copy()
+# dic3 = getSetsSimulation(threeValues, 9, 20000, 3, 0).copy()
+# dic4 = getSetsSimulation(threeValues, 12, 20000, 3, 0).copy()
 
-listDics = [dic1, dic2, dic3, dic4]
+# listDics = [dic1, dic2, dic3, dic4]
 
-#for dic in listDics:
-#    for key in dic:
-#        print(str(key), str(len(dic[key])))
+# #for dic in listDics:
+# #    for key in dic:
+# #        print(str(key), str(len(dic[key])))
     
-random.seed(0)
+# random.seed(0)
 
-threePropertiesNineCardsLow = random.sample(dic1[1],5)
-threePropertiesNineCardsHigh = random.sample(dic1[17],5)
-threePropertiesTwelveCardsLow = random.sample(dic2[6],5)
-threePropertiesTwelveCardsHigh = random.sample(dic2[34],5)
-threeValuesNineCardsLow = random.sample(dic3[1],5)
-threeValuesNineCardsHigh = random.sample(dic3[8],5)
-threeValuesTwelveCardsLow = random.sample(dic4[4],5)
-threeValuesTwelveCardsHigh = random.sample(dic4[14],5)
+# threePropertiesNineCardsLow = random.sample(dic1[1],5)
+# threePropertiesNineCardsHigh = random.sample(dic1[17],5)
+# threePropertiesTwelveCardsLow = random.sample(dic2[6],5)
+# threePropertiesTwelveCardsHigh = random.sample(dic2[34],5)
+# threeValuesNineCardsLow = random.sample(dic3[1],5)
+# threeValuesNineCardsHigh = random.sample(dic3[8],5)
+# threeValuesTwelveCardsLow = random.sample(dic4[4],5)
+# threeValuesTwelveCardsHigh = random.sample(dic4[14],5)
 
 
 

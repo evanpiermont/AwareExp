@@ -1,5 +1,4 @@
 from flask import Flask, request, redirect, url_for, render_template, jsonify
-app = Flask(__name__)
 
 import os
 import hashlib
@@ -13,18 +12,13 @@ from sqlalchemy.orm import sessionmaker
 
 from random import randint
 
-from db_setup import Base, DeckSQL, Hand, Subject, SType, Sets, Found
+from db_setup import DeckSQL, Hand, Subject, Sets, Found, db, app
 
 import cgi
 import collections
 
+session = db.session
 
-filePath = os.getcwd()
-engine = create_engine('sqlite:///'+ filePath + '/set_am_turk.db')
-
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
 
 
 ####
@@ -36,7 +30,7 @@ session = DBSession()
 ####
 
 handsize = 9
-rndtime = 120 #time in seconds
+rndtime = 45 #time in seconds
 payment = 10
 stype_max = 2 #number of s_types
 
@@ -151,6 +145,7 @@ def CreateSets(subject_id):
 
             j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
+
             diff_seconds = rndtime
 
             if j.exptime:
@@ -161,11 +156,9 @@ def CreateSets(subject_id):
 
             else:
 
-                time = datetime.now()
-                exptime = time + timedelta(seconds=+rndtime)
-                j.exptime = exptime
+                j.exptime = datetime.now() + timedelta(seconds=+rndtime)
                 session.add(j)
-                session.commit
+                session.commit()
 
 
             if diff_seconds < 0:
@@ -198,7 +191,7 @@ def CreateSets(subject_id):
     
                 found_sets_num = len(foundIDarray)
     
-                return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=   handIDarray, foundarray=foundarray, foundIDarray=foundIDarray, diff_seconds=diff_seconds, found_sets_num=found_sets_num)
+                return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=handIDarray, foundarray=foundarray, foundIDarray=foundIDarray, diff_seconds=diff_seconds, found_sets_num=found_sets_num)
 
 
 @app.route('/_add_set', methods=['POST'])
@@ -271,10 +264,8 @@ def End():
     return render_template('login.html', text="Thank you; your paycode is: " + hashed_id, v=False)
 
 
-# if __name__ == '__main__':
-#     app.debug = True
-#     app.run(host='0.0.0.0', port=5000)
 
 if __name__ == "__main__":
-    application.run(host='0.0.0.0')
+    app.debug = True
+    app.run(host='0.0.0.0')
 

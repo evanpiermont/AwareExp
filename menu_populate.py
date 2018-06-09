@@ -7,28 +7,14 @@ import itertools, os
 
 import db_setup
 
-from db_setup import Base, engine, DeckSQL, Hand, SType, Subject, Sets, Found
+from db_setup import DeckSQL, Hand, Subject, Sets, Found, db
 from setGame import Deck, getCards, isSetThreeCards
  
-filePath = os.getcwd()
-os.remove(filePath + '/set_am_turk.db')
-db_setup.Base.metadata.create_all(engine)
 
 
-#engine = create_engine('sqlite:////Users/evanpiermont/Desktop/scrabble/restaurantmenu.db')
-# Bind the engine to the metadata of the Base class so that the
-# declaratives can be accessed through a DBSession instance
-Base.metadata.bind = engine
- 
-DBSession = sessionmaker(bind=engine)
-# A DBSession() instance establishes all conversations with the database
-# and represents a "staging zone" for all the objects loaded into the
-# database session object. Any change made against the objects in the
-# session won't be persisted into the database until you call
-# session.commit(). If you're not happy about the changes, you can
-# revert all of them back to the last commit by calling
-# session.rollback()
-session = DBSession()
+db.create_all()
+    
+session = db.session
 
 
 currentdeck = Deck({'number':[0,1,2,3],'symbol':[0,1,2,3], 'color':[0,1,2,3]})
@@ -47,9 +33,6 @@ for i in allCards:
     session.add(deck)
     session.commit()
 
-s_type1 = SType()
-session.add(s_type1)
-session.commit()
 
 s_type1 = 1
 
