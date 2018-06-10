@@ -5,6 +5,8 @@
 from flask import Flask, request, redirect, url_for, render_template, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
+from flask_heroku import Heroku
+
 app = Flask(__name__)
 
 import os
@@ -17,7 +19,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy import create_engine
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/awareExp'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://kmwdsiybqohzkr:48c78dc82321c614a1f2058afdcf74987c7765b22a92be753f2a156d5299ad07@ec2-54-204-39-46.compute-1.amazonaws.com:5432/d40rkj7aib44id'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 

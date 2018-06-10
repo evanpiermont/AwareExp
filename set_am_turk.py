@@ -7,8 +7,7 @@ from datetime import datetime, timedelta
 from os import curdir, sep
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+# from flask_heroku import Heroku
 
 from random import randint
 
