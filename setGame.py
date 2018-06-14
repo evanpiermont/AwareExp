@@ -10,8 +10,8 @@ Created on Thu May  4 09:22:04 2017
 ###              UNAWARENESS EXPERIMENT: CODE FOR SET GAME                  ###
 ###############################################################################
 
-import itertools, time, random
-#import matplotlib.pyplot as plt
+import itertools, time, pylab, random, math
+import matplotlib.pyplot as plt
 
 class Deck(object):
     """
@@ -40,11 +40,12 @@ class Deck(object):
         
 def getCards(deck):
     """
+    'deck' is a Deck object.
     Return a list with every card of the deck, where each card is a tuple with
             the values of each one of the properties.
     This version ONLY works with decks with 2, 3, 4, or 5 properties. However, 
             the properties themselves can have an arbritrary number of 
-            values (or instances)
+            values (or instances).
     """
     listKeys = []
     for key in deck.getProperties():
@@ -75,6 +76,9 @@ def isSetThreeCards(cards):
     
     Recall that a set is formed whenever EACH of the properties is either
             the same in ALL cards or different in ALL cards
+    
+    WARNING: this function only makes sense when evaluating groups of THREE
+            cards
     """
     result = True
     for i in range(len(cards[0])): #all cards have the same num of properties
@@ -95,7 +99,7 @@ def cardCombinations(deck, n):
     n: number of cards in each group ( int > 0 )
     
     Returns a list of tuples of three cards representing ALL possible 
-            combinations of n cards for that a prtciular deck. Recall that each
+            combinations of n cards for that a particular deck. Recall that each
             card is itself a tuple with as many elements as there are keys in 
             the properties dictionary
     """
@@ -108,6 +112,9 @@ def totalNumSets(deck, n):
     
     Returns the total number of sets of size n that can be formed with the 
             cards in the deck
+            
+    WARNING: will only work with n=3 as long as the function used is
+            'isSetThreeCards'
     """
     start_time = time.time()
     listCombinations = cardCombinations(deck, n)
@@ -156,6 +163,9 @@ def makeHistSimulation(deck, handSize, trials, setSize):
     repeated = 0
     usedSamples = []
     tupleValues = []
+    ev = 0
+    var = 0
+    sd = 0
     for key in deck.getProperties():
         tupleValues.append(len(deck.getProperties()[key]))
     for trial in range(trials):
@@ -182,6 +192,12 @@ def makeHistSimulation(deck, handSize, trials, setSize):
             if numSets[n]==listTotal[i]:
                 count+=1
         numHands.append(count)
+    # Get expected value and standard deviation
+    for i in range(len(numSets)):
+        ev += ( numSets[i]*numHands[i] ) / sum(numHands)
+    for i in range(len(numSets)):
+        var += ( ( numSets[i] - ev ) ** 2 ) * ( numHands[i] / sum(numHands) )
+    sd = math.sqrt(var)
     pylab.bar(numSets, numHands, align='center')
     pylab.xlim([0,max(numSets)+1])
     pylab.title('Size of deck: ' + str(deck.getNumCards()) + ' | Properties: ' 
@@ -193,7 +209,7 @@ def makeHistSimulation(deck, handSize, trials, setSize):
     plt.savefig(str(deck.getNumCards())+'Deck_'+str(handSize)+'Cards_'
                 +str(setSize)+'-cardSet'+'.pdf')
     pylab.close()
-    return numSets, numHands
+    return numSets, numHands, (ev, var, sd)
 
 def getSetsSimulation(deck, handSize, trials, setSize, randomSeed):
     """
@@ -242,42 +258,47 @@ def getSetsSimulation(deck, handSize, trials, setSize, randomSeed):
         elif total in finalResult:
             finalResult[total].append([sampleCards, tempSet])
         listTotal.append(total)
-    return finalResult            
+    return finalResult
 
-#def selectLowHigh(deck, handSize, trials, setSize, randomSeed, numLow, numHigh):
-#    smallDeckSets = []
-#    largeDeckSets = []
-#    dicSets = getSetsSimulation(deck, handSize, trials, setSize, randomSeed).copy()
-##    for key in dicSets:
-##        print(str(key), str(len(dicSets[key])))
-#    return dicSets
-#    # find out lowest key with at least numLow number of subDecks
-#    # randomly select numLow out of possible subDecks
-#    # add subDecks smallDeckSets together with the corresponding list of sets
-#    # find out highest key with at least numHigh number of subDecks
-#    # randomly select numHigh out of possible subDecks
-#    # add subDecks together with list of sets
+def getSubdeckNsets(deck, handSize, trials, setSize, nsets, randomSeed):
+    """
+    deck: a Deck object
+    handSize: number of cards from Deck to be used ( int > 0 )
+    trials: number of simulations performed ( int > 0 )
+    setSize: number of cards in each set, usually equal to 3
+    nsets: number of sets desired (int > 0)
+    randomSeed: seed to be used for the random components
+    
+    Returns: from 'finalResult' dictionary (see 'getSetsSimulation') randomly 
+            picks one setSize-subDeck that generates 'nsets' number of sets. 
+            Returns a list of two lists: the first is a list with the cards
+            from the 'setSize-subDeck' and the second is a list of tuples with
+            all the 'nsets' number of sets formed by the subDeck.     
+    """
+    finalList = []
+    dic = getSetsSimulation(deck, handSize, trials, setSize, randomSeed)
+    x = random.choice(range(len(dic[nsets])))
+    finalList.append(dic[nsets][x][0])
+    finalList.append(dic[nsets][x][1])
+    return finalList
     
 ###############################################################################
 ###              SIMULATION: ORIGINAL AND THREEPROPERTIES DECKS             ###
 ###############################################################################
 
-# original = Deck({'number':[1,2,3],'symbol':['diamond', 'squiggle', 'oval'], 
-#         'shading':['solid', 'striped', 'open'], 'color':['red','green','purple']})
-
-# threeProperties = Deck({'number':[1,2,3,4],'color':['cyan','magenta','yellow','red']
-#                    ,'shape':['square','triangle','circle','squiggle']})
-    
-# threeValues = Deck({'number':[1,2,3],'color':['cyan','magenta','yellow']
-#                    ,'shape':['square','triangle','circle']})
-
-# listOfDecks = [original,threeProperties, threeValues]
-
-# listOfHands = [9,10,11,12]
-
+original = Deck({'number':[1,2,3],'symbol':['diamond', 'squiggle', 'oval'], 
+        'shading':['solid', 'striped', 'open'], 'color':['red','green','purple']})
+#
+#threeProperties = Deck({'number':[1,2,3,4],'color':['cyan','magenta','yellow','red']
+#                   ,'shape':['square','triangle','circle','squiggle']})
+#
+#listOfDecks = [original,threeProperties]
+#
+#listOfHands = [9,10,11,12]
+#
 #for deck in listOfDecks:
 #    for handSize in listOfHands:
-#        makeHistSimulation(deck, handSize, 20000, 3)
+#        makeHistSimulation(deck, handSize, 50000, 3)
 
 ###############################################################################
 ###                   EXAMPLES TO BE USED WITH EXPERIMENT                   ###
@@ -325,30 +346,6 @@ def getSetsSimulation(deck, handSize, trials, setSize, randomSeed):
 ###         SELECTING 5 SUBDECKS OF FEW SETS AND 5 WITH A LOT OF SET        ###
 ###############################################################################
 
-# Let's first do the simulations for each of the combinations of decks and
-#   hand sizes
-
-# dic1 = getSetsSimulation(threeProperties, 9, 20000, 3, 0).copy()
-# dic2 = getSetsSimulation(threeProperties, 12, 20000, 3, 0).copy()
-# dic3 = getSetsSimulation(threeValues, 9, 20000, 3, 0).copy()
-# dic4 = getSetsSimulation(threeValues, 12, 20000, 3, 0).copy()
-
-# listDics = [dic1, dic2, dic3, dic4]
-
-# #for dic in listDics:
-# #    for key in dic:
-# #        print(str(key), str(len(dic[key])))
-    
-# random.seed(0)
-
-# threePropertiesNineCardsLow = random.sample(dic1[1],5)
-# threePropertiesNineCardsHigh = random.sample(dic1[17],5)
-# threePropertiesTwelveCardsLow = random.sample(dic2[6],5)
-# threePropertiesTwelveCardsHigh = random.sample(dic2[34],5)
-# threeValuesNineCardsLow = random.sample(dic3[1],5)
-# threeValuesNineCardsHigh = random.sample(dic3[8],5)
-# threeValuesTwelveCardsLow = random.sample(dic4[4],5)
-# threeValuesTwelveCardsHigh = random.sample(dic4[14],5)
 
 
 
