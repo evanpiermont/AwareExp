@@ -12,9 +12,10 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from random import randint
 
 from db_setup import DeckSQL, Hand, Subject, Sets, Found, db, app
+from setGame import Deck, getCards, isSetThreeCards, getNhands, threeProperties  
 
 import cgi
-import collections
+import collections, itertools
 
 session = db.session
 
@@ -28,8 +29,8 @@ session = db.session
 #####
 ####
 
-handsize = 9
-rndtime = 45 #time in seconds
+handsize = 12
+rndtime = 500 #time in seconds
 payment = 10
 stype_max = 2 #number of s_types
 
@@ -95,7 +96,8 @@ def newUser():
             session.add(subject)
             session.commit()
     
-        return Instructions(subject_id) 
+        #return Instructions(subject_id)
+        return Quiz(subject_id) 
 
 
 @app.route('/instructions/<subject_id>', methods=['POST', 'GET'])
@@ -114,8 +116,61 @@ def Instructions(subject_id):
             return render_template('login.html', text='Enter a valid subject number.', v=True)
 
         else:
-            return render_template('instructions.html', subject_id = subject_id, handsize=handsize, rndtime=rndtime)
+            return render_template('instructions.html', subject_id = subject_id)
 
+
+@app.route('/compquiz/<subject_id>', methods=['POST', 'GET'])
+def Quiz(subject_id):
+
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+
+
+    if j.tryquiz:
+
+        return render_template('login.html', text='You already failed the quiz.', v=True)
+
+    else:
+        return render_template('quiz.html', subject_id = subject_id)
+
+@app.route('/quizval', methods=['POST'])
+def QuizVal():
+
+    subject_id=str(request.form['subject_id'])
+
+    a1=int(request.form['set1'])
+    a2=int(request.form['set2'])
+    a3=int(request.form['set3'])
+    a4=int(request.form['set4'])
+    a5=int(request.form['set5'])
+
+    correct = a1 + a2 + a3 + a4 + a5
+
+    if correct > 3:
+
+        j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+        j.tryquiz = True
+        j.passquiz = True
+        session.add(j)
+        session.commit()
+
+        return CreateSets(subject_id)
+
+    else:
+
+        j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+        j.tryquiz = True
+        j.passquiz = False
+        session.add(j)
+        session.commit()
+
+        return render_template('login.html', text='You failed the quiz.', v=True)
+
+
+
+
+
+
+    
 
 ####
 #####
@@ -164,16 +219,23 @@ def CreateSets(subject_id):
                 
                 return render_template('login.html', text='Sorry, you have already played', v=True)
 
+            elif not j.passquiz:
+
+                return render_template('login.html', text='Sorry, you have failed the quiz', v=True)
+
             else:
 
                 k = session.query(Hand).filter(Hand.s_type == j.s_type).limit(handsize).all()
     
                 handarray = []
                 handIDarray = []
+
     
                 for i in k:
                     handarray.append([i.color,i.symbol,i.number])
                     handIDarray.append(i.card)
+
+                print(handarray)
     
                 foundarray = []
                 foundIDarray = []
@@ -261,6 +323,23 @@ def End():
 
     paycode = subject_id + ".." + str(found_num)
     return render_template('login.html', text="Thank you; your paycode is: " + hashed_id, v=False)
+
+             
+
+@app.route('/viz', methods=['POST','get'])
+def Viz():
+
+    handarray=getNhands(threeProperties, 12, 1)[0]
+
+    total = 0
+
+    C = list(itertools.combinations(handarray, 3))
+    for i in C:
+        if isSetThreeCards(i):
+            total += 1
+
+    return render_template('set.html', subject_id=total, handarray=handarray, handIDarray='', foundarray=[], foundIDarray=[], diff_seconds=1000, found_sets_num=0)
+
 
 
 

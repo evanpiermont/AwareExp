@@ -10,8 +10,9 @@ Created on Thu May  4 09:22:04 2017
 ###              UNAWARENESS EXPERIMENT: CODE FOR SET GAME                  ###
 ###############################################################################
 
-import itertools, time, pylab, random, math
-import matplotlib.pyplot as plt
+import itertools, time, random, math
+#import pylab
+#import matplotlib.pyplot as plt
 
 class Deck(object):
     """
@@ -46,24 +47,26 @@ def getCards(deck):
     This version ONLY works with decks with 2, 3, 4, or 5 properties. However, 
             the properties themselves can have an arbritrary number of 
             values (or instances).
+
+            ##changed tuples to list becuase javascript needs sq brakets. really!
     """
     listKeys = []
     for key in deck.getProperties():
         listKeys.append(key)
     if len(deck.getProperties()) == 2:
-        return list(itertools.product(deck.getProperties()[listKeys[0]],
+        return list(list(tup) for tup in itertools.product(deck.getProperties()[listKeys[0]],
                                   deck.getProperties()[listKeys[1]])) 
     elif len(deck.getProperties()) == 3:
-        return list(itertools.product(deck.getProperties()[listKeys[0]],
+        return list(list(tup) for tup in itertools.product(deck.getProperties()[listKeys[0]],
                                   deck.getProperties()[listKeys[1]],
                                   deck.getProperties()[listKeys[2]]))    
     elif len(deck.getProperties()) == 4:
-        return list(itertools.product(deck.getProperties()[listKeys[0]],
+        return list(list(tup) for tup in itertools.product(deck.getProperties()[listKeys[0]],
                                   deck.getProperties()[listKeys[1]],
                                   deck.getProperties()[listKeys[2]],
                                   deck.getProperties()[listKeys[3]]))
     elif len(deck.getProperties()) == 5:
-        return list(itertools.product(deck.getProperties()[listKeys[0]],
+        return list(list(tup) for tup in itertools.product(deck.getProperties()[listKeys[0]],
                                   deck.getProperties()[listKeys[1]],
                                   deck.getProperties()[listKeys[2]],
                                   deck.getProperties()[listKeys[3]],
@@ -230,7 +233,7 @@ def getSetsSimulation(deck, handSize, trials, setSize, randomSeed):
             formed with those sampleSize-cards (the total number of sets is, of
             course, equal to the 'key')
     """
-    random.seed(randomSeed)
+    #random.seed(randomSeed)
     C = []
     sampleCards = []
     listTotal = []
@@ -258,6 +261,42 @@ def getSetsSimulation(deck, handSize, trials, setSize, randomSeed):
         elif total in finalResult:
             finalResult[total].append([sampleCards, tempSet])
         listTotal.append(total)
+    return finalResult
+
+def getNhands(deck, handSize, trials):
+    """
+    deck: a Deck object
+    handSize: number of cards from Deck to be used ( int > 0 )
+    trials: number of simulations performed ( int > 0 )
+    setSize: number of cards in each set, usually equal to 3
+    randomSeed: seed to be used for the random components
+    
+    Returns: a dictionary with every combination of cards and sets formed with 
+            those cards. Each key represents the number of possible sets, 
+            starting from the minimum number of sets. Associated
+            with each key is a list with as many elements as there are
+            sampleCards with that number 'key' of possible sets.  
+            Each element is itself a list with two elements: the first is a 
+            tuple with the exact subDeck of handSize-cards. The second 
+            element is a list with all possible sets of size setSize that was 
+            formed with those sampleSize-cards (the total number of sets is, of
+            course, equal to the 'key')
+    """
+    #random.seed(randomSeed)
+    C = []
+    sampleCards = []
+    listTotal = []
+    listCards = getCards(deck)
+    repeated = 0
+    usedSamples = []
+    finalResult = []
+    for trial in range(trials):
+        tempSet = [] #temporarily add sets before associating with KEY
+        count = 0
+        total = 0
+        sampleCards = random.sample(listCards, handSize)
+        if sampleCards not in usedSamples:
+            finalResult.append(sampleCards)
     return finalResult
 
 def getSubdeckNsets(deck, handSize, trials, setSize, nsets, randomSeed):
@@ -289,8 +328,8 @@ def getSubdeckNsets(deck, handSize, trials, setSize, nsets, randomSeed):
 original = Deck({'number':[1,2,3],'symbol':['diamond', 'squiggle', 'oval'], 
         'shading':['solid', 'striped', 'open'], 'color':['red','green','purple']})
 #
-#threeProperties = Deck({'number':[1,2,3,4],'color':['cyan','magenta','yellow','red']
-#                   ,'shape':['square','triangle','circle','squiggle']})
+threeProperties = Deck({'number':[0,1,2,3],'color':[0,1,2,3]
+                  ,'shape':[0,1,2,3]})
 #
 #listOfDecks = [original,threeProperties]
 #
@@ -316,7 +355,7 @@ original = Deck({'number':[1,2,3],'symbol':['diamond', 'squiggle', 'oval'],
 # There is a lot here, because there are a lot of subDekcs that generate
 #   exactly 7 sets. Let's compute exactly how many there are:
     
-#print(len(getSetsSimulation(threeProperties, 10, 10000, 3, 12345)[7]))
+print(getNhands(threeProperties, 12, 1))
 
 # For this particular number of trials and random seed, there are 735 (unique) 
 #   such subDecks. If you want to recover a particular subDeck, simply call

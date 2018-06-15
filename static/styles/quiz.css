@@ -1,7 +1,8 @@
 #submit{
-    top: 105%;
-    right: 10%;
-    width: 20%;
+    position:fixed;
+    top: 88%;
+    right: 5%;
+    width: 15%;
     height: 5%;
     padding-top: 3px;
     border-radius: 4px;
@@ -19,6 +20,7 @@ input[type="radio"] + label span {
     background-color:#002b36;
     padding: 4px;
     text-align: center;
+    min-width: 130px;
 }
 
 #adminenter{
@@ -53,4 +55,69 @@ input[type="number"]{
     color: #dc322f;
 }
 
+.display_card{
+  position: relative;
+  width: 28%;
+  height: 70%;
+  border: 3px solid #073642;
+  background: #839496;
+  border-radius: 5px;
+}
 
+.question{
+  position: fixed;
+  left: 10%;
+  height: 18%;
+  width: 40%;
+}
+
+.answer{
+  position: fixed;
+  left: 50%;
+  height: 20%;
+  width: 40%;
+}
+
+#q1{
+    top: 5%;
+}
+
+#q2{
+    top: 23%;
+}
+
+#q3{
+    top: 41%;
+}
+
+#q4{
+    top: 59%;
+}
+
+#q5{
+    top: 77%;
+}
+
+
+
+
+#a1{
+    top: 10%;
+}
+
+
+#a2{
+    top: 28%;
+}
+
+#a3{
+    top: 46%;
+}
+
+#a4{
+    top: 64%;
+}
+
+#a5{
+    top: 82%;
+}

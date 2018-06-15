@@ -8,7 +8,7 @@ import itertools, os
 import db_setup
 
 from db_setup import DeckSQL, Hand, Subject, Sets, Found, db
-from setGame import Deck, getCards, isSetThreeCards
+from setGame import Deck, getCards, isSetThreeCards, getNhands  
  
 
 
@@ -31,12 +31,13 @@ for i in allCards:
     number = i[2])
 
     session.add(deck)
-    session.commit()
+    
+session.commit()
 
 
 s_type1 = 1
 
-for i in [1,7,34,42,41,51,55,17,9]:
+for i in [60,7,34,42,41,51,47,17,9,62,11,12]:
     q = session.query(DeckSQL).filter(DeckSQL.id == i).one()
     hand = Hand(
         card = i,
@@ -67,45 +68,45 @@ for i in C:
             card2 = j[1],
             card3 = j[2])   
         session.add(sets)
-        session.commit() 
+session.commit() 
 
 
-#### do this more efficently in the future
+# #### do this more efficently in the future
 
-s_type1 = 2
+# s_type1 = 2
 
-for i in [27,26,25,24,23,22,21,20,19]:
-    q = session.query(DeckSQL).filter(DeckSQL.id == i).one()
-    hand = Hand(
-        card = i,
-        color = q.color,
-        symbol = q.symbol,
-        number = q.number,
-        s_type = s_type1,
-        )
-    session.add(hand)
-    session.commit()
+# for i in [27,26,25,24,23,22,21,20,19,11,2,3]:
+#     q = session.query(DeckSQL).filter(DeckSQL.id == i).one()
+#     hand = Hand(
+#         card = i,
+#         color = q.color,
+#         symbol = q.symbol,
+#         number = q.number,
+#         s_type = s_type1,
+#         )
+#     session.add(hand)
+#     session.commit()
 
-k = session.query(Hand).filter(Hand.s_type == 2).all()
+# k = session.query(Hand).filter(Hand.s_type == 2).all()
 
-handarrayindex = []
+# handarrayindex = []
 
-for i in k:
-    handarrayindex.append(i.card)
+# for i in k:
+#     handarrayindex.append(i.card)
 
-C = list(itertools.combinations(handarrayindex, 3))
-for i in C:
-    cards = list(map(cardFromIndex, i))
-    if isSetThreeCards(cards):
-        j = list(i)
-        j.sort()
-        sets = Sets(
-            s_type = s_type1,
-            card1 = j[0],
-            card2 = j[1],
-            card3 = j[2])   
-        session.add(sets)
-        session.commit() 
+# C = list(itertools.combinations(handarrayindex, 3))
+# for i in C:
+#     cards = list(map(cardFromIndex, i))
+#     if isSetThreeCards(cards):
+#         j = list(i)
+#         j.sort()
+#         sets = Sets(
+#             s_type = s_type1,
+#             card1 = j[0],
+#             card2 = j[1],
+#             card3 = j[2])   
+#         session.add(sets)
+#         session.commit() 
 
 
 
