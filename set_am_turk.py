@@ -10,16 +10,15 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 # from flask_heroku import Heroku
 
 from random import randint
+import random
 
 from db_setup import DeckSQL, Hand, Subject, Sets, Found, db, app
-from setGame import Deck, getCards, isSetThreeCards, getNhands, threeProperties  
+from setGame import Deck, getCards, isSetThreeCards, getNhands, threeProperties, getSubdeckNsets, low_list, high_list
 
 import cgi
 import collections, itertools
 
 session = db.session
-
-
 
 ####
 #####
@@ -33,7 +32,6 @@ handsize = 12
 rndtime = 500 #time in seconds
 payment = 10
 stype_max = 1 #number of s_types
-
 
 ####
 #####
@@ -325,28 +323,44 @@ def End():
              
 
 @app.route('/viz', methods=['POST','get'])
+# def Viz():
+# 
+#     handIDarray = []
+#     for i in range(12):
+#         handIDarray.append(i)
+# 
+# 
+#     handarray=getNhands(threeProperties, 12, 1)[0]
+# 
+#     total = 0
+# 
+#     C = list(itertools.combinations(handarray, 3))
+#     for i in C:
+#         if isSetThreeCards(i):
+#             total += 1
+# 
+#     return render_template('set.html', subject_id=total, handarray=handarray, handIDarray=handIDarray, foundarray=[], foundIDarray=[], diff_seconds=1000, found_sets_num=0)
+
 def Viz():
 
     handIDarray = []
     for i in range(12):
         handIDarray.append(i)
+        
+    # randomly pick among list with few sets or list of lots of sets
+    if random.random() > 0.5:
+        rnd = random.choice(low_list) #low_list comes from setGame.py
+    else:
+        rnd = random.choice(high_list) #high_list comes from setGame.py
+    
+    handarray = rnd[0]
 
-
-    handarray=getNhands(threeProperties, 12, 1)[0]
-
-    total = 0
-
-    C = list(itertools.combinations(handarray, 3))
-    for i in C:
-        if isSetThreeCards(i):
-            total += 1
+    total = len(rnd[1])
 
     return render_template('set.html', subject_id=total, handarray=handarray, handIDarray=handIDarray, foundarray=[], foundIDarray=[], diff_seconds=1000, found_sets_num=0)
-
-
-
 
 if __name__ == "__main__":
     app.debug = True
     app.run(host='0.0.0.0')
 
+ 

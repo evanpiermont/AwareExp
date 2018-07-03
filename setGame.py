@@ -11,8 +11,8 @@ Created on Thu May  4 09:22:04 2017
 ###############################################################################
 
 import itertools, time, random, math
-#import pylab
-#import matplotlib.pyplot as plt
+import pylab
+import matplotlib.pyplot as plt
 
 class Deck(object):
     """
@@ -233,7 +233,7 @@ def getSetsSimulation(deck, handSize, trials, setSize, randomSeed):
             formed with those sampleSize-cards (the total number of sets is, of
             course, equal to the 'key')
     """
-    #random.seed(randomSeed)
+    random.seed(randomSeed)
     C = []
     sampleCards = []
     listTotal = []
@@ -283,23 +283,17 @@ def getNhands(deck, handSize, trials):
             course, equal to the 'key')
     """
     #random.seed(randomSeed)
-    C = []
     sampleCards = []
-    listTotal = []
     listCards = getCards(deck)
-    repeated = 0
     usedSamples = []
     finalResult = []
     for trial in range(trials):
-        tempSet = [] #temporarily add sets before associating with KEY
-        count = 0
-        total = 0
         sampleCards = random.sample(listCards, handSize)
         if sampleCards not in usedSamples:
             finalResult.append(sampleCards)
     return finalResult
 
-def getSubdeckNsets(deck, handSize, trials, setSize, nsets, randomSeed):
+def getSubdeckNsets(deck, handSize, trials, setSize, nSets, randomSeed, nExamples):
     """
     deck: a Deck object
     handSize: number of cards from Deck to be used ( int > 0 )
@@ -309,16 +303,23 @@ def getSubdeckNsets(deck, handSize, trials, setSize, nsets, randomSeed):
     randomSeed: seed to be used for the random components
     
     Returns: from 'finalResult' dictionary (see 'getSetsSimulation') randomly 
-            picks one setSize-subDeck that generates 'nsets' number of sets. 
-            Returns a list of two lists: the first is a list with the cards
-            from the 'setSize-subDeck' and the second is a list of tuples with
-            all the 'nsets' number of sets formed by the subDeck.     
+            picks 'nExamples' setSize-subDeck that generates 'nSets' number of sets. 
+            If 'nExamples'is 1, returns a list of two lists: the first is a 
+            list with the cards from the 'setSize-subDeck' and the second is a 
+            list of tuples with all the 'nsets' number of sets formed by the 
+            subDeck; if 'nExamples' is larger than 1, returns a 
+            list-of-lists-of-lists.  
     """
     finalList = []
     dic = getSetsSimulation(deck, handSize, trials, setSize, randomSeed)
-    x = random.choice(range(len(dic[nsets])))
-    finalList.append(dic[nsets][x][0])
-    finalList.append(dic[nsets][x][1])
+    if nExamples == 1:
+        x = random.choice(range(len(dic[nSets])))
+        finalList.append(dic[nSets][x][0])
+        finalList.append(dic[nSets][x][1])
+    else:
+        x = random.sample(range(len(dic[nSets])),nExamples)
+        for i in x:
+            finalList.append([dic[nSets][i][0],dic[nSets][i][1]])
     return finalList
     
 ###############################################################################
@@ -327,10 +328,10 @@ def getSubdeckNsets(deck, handSize, trials, setSize, nsets, randomSeed):
 
 original = Deck({'number':[1,2,3],'symbol':['diamond', 'squiggle', 'oval'], 
         'shading':['solid', 'striped', 'open'], 'color':['red','green','purple']})
-#
+
 threeProperties = Deck({'number':[0,1,2,3],'color':[0,1,2,3]
                   ,'shape':[0,1,2,3]})
-#
+
 #listOfDecks = [original,threeProperties]
 #
 #listOfHands = [9,10,11,12]
@@ -340,55 +341,13 @@ threeProperties = Deck({'number':[0,1,2,3],'color':[0,1,2,3]
 #        makeHistSimulation(deck, handSize, 50000, 3)
 
 ###############################################################################
-###                   EXAMPLES TO BE USED WITH EXPERIMENT                   ###
+###              RANDOMLY GENERATE HIGH- AND LOW-COUNT SUBDECKS             ###
+###                       FOR TESTING IN THE VIZ PAGE                       ###    
 ###############################################################################
 
-# We want to choose a subDeck of 10 cards, with a low number of possible sets
-
-# The function 'getSetsSimulation' generates a dictionary where eachkey  is the 
-#   number of sets that could be formed, and the values are lists of subDekcs
-#   and sets formed with each subDeck. For example, say I want a subDeck that 
-#   has 7 sets. Let's call the function with the key equal to 7:
+# Create a list with 5 decks of 10 sets each and one with 5 decks of 28 sets;
+# first tests used random seed 0    
     
-#print(getSetsSimulation(threeProperties, 10, 10000, 3, 12345)[7])
+low_list = getSubdeckNsets(threeProperties,12,50000,3,10,1987,5)
 
-# There is a lot here, because there are a lot of subDekcs that generate
-#   exactly 7 sets. Let's compute exactly how many there are:
-    
-print(getNhands(threeProperties, 12, 1))
-
-# For this particular number of trials and random seed, there are 735 (unique) 
-#   such subDecks. If you want to recover a particular subDeck, simply call
-#   the function and recover the element of the list you're interested in. For
-#   example, if you call the first element of function with the key 7, you'll
-#   get a list of lists: the first element is the particular subDeck and the 
-#   second is a list of all possible (7) sets formed with such cards:
-    
-#print(getSetsSimulation(threeProperties, 10, 10000, 3, 12345)[7][0])
-
-# Then, if you call the first element of that, you'll get the subDeck of 10
-#   card used to generate the sets:
-
-#print(getSetsSimulation(threeProperties, 10, 10000, 3, 12345)[7][0][0])
-
-# And you can use this element to generate the images for the experiment. Also, 
-#   if you call the second element of that list of lists, you'll get all the 
-#   possible sets formed with those cards:
-
-#print(getSetsSimulation(threeProperties, 10, 10000, 3, 12345)[7][0][1])
-
-# Which is, of course, a list of length 7, where each element is a tuple with
-#   thee cards that form a seet. And you can go through this list to both 
-#   generate images for the experiment and to check people's answers. 
-
-###############################################################################
-###         SELECTING 5 SUBDECKS OF FEW SETS AND 5 WITH A LOT OF SET        ###
-###############################################################################
-
-
-
-
-
-
-
-
+high_list = getSubdeckNsets(threeProperties,12,50000,3,28,1987,5)
