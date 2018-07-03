@@ -32,7 +32,7 @@ session = db.session
 handsize = 12
 rndtime = 500 #time in seconds
 payment = 10
-stype_max = 2 #number of s_types
+stype_max = 1 #number of s_types
 
 
 ####
@@ -96,8 +96,8 @@ def newUser():
             session.add(subject)
             session.commit()
     
-        #return Instructions(subject_id)
-        return Quiz(subject_id) 
+        return Instructions(subject_id)
+        #return Quiz(subject_id) 
 
 
 @app.route('/instructions/<subject_id>', methods=['POST', 'GET'])
@@ -234,8 +234,6 @@ def CreateSets(subject_id):
                 for i in k:
                     handarray.append([i.color,i.symbol,i.number])
                     handIDarray.append(i.card)
-
-                print(handarray)
     
                 foundarray = []
                 foundIDarray = []
@@ -329,6 +327,11 @@ def End():
 @app.route('/viz', methods=['POST','get'])
 def Viz():
 
+    handIDarray = []
+    for i in range(12):
+        handIDarray.append(i)
+
+
     handarray=getNhands(threeProperties, 12, 1)[0]
 
     total = 0
@@ -338,7 +341,7 @@ def Viz():
         if isSetThreeCards(i):
             total += 1
 
-    return render_template('set.html', subject_id=total, handarray=handarray, handIDarray='', foundarray=[], foundIDarray=[], diff_seconds=1000, found_sets_num=0)
+    return render_template('set.html', subject_id=total, handarray=handarray, handIDarray=handIDarray, foundarray=[], foundIDarray=[], diff_seconds=1000, found_sets_num=0)
 
 
 

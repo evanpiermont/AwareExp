@@ -17,7 +17,7 @@ $("#next").click(function() {
       current_pane+=1; 
 
   	} else {
-  		window.location.replace("/createsets/"+$subject);
+  		window.location.replace("/compquiz/"+$subject);
   	}
 });
 
