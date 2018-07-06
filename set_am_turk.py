@@ -29,7 +29,7 @@ session = db.session
 ####
 
 handsize = 12
-rndtime = 500 #time in seconds
+rndtime = 200 #time in seconds
 payment = 10
 stype_max = 1 #number of s_types
 

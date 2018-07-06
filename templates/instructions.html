@@ -8,36 +8,49 @@
      <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
     <script src={{ url_for('static', filename='js/bg.js') }} language="Javascript" type="text/javascript"></script>   
     <script src={{ url_for('static', filename='js/instructions.js') }} language="Javascript" type="text/javascript"></script>
-
     <script src={{ url_for('static', filename='js/render.js') }} language="Javascript" type="text/javascript"></script>
     <script type="text/javascript" src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <script type="text/javascript">
         var $subject = '{{subject_id}}';
     </script>
     
-    <title> </title>
+    <title> </title> 
 </head>
-
 <body>
     <div id='background'>
         
         <div id=wrap>
         <div class="inst" id=pane-1>
-            <header><h4>Thank you for participating!</h4></header>
+            <header><h4>Thank you for participating in our research!</h4></header>
+            <br>     
+            <p>This study is comprised of a short task and some questions. It's conducted by researchers
+            at the University of Pittsburgh (USA) and Royal Holloway University (UK). Our goal is to learn
+            more about decision-making. It should take more or less 8 minutes to complete.</p>
             <br>
-            <p>This is an experiment about decision making. Besides the $0.25 for completing the study,
-            you could get additional payment based partly on your performance, and partly
-            on chance. In the next pages we'll explain (i) the experimental task, (ii) how you
-            make decisions, and (iii) how the extra payment is determined.</p>
+            <p> Your participation is voluntary and your responses are anonymous. No one will be able to
+            track your answers back to you. Please make sure to mark your Amazon Profile as private if you
+            do not want to be identified from your worker ID.</p>
+            <br>
+            <p>Questions? Please contact Felipe A. Araujo at f.araujo@pitt.edu</p>
+        </div>
+        
+        <div class="inst" id=pane-2>
+            <p>This is an experimental study about decision-making. On top of the $0.25 for completing the
+            study, you can receive an additional payment based on your choices. This additional payment will
+            only be available to participants that correctly answer a few comprehension questions prior to
+            the start of the study.</p>
+            <br>
+            <p>In the following pages we will explain the experimental task, how you make decisions, and how
+            the extra payment is determined.</p>
             <br>
             <p>Any extra payment will be deposited as a bonus on MTurk within 3 days.</p>
         </div>
         
-        
-        <div class="inst" id=pane-2>
-            <p>The experiment will use cards containing a certain number (1, 2, 3, or 4) of a particular symbol
-            (triangle, square, circle, or star) of a particular color (purple, orange, red, or blue). Considering all
-            possible combinations of the attributes number, symbol, and color, we end up with 4x4x4=64 unique cards.</p>
+        <div class="inst" id=pane-3>
+            <p>The study will use cards containing a certain number (1, 2, 3, or 4) of a
+            particular symbol (triangle, square, circle, or star) with a specific color (purple, orange,
+            red, or blue). Considering all possible values for [number, symbol, color] we end up
+            with a deck of 4x4x4=64 unique cards.</p>
             <br>
             <p>As an example, four of those cards are shown below:</p>
             
@@ -51,29 +64,27 @@
         </div> 
         
         
-        <div class="inst" id=pane-3>
-            <p>From the deck of 64 cards, the computer will randomly select 9 cards. Your objective
-            will be to use those 9 cards to form groups of 3 cards satisfying a specific property, which
-            we'll explain soon. A combination of 3 cards satisfying the property is called a
-            <span class=hl>SET</span>.</p>
-            <br>
-            <p>For today's experiment, you will be paid an additional <b>$0.20</b> for each <span class=hl>SET</span>
-            that you can form.</p>
-        </div>
-
         <div class="inst" id=pane-4>
-             <p>The property that defines a <span class=hl>SET</span> is this: A <span class=hl>SET</span> is any
-             combination of 3 cards such that each attribute (number, symbol, and color) is either all the
+            <p>From the 64-card deck, the computer will randomly select 12 cards. Your goal is to use those
+            12 cards to form groups of 3 cards satisfying a simple property. Any combination of 3 cards
+            satisfying that property is called a <span class=hl>SET</span>.</p>
+            
+            <br>
+            
+            <p>The property that defines a <span class=hl>SET</span> is this: A <span class=hl>SET</span> is
+             any combination of 3 cards such that each attribute (number, symbol, and color) is either all the
              same or all different among the 3 cards.</p>
-             <br>
-            <p>The next pages will show you a few examples.</p>
+            
+            <br>
+            
+            <p>The next few pages show examples of 3-card combinations that <b>do</b> and <b>do not</b> form
+            a <span class=hl>SET</span>.</p>
         </div>
-
+        
         <div class="inst" id=pane-5>
              <header><h4>Example 1</h4></header>
              <br>
              <p>The following 3 cards form a <span class=hl>SET</span>:</p>  
-
             <div id=cards_for_instructions>
                 <svg class="card display_card" data-card="[2,0,3]"></svg>
                 <svg class="card display_card" data-card="[2,1,3]"></svg>
@@ -82,13 +93,10 @@
             <p>That's because all cards have the <b>same</b> color (orange), the <b>same</b> number of symbols
             (4), and <b>different</b> symbols (from left to right: triangle, square, and circle).</p>
         </div>
-
-
         <div class="inst" id=pane-6>
              <header><h4>Example 2</h4></header>
              <br>
              <p>The following 3 cards also form a <span class=hl>SET</span>:</p>  
-
             <div id=cards_for_instructions>
                 <svg class="card display_card" data-card="[2,0,2]"></svg>
                 <svg class="card display_card" data-card="[1,0,3]"></svg>
@@ -98,51 +106,66 @@
             (from left to right: orange, red, and purple), and <b>different</b> number of symbols
             (from left to right: 3, 4, and 1).</p>
         </div> 
-
                 <div class="inst" id=pane-7>
              <header><h4>Example 3</h4></header>
              <br>
-             <p>The following 3 cards, on the other hand, do NOT form a <span class=hl>SET</span>:</p>  
-
+             <p>The following 3 cards, on the other hand, do <b>NOT</b> form a <span class=hl>SET</span>:</p>  
             <div id=cards_for_instructions>
                 <svg class="card display_card" data-card="[1,0,0]"></svg>
-                <svg class="card display_card" data-card="[3,2,0]"></svg>
+                <svg class="card display_card" data-card="[3,2,1]"></svg>
                 <svg class="card display_card" data-card="[2,2,2]"></svg>
             </div>
-            <p>Note that while the middle and right-most cards have circles, the left-most card has a triangle.
+            <p>Even though the middle and right-most cards have circles, the left-most card has a triangle.
             Hence, for the attribute symbol, the cards are neither all the same nor all different. Note 
-            that the cards are different in respect to color and number.</p>
-        </div> 
-
-        <div class="inst" id=pane-8>
-             <p>You will be shown the 9 cards drawn from the deck of 64, and you be given {{rndtime}} seconds
-             to click on the cards to form <span class=hl>SETs</span>. The order the cards are clicked does not matter,
-             and you can click a selected card to un-select it.</p>
-             <br>
-             <p>If you select 3 cards that form a <span class=hl>SET</span>, it will be registered on the side bar. If
-                you select 3 cards that do not form a <span class=hl>SET</span>, you will incur a 2-second penalty. If
-                you select the same <span class=hl>SET</span> more than once, you will also incur a 2-second penalty.
-                Therefore, you should not randomly click on cards in the hopes of finding a <span class=hl>SET</span>.
-             </p>
+            that the cards are all different with respect to color and number.</p>
         </div>
-
+                
+        <div class="inst" id=pane-8>
+             <p>In the experiment, you will see the 12 cards drawn from the 64-card deck and will have
+                120 seconds to form <span class=hl>SET</span>s. You can form a <span class=hl>SET</span>
+                by clicking on the cards to select, and you can click a selected card to un-select it.</p>
+             <br>
+             <p>If you select 3 cards that form a <span class=hl>SET</span>, it will be registered on the
+                right side of your screen. If you select 3 cards that do not form a <span class=hl>SET</span>,
+                you will incur a 2-second penalty. And if you select the same <span class=hl>SET</span> more
+                than once, you will also incur a 2-second penalty. Therefore, you should not randomly click
+                on cards in the hopes of finding a <span class=hl>SET</span>.</p>
+        </div>
+        
         <div class="inst" id=pane-9>
-            <header><h4>Review and Payment</h4></header>
+            <header><h4>Comprehension Questions and Payment</h4></header>
             <br>
-            <p>If you complete the study, you will receive $0.25 for your participation, and an extra $0.20
-            per <span class=hl>SET</span> found. This extra payment will be deposited via a bonus on MTurk
-            and deposited within 3 days.</p>
+            <p>We'll now ask you to answer some comprehension quuestions. We'll show you five different
+            combinations of 3 cards and ask you if they form a <span class=hl>SET</span>:</p>
             <br>
-            <p>After the 120 seconds expire, you will be asked to complete a brief survey. After you complete
-            the survey, you will receive your Mturk completion code.</p>
-            <br><br>
+            <ul>
+                <li>
+                If you get one or more questions wrong, the study ends and you receive $0.25.
+                </li>
+                <li>
+                If you answer all questions correctly, you'll receive $0.25 for completing the study and
+                an extra $0.20 per valid <span class=hl>SET</span> you find during the experiment.
+                </li>
+            </ul>
+        </div>
+        
+        <div class="inst" id=pane-10>
+            <header><h4>Congratulations!</h4></header>
+            <br>
+            <p>You got all questions right and will now move on to the main part of the study.</p>
+            <br>
+            <p>You will have 120 seconds to form <span class=hl>SET</span>s and will be paid an
+            additional $0.20 per correct <span class=hl>SET</span>. After the 120 seconds expire, you'll
+            be asked to complete a brief survey. Finally, you will receive your Mturk completion code.</p>
+            <br>
+            <p> Any extra amount you earn will be paid via a bonus on MTurk within 3 days.</p>
+            <br>
             Good luck!
         </div>
-
+        
         <div class="submit" id=prev>Prev</div>
         <div class="submit" id=next>Next</div>
         </div>
-
         <div id=subject_id_box> Subject#: {{subject_id}}</div>
     </div>
 </body>
