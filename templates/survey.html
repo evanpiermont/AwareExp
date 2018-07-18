@@ -18,6 +18,43 @@
     <title> </title>
 </head>
 
+<style>
+.slidecontainer {
+    width: 50%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 80%;
+    height: 15px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.5;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 0.7;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 20px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+</style>
+
 <body>
     <div id='background'>
         
@@ -67,23 +104,56 @@
     <input type="radio" name="degree" id="doctorate" value=4 required>
     <label for="doctorate"><span>Ph.D.</span></label>
 
-    <br><br><br><br>
+    <br><br>
 
-    Of all possible <span class=hl>SETs</span>, what percentage do you believe you found?:  <input name="percent" id="percent" type="number" min="0" max="100" required />
+    Of all possible <span class=hl>SETs</span>, what percentage, from 0 to 100%, do you believe you found?:
+    <span id="p1"></span>%
+    <br><br>
+    <input type="range" min="1" max="100" value="50" class="slider" id="percent1">
+    <!-- <input name="percent" id="percent" type="number" min="0" max="100" required /> -->
+
+    <script>
+    var slider1 = document.getElementById("percent1");
+    var output1 = document.getElementById("p1");
+    output1.innerHTML = slider1.value;
+
+    slider1.oninput = function() {
+        output1.innerHTML = this.value;
+        };
+    </script>
 
     <br><br>
 
-    On a scale from 0 to 100%, how likey do you think it is that you found at least half of all sets?:  <input name="half" id="half" type="number" min="0" max="100" required />
+    On a scale from 0 to 100%, how likey do you think it is that you found at least half of all sets?:
+    <span id="p2"></span>%
+    <br><br>
+    <input type="range" min="1" max="100" value="50" class="slider" id="percent2">
+    <!--<input name="half" id="half" type="number" min="0" max="100" required />-->
+
+    <script>
+    var slider2 = document.getElementById("percent2");
+    var output2 = document.getElementById("p2");
+    output2.innerHTML = slider2.value;
+
+    slider2.oninput = function() {
+        output2.innerHTML = this.value;
+        };
+    </script>
 
     <br><br>
 
-    Would you rather receive $0.10 for each set you found, or have one of all possible sets drawn at random,
-    and receive $2.00 if you found that particular set?:  <input name="bet" id="bet" type="number" min="0" max="100" required />
+    Would you rather receive (A) $0.10 for each set you found or (B) have one of all possible sets
+    drawn at random, and receive $2.00 if you found that particular set?
+    <input type="radio" name="bet" id="betA" value=0 required>
+    <label for="betA"><span> A </span></label>
+    <input type="radio" name="bet" id="betB" value=0 required>
+    <label for="betB"><span> B </span></label>
+    <!--<input name="bet" id="bet" type="number" min="0" max="100" required />-->
 
     <br><br>
 
-    Suppose one <span class=hl>SET</span> is drawn randomly out of all possible <span class=hl>SETs</span>.
-    What is the probability it would contain at least one star symbol?:  <input name="star" id="star" type="number" min="0" max="100" required />    
+    <!--Suppose one <span class=hl>SET</span> is drawn randomly out of all possible <span class=hl>SETs</span>.
+    What is the probability it would contain at least one star symbol?:  <input name="star" id="star" type="number" min="0" max="100" required />-->    
 
     <input type="hidden" name="subject_id" value={{ subject_id }}>
     <input type="submit" value="Continue" class=submit id=submit>
