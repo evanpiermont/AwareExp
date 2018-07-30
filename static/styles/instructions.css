@@ -12,18 +12,23 @@
 }
 
 #next{
+    position: fixed;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    width: 10%;
-    right: 0%;
+    top: 85%;
+    width: 8%;
+    right: 10%;
 }
 
 #prev{
+    position: fixed;
     display: none;
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     width: 10%;
-    right: 11%;
+    top: 85%;
+    width: 8%;
+    right: 19%;
 
 }
 
@@ -32,6 +37,7 @@
     left: 15%;
     top: 15%;
     width: 70%;
+    height: 70%
     font-size: 60%;
     overflow: visible;
     font-size: 40%;
@@ -52,12 +58,12 @@
 }
 
 .display_card{
-	position: relative;
-	width: 20%;
-	height: 70%;
-	border: 3px solid #073642;
-	background: #839496;
-	border-radius: 5px;
+    position: relative;
+    width: 20%;
+    height: 70%;
+    border: 3px solid #073642;
+    background: #839496;
+    border-radius: 5px;
 }
 
 .hl{

@@ -20,8 +20,8 @@ from sqlalchemy import create_engine
 
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://kmwdsiybqohzkr:48c78dc82321c614a1f2058afdcf74987c7765b22a92be753f2a156d5299ad07@ec2-54-204-39-46.compute-1.amazonaws.com:5432/d40rkj7aib44id'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/awareExp'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:231207@localhost:5432/awareExp' #Felipe's local
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/awareExp'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:231207@localhost:5432/awareExp' #Felipe's local
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -80,6 +80,7 @@ class Subject(db.Model):
     half = Column(Integer)
     bet = Column(Integer)
     star = Column(Integer)
+    payment = Column(Integer, default=0)
 
 # types are non-unique by subject, encode the hand, lazy way of getting around problems with encoding
 
@@ -95,6 +96,9 @@ class Found(db.Model):
     id = Column(Integer, primary_key=True)
     sets = Column(Integer, ForeignKey("sets.id"))
     subject = Column(Integer, ForeignKey("subject.id"))
+    timefound = Column(DateTime)
+    isset = Column(Boolean, default=False)
+    novelset = Column(Boolean, default=False)
 
 
 

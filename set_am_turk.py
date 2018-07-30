@@ -32,6 +32,7 @@ handsize = 12
 rndtime = 200 #time in seconds
 payment = 10
 stype_max = 1 #number of s_types
+rounds = 1 #number of rounds.
 
 ####
 #####
@@ -56,6 +57,10 @@ def Login():
 #####
 ####
 
+### This route is the main landing page, it allows us to enter a username manually. It will accept
+### any 6 or more charecter string as a user name (this is validated later, via the /user route)
+### redirects to the /user with a formated URL
+
 @app.route('/user_manual', methods=['POST', 'GET'])
 def Manual():
 
@@ -64,12 +69,17 @@ def Manual():
     return redirect(url_for('newUser', workerID=subject_id), code=302)
 
 
+### This is the route from M-TURK. takes the worker ID from the URL under workerID
+### enters the subject if it does not exist in the data base.
+
 @app.route('/user/', methods=['POST', 'GET'])
 def newUser():
 
     subject_id = request.args.get('workerID')
 
     if not subject_id or len(subject_id) < 5:
+
+        ### we resuse the login page as a prompt for payment, so v=true allows username entry.
 
         return render_template('login.html', text='Enter a valid subject number.', v=True)
 
@@ -90,7 +100,7 @@ def newUser():
             subject = Subject(
                 idCode= subject_id,
                 hashed_id = hashed_id,
-                s_type = s_type)
+                s_type = s_type) 
             session.add(subject)
             session.commit()
     
@@ -116,6 +126,8 @@ def Instructions(subject_id):
         else:
             return render_template('instructions.html', subject_id = subject_id)
 
+### just routes the guy to the quiz. we could obviously totally get around this by formatting URLS
+### and just making the redirect from the instructions directly. but why not. 
 
 @app.route('/compquiz/<subject_id>', methods=['POST', 'GET'])
 def Quiz(subject_id):
@@ -129,6 +141,8 @@ def Quiz(subject_id):
 
     else:
         return render_template('quiz.html', subject_id = subject_id)
+
+### now we need to make sure they passed the quiz. 
 
 @app.route('/quizval', methods=['POST'])
 def QuizVal():
@@ -163,11 +177,12 @@ def QuizVal():
 
         return render_template('login.html', text='You failed the quiz.', v=True)
 
+### landing page.
 
+@app.route('/waitnext', methods=['POST'])
+def WaitNext():
 
-
-
-
+    return render_template('login.html', text='Enter a valid subject number.', v=True)
     
 
 ####
@@ -177,6 +192,8 @@ def QuizVal():
 ######
 #####
 ####
+
+### this generates the page with the cards on it.
 
 @app.route('/createsets/<subject_id>', methods=['POST', 'GET'])
 def CreateSets(subject_id):
@@ -195,23 +212,31 @@ def CreateSets(subject_id):
 
         else:
 
+            ### get SQL object for the subject
+
             j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
+            ### we need to start a timer for the subject, or validate against the exisiting timer, if the page
+            ### has already been visited (if someone reloads the page---keep timers in the server so that we do
+            ### have to deal with people messing with them via JS)
 
-            diff_seconds = rndtime
+            diff_seconds = rndtime ### global variable for the amound of time the round lasts
 
+            ### if a timer has alread been set, calculate the remaining time
             if j.exptime:
 
                 diff = j.exptime - datetime.now()
                 diff = diff - timedelta(microseconds=diff.microseconds)
-                diff_seconds= diff.total_seconds()
+                diff_seconds = diff.total_seconds()
 
+            ###  otherwise create a new sql entery for the start time
             else:
 
                 j.exptime = datetime.now() + timedelta(seconds=+rndtime)
                 session.add(j)
                 session.commit()
 
+            ###  if there is time remaining
 
             if diff_seconds < 0:
                 
@@ -223,16 +248,24 @@ def CreateSets(subject_id):
 
             else:
 
+                ### s-type-i if the deck that the user has for round i, returns a hand of cards
+
                 k = session.query(Hand).filter(Hand.s_type == j.s_type).limit(handsize).all()
     
+                ###  all the cards in the hand 
+
                 handarray = []
                 handIDarray = []
 
-    
+                ### for each card in the hand, we take its attributes and its unique ID number and store it
+                ### of course the attributes define the id, but fuck bijections
+
                 for i in k:
                     handarray.append([i.color,i.symbol,i.number])
                     handIDarray.append(i.card)
-    
+                
+                ### which sets have already been found? 
+
                 foundarray = []
                 foundIDarray = []
     
@@ -243,32 +276,64 @@ def CreateSets(subject_id):
                     card1 = session.query(DeckSQL).filter(DeckSQL.id == setX.card1).one()
                     card2 = session.query(DeckSQL).filter(DeckSQL.id == setX.card2).one()
                     card3 = session.query(DeckSQL).filter(DeckSQL.id == setX.card3).one()
-                    foundarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number   ],[card3.color,card3.symbol,card3.number]])
+                    foundarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number]])
                     foundIDarray.append([setX.card1,setX.card2,setX.card3])
     
                 found_sets_num = len(foundIDarray)
     
                 return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=handIDarray, foundarray=foundarray, foundIDarray=foundIDarray, diff_seconds=diff_seconds, found_sets_num=found_sets_num)
 
+### this next route is just a lil json thing to add new found sets to the database (and keep everything in sync, 
+### which is probably unnecessary. so sloppy)
+
+
+### basically, whats happenin is the browser is sending the server some data. the data is json format, we can 
+### request the things we need below (and load them back into python varaibles via json.loads)
 
 @app.route('/_add_set', methods=['POST'])
 def AddSetJSON():
 
-    cardsX=request.form['cardsX']
+
+    cardsID=request.form['cardsX']
     subject_id=request.form['subject_id']
-    cardsX=json.loads(cardsX)
+    isset=request.form['issetX']
+    novelset=request.form['novelsetX']
+    cardsID=json.loads(cardsID)
+    isset=json.loads(isset)
 
     j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
-    setX = session.query(Sets).filter(Sets.card1 == cardsX[0], Sets.card2 == cardsX[1], Sets.card3 == cardsX[2]).one()
+    ### isset is a js created varaible do decide if the three cards are a set
+    ### if yes, it will find the set as an SQL object. linking the new SQL entry via table join
+    ### if no, it will leave newset.sets empty
 
-    newset = Found(
-        sets = setX.id,
-        subject = j.id)
-    session.add(newset)
-    session.commit()
- 
-    return jsonify(foundarray = setX.id)
+    ### it reutrns json, but becuase of lazyiness we do not validate on the server side.
+
+    if isset:
+
+        setX = session.query(Sets).filter(Sets.card1 == cardsID[0], Sets.card2 == cardsID[1], Sets.card3 == cardsID[2]).one()
+
+        newset = Found(
+            sets = setX.id,
+            subject = j.id,
+            timefound = datetime.now(),
+            isset = True,
+            novelset = novelset)
+        session.add(newset)
+        session.commit()
+    
+        return jsonify(foundarray = isset)
+
+    else:
+
+        newset = Found(
+            subject = j.id,
+            timefound = datetime.now(),
+            isset = False)
+        session.add(newset)
+        session.commit()
+    
+        return jsonify(foundarray = isset)
 
 ####
 #####

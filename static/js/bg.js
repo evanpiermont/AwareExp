@@ -32,8 +32,8 @@ $shape3 = $cyan;
 
 
 fontsize = function () {
-    var x = $(window).width() * 0.10; // 10% of container width
-    var y = $(window).height() * 0.10; // 10% of container height
+    var x = $(window).width() * 0.08; // 10% of container width
+    var y = $(window).height() * 0.08; // 10% of container height
     var fontSize = Math.min(x,y);
     $("body").css('font-size', fontSize);
 };

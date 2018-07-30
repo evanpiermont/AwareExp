@@ -348,6 +348,6 @@ threeProperties = Deck({'number':[0,1,2,3],'color':[0,1,2,3]
 # Create a list with 5 decks of 10 sets each and one with 5 decks of 28 sets;
 # first tests used random seed 0    
     
-low_list = getSubdeckNsets(threeProperties,12,50000,3,10,1987,5)
+low_list = getSubdeckNsets(threeProperties,12,500,3,10,1987,5)
 
-high_list = getSubdeckNsets(threeProperties,12,50000,3,28,1987,5)
+high_list = getSubdeckNsets(threeProperties,12,500,3,28,1987,5)

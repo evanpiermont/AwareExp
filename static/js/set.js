@@ -46,6 +46,7 @@ clickCard = function(){
         });
 
         if (isSetThreeCards(clickedSpec) == false){
+            sendSets(cardsID, false, false);
             $('#entertextprompt').text("Thats not a set.");
             $('#set_prompt').fadeIn('fast', function(){
                 count = 200;
@@ -60,6 +61,7 @@ clickCard = function(){
                 }
             }
             if (foundalready) {
+            sendSets(cardsID, true, false);
             $('#entertextprompt').text("You already found that set.");
             $('#set_prompt').fadeIn('fast', function(){
                 count = 200;
@@ -69,7 +71,7 @@ clickCard = function(){
             } else {
                 foundSets.push(cardsID);
                 $('#found_count_inuput').val(foundSets.length)
-                sendSets(cardsID);
+                sendSets(cardsID, true, true);
                 var clickedSpec = clicked.map(function(x) {
                 return '[' + $('#card' + x).data('card')+ ']';
                 });
@@ -148,14 +150,18 @@ appendset = function(cardsX){
 
 // sends found sets to server, gets json, but right now the json does nothing
 
-sendSets = function(cardsID){
+sendSets = function(cardsID,isset,novelset){
     
-    cardsID = JSON.stringify(cardsID);
-    formdata = '&cardsX=' + cardsID;
+    cardsX = JSON.stringify(cardsID);
+    //issetX = JSON.stringify(isset);
+    //novelsetX = JSON.stringify(novelset);
+    formdata = '&cardsX=' + cardsX;
     formdata = formdata += '&subject_id=' + $subject;
+    formdata = formdata += '&issetX=' + isset;
+    formdata = formdata += '&novelsetX=' + novelset;
     $.post('/_add_set', formdata, function(json){
         console.log(json);
-    });
+    })
 }
 
 // time out the page
