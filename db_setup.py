@@ -36,19 +36,23 @@ class DeckSQL(db.Model):
     number = Column(Integer)
 
 
-# pick some hands from the deck, store them below. every card/type pair
+# list of hands store them below.
 
 
 class Hand(db.Model):
     __tablename__ = 'hand'
 
     id = Column(Integer, primary_key=True)
+    hand_type = Column(Integer)
+
+#for each hand, what are the consitutuent cards?
+
+class HandByCard(db.Model):
+    __tablename__ = 'hand_by_card'
+
+    id = Column(Integer, primary_key=True)
+    hand = Column(Integer, ForeignKey("hand.id"))
     card = Column(Integer, ForeignKey("deck.id"))
-    color = Column(Integer)
-    symbol = Column(Integer)
-    number = Column(Integer)
-    #s_type = Column(Integer, ForeignKey("s_type.id"))
-    s_type = Column(Integer)
 
 
 #returns all sets, stores which hand the sets are in, what are the three cards
@@ -56,7 +60,7 @@ class Hand(db.Model):
 class Sets(db.Model):
     __tablename__ = 'sets' 
     id = Column(Integer, primary_key=True)
-    s_type = Column(Integer, ForeignKey("hand.id"))
+    hand = Column(Integer, ForeignKey("hand.id"))
     card1 = Column(Integer, ForeignKey("deck.id"))
     card2 = Column(Integer, ForeignKey("deck.id"))
     card3 = Column(Integer, ForeignKey("deck.id"))
@@ -68,11 +72,8 @@ class Subject(db.Model):
     id = Column(Integer, primary_key=True)
     idCode = Column(String(100))
     hashed_id = Column(String(100))
-    # s_type = Column(Integer, ForeignKey("s_type.id"))
-    s_type = Column(Integer)
     tryquiz = Column(Boolean, default=False)
     passquiz = Column(Boolean, default=False)
-    exptime = Column(DateTime)
     gender = Column(Integer)
     race = Column(Integer)
     degree = Column(Integer)
@@ -82,12 +83,24 @@ class Subject(db.Model):
     star = Column(Integer)
     payment = Column(Integer, default=0)
 
-# types are non-unique by subject, encode the hand, lazy way of getting around problems with encoding
+# who has which hand when?!?
 
-# class SType(db.Model):
-#     __tablename__ = 's_type' 
-#     id = Column(Integer, primary_key=True)
+class HandByRound(db.Model):
+    __tablename__ = 'hand_by_round' 
+    id = Column(Integer, primary_key=True)
+    subject = Column(Integer, ForeignKey("subject.id"))
+    rnd = Column(Integer)
+    hand = Column(Integer, ForeignKey("hand.id"))
 
+# when did each round start for each subject?
+
+class StartTimes(db.Model):
+    __tablename__ = 'start_times'
+
+    id = Column(Integer, primary_key=True)
+    subject = Column(Integer, ForeignKey("subject.id"))
+    rnd = Column(Integer)
+    exptime = Column(DateTime)
 
 #sets that hae been found
 
@@ -99,6 +112,8 @@ class Found(db.Model):
     timefound = Column(DateTime)
     isset = Column(Boolean, default=False)
     novelset = Column(Boolean, default=False)
+    hand = Column(Integer, ForeignKey("hand.id"))
+    rnd = Column(Integer)
 
 
 

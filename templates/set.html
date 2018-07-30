@@ -14,6 +14,7 @@
         var $subject = '{{subject_id}}';
         var foundSets = {{foundIDarray}};
         var diff_seconds = {{diff_seconds}};
+        var rnd = {{rnd}};
     </script>
     <title> </title>
 </head>
@@ -65,7 +66,7 @@
 
 <div id=subject_id_box> Subject#: {{subject_id}}; Time: <span id=timer></span></div>
 
-<form method='POST' enctype='multipart/form-data' action='/survey' name=endform>
+<form method='POST' enctype='multipart/form-data' action={{action}} name=endform>
     <input type="hidden" value={{subject_id}} class=submit name="subject_id">
     <input type="hidden" value={{found_sets_num}} id="found_count_inuput" class=submit name="found_num">
 </form>

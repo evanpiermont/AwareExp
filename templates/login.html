@@ -18,10 +18,12 @@
         <div id='entertextprompt'>{{text}}</div>
 
 {%if v%}
-<form method='POST' enctype='multipart/form-data' action='/user_manual'>
+<form method='POST' enctype='multipart/form-data' action={{action}}>
+    {%if input%}
     <input type="text" autocomplete="off" autofocus="autofocus"
     name="subject_id" id="word-input">
-    <input type="submit" value="Submit" class=submit id=submit>
+    {%endif%}
+    <input {%if not input%} style="top:80%" {%endif%} type="submit" value="Submit" class=submit id=submit>
 </form>
 {%endif%}
 

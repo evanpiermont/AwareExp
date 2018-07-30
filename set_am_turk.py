@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, render_template, jsonify
+from flask import Flask, request, redirect, url_for, render_template, jsonify, Markup
 
 import os
 import hashlib
@@ -12,7 +12,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from random import randint
 import random
 
-from db_setup import DeckSQL, Hand, Subject, Sets, Found, db, app
+from db_setup import DeckSQL, Hand, HandByCard, HandByRound, StartTimes, Subject, Sets, Found, db, app
 from setGame import Deck, getCards, isSetThreeCards, getNhands, threeProperties, getSubdeckNsets
 
 import cgi
@@ -29,34 +29,10 @@ session = db.session
 ####
 
 handsize = 12
-rndtime = 200 #time in seconds
+rndtime = 160 #time in seconds
 payment = 10
-stype_max = 1 #number of s_types
-rounds = 1 #number of rounds.
+rounds = 2 #number of rounds.
 
-super_small_decks = [[[1, 1, 2],[1, 2, 1],[3, 1, 0],[2, 1, 2],[0, 2, 1],[2, 2, 1],[2, 2, 3],[1, 2, 3],[1, 2, 0],[0, 1, 2],[2, 1, 1],[1, 2, 2]],
- [[3, 3, 0],[1, 1, 2],[0, 1, 2],[2, 1, 1],[3, 0, 0],[3, 3, 3],[0, 0, 3],[2, 1, 3],[3, 0, 2],[2, 1, 0],[0, 1, 1],[0, 0, 2]],
- [[3, 3, 0],[2, 3, 2],[3, 1, 0],[2, 1, 3],[2, 1, 2],[3, 0, 3],[1, 0, 0],[0, 0, 1],[3, 0, 2],[0, 0, 0],[1, 0, 2],[2, 1, 1]],
- [[1, 3, 1],[0, 1, 2],[0, 2, 3],[0, 3, 3],[1, 3, 0],[1, 0, 3],[0, 2, 0],[0, 3, 2],[0, 1, 3],[0, 0, 2],[0, 1, 0],[1, 0, 1]],
- [[3, 0, 1],[0, 2, 0],[3, 1, 3],[0, 0, 1],[1, 0, 3],[0, 2, 1],[0, 0, 3],[1, 0, 1],[3, 3, 3],[3, 0, 3],[1, 3, 1],[3, 3, 0]]]
-
-small_decks = [[[0, 3, 0],[3, 0, 1],[1, 0, 3],[3, 0, 3],[3, 0, 2],[1, 0, 1],[0, 1, 2],[1, 1, 0],[1, 3, 2],[1, 2, 2],[0, 3, 3],[3, 3, 1]],
- [[1, 1, 1],[2, 3, 2],[0, 2, 2],[0, 2, 1],[0, 1, 3],[1, 2, 2],[1, 0, 2],[3, 1, 0],[0, 0, 2],[0, 1, 0],[1, 2, 3],[0, 3, 0]],
- [[1, 1, 1],[2, 0, 1],[1, 0, 0],[3, 0, 2],[1, 1, 3],[3, 1, 3],[0, 3, 1],[2, 3, 3],[3, 3, 2],[0, 2, 3],[1, 0, 2],[0, 3, 3]],
- [[2, 1, 2],[2, 2, 2],[3, 0, 3],[2, 2, 0],[1, 2, 0],[2, 1, 3],[1, 0, 1],[1, 0, 2],[3, 2, 1],[2, 0, 2],[0, 2, 3],[2, 0, 0]],
- [[1, 2, 3],[0, 0, 1],[0, 3, 3],[3, 3, 1],[0, 1, 1],[2, 0, 3],[3, 2, 3],[2, 3, 3],[3, 3, 2],[2, 0, 2],[0, 2, 0],[0, 2, 3]]]
-
-large_decks = [[[0, 2, 1],[1, 3, 3],[1, 1, 3],[2, 2, 2],[1, 2, 2],[3, 2, 1],[2, 2, 1],[1, 0, 3],[3, 3, 0],[2, 1, 2],[2, 0, 1],[2, 3, 0]],
- [[1, 2, 2],[0, 1, 1],[2, 1, 3],[0, 0, 0],[1, 0, 2],[3, 3, 1],[2, 1, 1],[3, 0, 3],[2, 1, 2],[3, 1, 1],[0, 0, 3],[1, 2, 1]],
- [[3, 3, 3],[3, 2, 3],[2, 1, 3],[0, 1, 1],[3, 1, 1],[2, 3, 2],[1, 3, 0],[3, 2, 0],[2, 2, 0],[0, 1, 2],[3, 1, 0],[3, 0, 2]],
- [[2, 1, 2],[0, 3, 1],[3, 2, 3],[0, 1, 1],[3, 1, 2],[0, 3, 2],[1, 0, 2],[3, 0, 2],[0, 0, 1],[0, 2, 3],[2, 2, 3],[1, 2, 0]],
- [[3, 1, 2],[3, 0, 2],[1, 2, 3],[1, 2, 1],[0, 1, 0],[1, 1, 0],[1, 0, 1],[1, 3, 3],[2, 3, 1],[0, 3, 3],[3, 2, 1],[0, 0, 2]]]
-
-super_large_decks = [[[1, 0, 1],[1, 0, 0],[2, 1, 0],[1, 3, 3],[3, 2, 2],[2, 2, 2],[3, 0, 2],[0, 2, 1],[0, 1, 3],[3, 3, 2],[0, 3, 3],[0, 0, 0]],
- [[2, 1, 3],[1, 0, 2],[2, 2, 2],[3, 0, 3],[0, 0, 1],[2, 1, 1],[0, 0, 0],[3, 3, 3],[0, 1, 0],[1, 2, 2],[3, 0, 0],[2, 3, 1]],
- [[2, 0, 0],[0, 2, 2],[1, 0, 0],[2, 2, 2],[0, 3, 1],[2, 0, 1],[3, 0, 0],[1, 2, 0],[1, 0, 1],[1, 2, 2],[3, 1, 3],[0, 1, 3]],
- [[0, 1, 1],[2, 0, 2],[1, 3, 0],[2, 2, 2],[1, 2, 2],[0, 3, 2],[3, 2, 2],[2, 3, 0],[0, 0, 1],[1, 0, 3],[1, 1, 0],[1, 3, 3]],
- [[2, 3, 0],[3, 0, 2],[1, 0, 1],[3, 0, 0],[1, 2, 2],[1, 2, 1],[3, 0, 3],[0, 3, 1],[3, 1, 1],[2, 1, 0],[0, 3, 0],[0, 0, 3]]]
 
 ####
 #####
@@ -71,7 +47,8 @@ super_large_decks = [[[1, 0, 1],[1, 0, 0],[2, 1, 0],[1, 3, 3],[3, 2, 2],[2, 2, 2
 def Login():
 
 
-    return render_template('login.html', v="Please enter a subject number.")
+        return render_template('login.html', text='Enter a subject number.', action='/user_manual', input=True, v=True)
+
 
 ####
 #####
@@ -105,7 +82,7 @@ def newUser():
 
         ### we resuse the login page as a prompt for payment, so v=true allows username entry.
 
-        return render_template('login.html', text='Enter a valid subject number.', v=True)
+        return render_template('login.html', text='Enter a valid subject number.', action='/user_manual', input=True, v=True)
 
     else:
         sub = session.query(Subject).all()
@@ -119,14 +96,25 @@ def newUser():
         if subject_id not in subjectnames:
 
             hashed_id = hashlib.sha1(subject_id.encode("UTF-8")).hexdigest()[:8]
-            s_type = randint(1,stype_max)
-        
+                    
             subject = Subject(
                 idCode= subject_id,
-                hashed_id = hashed_id,
-                s_type = s_type) 
+                hashed_id = hashed_id) 
             session.add(subject)
             session.commit()
+
+            hands = session.query(Hand).all() #all possible hands
+            random.seed(datetime.now())
+            handarray = random.sample(hands, rounds) #random sample, 1 for each round
+            j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+            
+            for rnd in range(rounds):
+                new_hand_by_round = HandByRound(
+                    subject = j.id,
+                    rnd = rnd,
+                    hand = handarray[rnd].id)
+                session.add(new_hand_by_round)
+                session.commit()
     
         return Instructions(subject_id)
         #return Quiz(subject_id) 
@@ -145,7 +133,7 @@ def Instructions(subject_id):
 
         if subject_id not in subjectnames:
 
-            return render_template('login.html', text='Enter a valid subject number.', v=True)
+            return render_template('login.html', text='Enter a valid subject number.', action='/user_manual', input=True, v=True)
 
         else:
             return render_template('instructions.html', subject_id = subject_id)
@@ -161,7 +149,7 @@ def Quiz(subject_id):
 
     if j.tryquiz:
 
-        return render_template('login.html', text='You already failed the quiz.', v=True)
+        return render_template('login.html', text='You have already failed the quiz.', input=False, v=True)
 
     else:
         return render_template('quiz.html', subject_id = subject_id)
@@ -189,7 +177,7 @@ def QuizVal():
         session.add(j)
         session.commit()
 
-        return CreateSets(subject_id)
+        return WaitNext(subject_id,0)
 
     else:
 
@@ -199,15 +187,38 @@ def QuizVal():
         session.add(j)
         session.commit()
 
-        return render_template('login.html', text='You failed the quiz.', v=True)
+        return render_template('login.html', text='You failed the quiz.', input=False, v=False)
 
 ### landing page.
 
-@app.route('/waitnext', methods=['POST'])
-def WaitNext():
+@app.route('/waitnext/<subject_id>/<rnd>', methods=['POST'])
+def WaitNext(subject_id,rnd):
 
-    return render_template('login.html', text='Enter a valid subject number.', v=True)
+    rnd = int(rnd)
+
+    if rnd == 0:
+
+        text = Markup("""
+            You passed the comprehension quiz and will now move on to the main part of the study.
+            <br><br>
+            The study consists of """+str(rounds)+""" rounds.
+            <br><br>
+            In each round, you will have """+str(rndtime) + """ seconds to form <span class=hl>SET</span>s and will be paid an
+            additional $0."""+str(payment)+""" per correct <span class=hl>SET</span>. After  """+str(rounds)+""" rounds, you'll
+            be asked to complete a brief survey. Finally, you will receive your Mturk completion code.
+            <br><br>
+            Any extra amount you earn will be paid via a bonus on MTurk within 3 days.
+            <br><br> Good luck! Press submit to begin.""")
+
+        return render_template('login.html', text=text, action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
     
+    elif rnd < rounds:
+
+        return render_template('login.html', text='Click Submit to continue to round'+str(rnd+1)+'.', action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
+
+    else:
+
+        return render_template('survey.html', subject_id=subject_id)
 
 ####
 #####
@@ -219,8 +230,8 @@ def WaitNext():
 
 ### this generates the page with the cards on it.
 
-@app.route('/createsets/<subject_id>', methods=['POST', 'GET'])
-def CreateSets(subject_id):
+@app.route('/createsets/<subject_id>/<rnd>', methods=['POST', 'GET'])
+def CreateSets(subject_id,rnd):
 
         sub = session.query(Subject).all()
         subjectnames = []
@@ -232,7 +243,7 @@ def CreateSets(subject_id):
 
         if subject_id not in subjectnames:
 
-            return render_template('login.html', text='Enter a valid subject number.', v=True)
+            return render_template('login.html', text='Enter a valid subject number.', action='/user_manual', input=True, v=True)
 
         else:
 
@@ -246,37 +257,41 @@ def CreateSets(subject_id):
 
             diff_seconds = rndtime ### global variable for the amound of time the round lasts
 
-            ### if a timer has alread been set, calculate the remaining time
-            if j.exptime:
+            ### if a timer has alread been set for this subject/round, calculate the remaining time
 
-                diff = j.exptime - datetime.now()
+            if session.query(StartTimes).filter(StartTimes.subject == j.id, StartTimes.rnd == rnd).count() > 0:
+                exptime = session.query(StartTimes).filter(StartTimes.subject == j.id, StartTimes.rnd == rnd).one()
+                diff = exptime.exptime - datetime.now()
                 diff = diff - timedelta(microseconds=diff.microseconds)
                 diff_seconds = diff.total_seconds()
 
             ###  otherwise create a new sql entery for the start time
             else:
 
-                j.exptime = datetime.now() + timedelta(seconds=+rndtime)
-                session.add(j)
+                new_exptime = StartTimes(
+                    subject = j.id,
+                    rnd = rnd,
+                    exptime = datetime.now() + timedelta(seconds=+rndtime))
+                session.add(new_exptime)
                 session.commit()
 
             ###  if there is time remaining
 
             if diff_seconds < 0:
                 
-                return render_template('login.html', text='Sorry, you have already played', v=True)
+                return render_template('login.html', text='You have already played.', action='/user_manual', v=False)
 
             elif not j.passquiz:
 
-                return render_template('login.html', text='Sorry, you have failed the quiz', v=True)
+                return render_template('login.html', text='Sorry, you have failed the quiz', v=False)
 
             else:
 
-                ### s-type-i if the deck that the user has for round i, returns a hand of cards
+                hand = session.query(HandByRound).filter(HandByRound.subject == j.id, HandByRound.rnd == rnd).one()
 
-                k = session.query(Hand).filter(Hand.s_type == j.s_type).limit(handsize).all()
+                cards = session.query(HandByCard).filter(HandByCard.hand == hand.hand).all()
     
-                ###  all the cards in the hand 
+                ###  all the cards in the hand, as HandByCard objects. 
 
                 handarray = []
                 handIDarray = []
@@ -284,16 +299,17 @@ def CreateSets(subject_id):
                 ### for each card in the hand, we take its attributes and its unique ID number and store it
                 ### of course the attributes define the id, but fuck bijections
 
-                for i in k:
-                    handarray.append([i.color,i.symbol,i.number])
-                    handIDarray.append(i.card)
+                for i in cards:
+                    cardsql = session.query(DeckSQL).filter(DeckSQL.id == i.card).one()
+                    handarray.append([cardsql.color,cardsql.symbol,cardsql.number])
+                    handIDarray.append(cardsql.id)
                 
                 ### which sets have already been found? 
 
                 foundarray = []
                 foundIDarray = []
     
-                found = session.query(Found).filter(Found.subject == j.id).all()
+                found = session.query(Found).filter(Found.subject == j.id, Found.rnd == rnd, Found.isset==True).all()
     
                 for s in found:
                     setX = session.query(Sets).filter(Sets.id == s.sets).one()
@@ -304,8 +320,11 @@ def CreateSets(subject_id):
                     foundIDarray.append([setX.card1,setX.card2,setX.card3])
     
                 found_sets_num = len(foundIDarray)
+
+                rnd = int(rnd)
+                next_rnd = rnd + 1
     
-                return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=handIDarray, foundarray=foundarray, foundIDarray=foundIDarray, diff_seconds=diff_seconds, found_sets_num=found_sets_num)
+                return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=handIDarray, foundarray=foundarray, foundIDarray=foundIDarray, diff_seconds=diff_seconds, found_sets_num=found_sets_num, action=url_for('WaitNext', subject_id=subject_id, rnd=next_rnd),rnd=rnd)
 
 ### this next route is just a lil json thing to add new found sets to the database (and keep everything in sync, 
 ### which is probably unnecessary. so sloppy)
@@ -322,8 +341,11 @@ def AddSetJSON():
     subject_id=request.form['subject_id']
     isset=request.form['issetX']
     novelset=request.form['novelsetX']
+    rnd=request.form['rndX']
     cardsID=json.loads(cardsID)
     isset=json.loads(isset)
+    novelset = json.loads(novelset)
+
 
     j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
@@ -335,14 +357,18 @@ def AddSetJSON():
 
     if isset:
 
-        setX = session.query(Sets).filter(Sets.card1 == cardsID[0], Sets.card2 == cardsID[1], Sets.card3 == cardsID[2]).one()
+        hand = session.query(HandByRound).filter(HandByRound.rnd == int(rnd), HandByRound.subject==j.id).one()
+
+        setX = session.query(Sets).filter(Sets.card1 == cardsID[0], Sets.card2 == cardsID[1], Sets.card3 == cardsID[2], Sets.hand==hand.hand).one()
 
         newset = Found(
             sets = setX.id,
             subject = j.id,
             timefound = datetime.now(),
             isset = True,
-            novelset = novelset)
+            novelset = novelset,
+            rnd = rnd,
+            hand = hand.hand)
         session.add(newset)
         session.commit()
     
@@ -353,7 +379,9 @@ def AddSetJSON():
         newset = Found(
             subject = j.id,
             timefound = datetime.now(),
-            isset = False)
+            isset = False,
+            rnd = rnd,
+            hand = hand.hand)
         session.add(newset)
         session.commit()
     
@@ -367,12 +395,12 @@ def AddSetJSON():
 #####
 ####
 
-@app.route('/survey', methods=['POST'])
-def Survey():
+# @app.route('/survey/<subject_id>', methods=['POST'])
+# def Survey(subject_id):
 
-    subject_id=str(request.form['subject_id'])
+#     subject_id=str(request.form['subject_id'])
 
-    return render_template('survey.html', subject_id=subject_id)
+#     return render_template('survey.html', subject_id=subject_id)
 
 
 
