@@ -332,6 +332,14 @@ original = Deck({'number':[1,2,3],'symbol':['diamond', 'squiggle', 'oval'],
 threeProperties = Deck({'number':[0,1,2,3],'color':[0,1,2,3]
                   ,'shape':[0,1,2,3]})
 
+#listOfDecks = [original,threeProperties]
+#
+#listOfHands = [9,10,11,12]
+#
+#for deck in listOfDecks:
+#    for handSize in listOfHands:
+#        makeHistSimulation(deck, handSize, 50000, 3)
+
 ###############################################################################
 ###              RANDOMLY GENERATE HIGH- AND LOW-COUNT SUBDECKS             ###
 ###                       FOR TESTING IN THE VIZ PAGE                       ###    
@@ -343,24 +351,3 @@ threeProperties = Deck({'number':[0,1,2,3],'color':[0,1,2,3]
 low_list = getSubdeckNsets(threeProperties,12,500,3,10,1987,5)
 
 high_list = getSubdeckNsets(threeProperties,12,500,3,28,1987,5)
-
-#super_small = getSubdeckNsets(threeProperties,12,25000,3,10,6895466,5)
-#
-#small = getSubdeckNsets(threeProperties,12,25000,3,15,6895466,5)
-#
-#large = getSubdeckNsets(threeProperties,12,25000,3,23,6895466,5)
-#
-#super_large = getSubdeckNsets(threeProperties,12,25000,3,28,6895466,5)
-
-###############################################################################
-###                      GENERATE RELEVANT HISTOGRAMS                       ###
-###############################################################################
-
-#listOfDecks = [original,threeProperties]
-#
-#listOfHands = [9,10,11,12]
-#
-#for deck in listOfDecks:
-#    for handSize in listOfHands:
-#        makeHistSimulation(deck, handSize, 50000, 3)
-

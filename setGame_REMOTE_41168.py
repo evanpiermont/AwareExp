@@ -340,10 +340,6 @@ threeProperties = Deck({'number':[0,1,2,3],'color':[0,1,2,3]
 # Create a list with 5 decks of 10 sets each and one with 5 decks of 28 sets;
 # first tests used random seed 0    
     
-low_list = getSubdeckNsets(threeProperties,12,500,3,10,1987,5)
-
-high_list = getSubdeckNsets(threeProperties,12,500,3,28,1987,5)
-
 #super_small = getSubdeckNsets(threeProperties,12,25000,3,10,6895466,5)
 #
 #small = getSubdeckNsets(threeProperties,12,25000,3,15,6895466,5)
@@ -363,4 +359,3 @@ high_list = getSubdeckNsets(threeProperties,12,500,3,28,1987,5)
 #for deck in listOfDecks:
 #    for handSize in listOfHands:
 #        makeHistSimulation(deck, handSize, 50000, 3)
-
