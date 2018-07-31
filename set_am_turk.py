@@ -1,3 +1,4 @@
+from __future__ import division
 from flask import Flask, request, redirect, url_for, render_template, jsonify, Markup
 
 import os
@@ -28,10 +29,11 @@ session = db.session
 #####
 ####
 
-handsize = 12
-rndtime = 160 #time in seconds
-payment = 10
+handsize = 12 #number of cards per hand
+rndtime = 20 #time in seconds
+payment = 10 #payment in cents per correct anwser
 rounds = 2 #number of rounds.
+time_penalty = 500 #length of penalty in MILIseconds
 
 
 ####
@@ -99,7 +101,8 @@ def newUser():
                     
             subject = Subject(
                 idCode= subject_id,
-                hashed_id = hashed_id) 
+                hashed_id = hashed_id,
+                payment = 25) 
             session.add(subject)
             session.commit()
 
@@ -214,7 +217,7 @@ def WaitNext(subject_id,rnd):
     
     elif rnd < rounds:
 
-        return render_template('login.html', text='Click Submit to continue to round'+str(rnd+1)+'.', action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
+        return render_template('login.html', text='Click Submit to continue to round '+str(rnd+1)+'.', action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
 
     else:
 
@@ -309,7 +312,7 @@ def CreateSets(subject_id,rnd):
                 foundarray = []
                 foundIDarray = []
     
-                found = session.query(Found).filter(Found.subject == j.id, Found.rnd == rnd, Found.isset==True).all()
+                found = session.query(Found).filter(Found.subject == j.id, Found.rnd == rnd, Found.isset==True, Found.novelset==True).all()
     
                 for s in found:
                     setX = session.query(Sets).filter(Sets.id == s.sets).one()
@@ -324,7 +327,7 @@ def CreateSets(subject_id,rnd):
                 rnd = int(rnd)
                 next_rnd = rnd + 1
     
-                return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=handIDarray, foundarray=foundarray, foundIDarray=foundIDarray, diff_seconds=diff_seconds, found_sets_num=found_sets_num, action=url_for('WaitNext', subject_id=subject_id, rnd=next_rnd),rnd=rnd)
+                return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=handIDarray, foundarray=foundarray, foundIDarray=foundIDarray, diff_seconds=diff_seconds, found_sets_num=found_sets_num, action=url_for('WaitNext', subject_id=subject_id, rnd=next_rnd),rnd=rnd, time_penalty=time_penalty)
 
 ### this next route is just a lil json thing to add new found sets to the database (and keep everything in sync, 
 ### which is probably unnecessary. so sloppy)
@@ -370,6 +373,11 @@ def AddSetJSON():
             rnd = rnd,
             hand = hand.hand)
         session.add(newset)
+
+        if novelset:
+            j.payment += payment
+            session.add(j)
+        
         session.commit()
     
         return jsonify(foundarray = isset)
@@ -425,39 +433,44 @@ def End():
     j.percent = request.form['percent']
     j.half = request.form['half']
     j.bet = request.form['bet']
-    j.star = request.form['star']
+    #j.star = request.form['star']
 
     session.add(j)
     session.commit()
 
-    found_num = session.query(Found).filter(Found.subject == j.id).count()
+    found_num = session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True).count()
 
     hashed_id = j.hashed_id
 
-    paycode = subject_id + ".." + str(found_num)
-    return render_template('login.html', text="Thank you; your paycode is: " + hashed_id, v=False)
+    text = Markup("""
+            Thank you.
+            <br><br>
+            You found """+str(found_num)+""" sets.
+            <br><br>
+            You total payment is $"""+str(round(j.payment/100, 2))+""".
+            <br><br>
+            Please enter the following paycode on Amazon M-Turk: 
+            <br><br><br>
+            <h1>"""+str(hashed_id)+"""</h1>"""
+             )
+
+
+
+    return render_template('login.html', text=text, v=False)
 
              
 
-@app.route('/viz', methods=['POST','get'])
-# def Viz():
-# 
-#     handIDarray = []
-#     for i in range(12):
-#         handIDarray.append(i)
-# 
-# 
-#     handarray=getNhands(threeProperties, 12, 1)[0]
-# 
-#     total = 0
-# 
-#     C = list(itertools.combinations(handarray, 3))
-#     for i in C:
-#         if isSetThreeCards(i):
-#             total += 1
-# 
-#     return render_template('set.html', subject_id=total, handarray=handarray, handIDarray=handIDarray, foundarray=[], foundIDarray=[], diff_seconds=1000, found_sets_num=0)
 
+
+####
+#####
+######
+####### VIZ
+######
+#####
+####
+
+@app.route('/viz', methods=['POST','get'])
 def Viz():
 
     handIDarray = []

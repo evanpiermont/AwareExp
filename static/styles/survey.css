@@ -45,12 +45,60 @@ input[type="number"]{
     font-size: 100%
 }
 
+input[type="range"]:focus{
+    outline: none;
+    border-bottom: none;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb{
+    background-color:#b58900;
+}
+
+input[type="range"]:focus::-moz-range-thumb{
+    background-color:#b58900;
+}
+
 .submit{
   font-size: 100%;
 }
 
 .hl{
     color: #dc322f;
+}
+
+.slidecontainer {
+    width: 50%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 80%;
+    height: 15px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.5;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 0.7;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 20px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 15px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
 }
 
 

@@ -18,43 +18,6 @@
     <title> </title>
 </head>
 
-<style>
-.slidecontainer {
-    width: 50%;
-}
-
-.slider {
-    -webkit-appearance: none;
-    width: 80%;
-    height: 15px;
-    background: #d3d3d3;
-    outline: none;
-    opacity: 0.5;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-}
-
-.slider:hover {
-    opacity: 0.7;
-}
-
-.slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 15px;
-    height: 20px;
-    background: #4CAF50;
-    cursor: pointer;
-}
-
-.slider::-moz-range-thumb {
-    width: 25px;
-    height: 25px;
-    background: #4CAF50;
-    cursor: pointer;
-}
-</style>
-
 <body>
     <div id='background'>
         
@@ -109,7 +72,7 @@
     Of all possible <span class=hl>SETs</span>, what percentage, from 0 to 100%, do you believe you found?:
     <span id="p1"></span>%
     <br><br>
-    <input type="range" min="1" max="100" value="50" class="slider" id="percent1">
+    <input name="percent" type="range" min="1" max="100" value="50" class="slider" id="percent1">
     <!-- <input name="percent" id="percent" type="number" min="0" max="100" required /> -->
 
     <script>
@@ -127,7 +90,7 @@
     On a scale from 0 to 100%, how likey do you think it is that you found at least half of all sets?:
     <span id="p2"></span>%
     <br><br>
-    <input type="range" min="1" max="100" value="50" class="slider" id="percent2">
+    <input name="half" type="range" min="1" max="100" value="50" class="slider" id="percent2">
     <!--<input name="half" id="half" type="number" min="0" max="100" required />-->
 
     <script>

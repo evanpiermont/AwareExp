@@ -1,5 +1,3 @@
-
-
 $(document).ready(function() { //we need to re aqquire the window sizes
 $("#foundsets").scroll(function() {
       
@@ -49,7 +47,7 @@ clickCard = function(){
             sendSets(cardsID, false, false, rnd);
             $('#entertextprompt').text("Thats not a set.");
             $('#set_prompt').fadeIn('fast', function(){
-                count = 200;
+                count = penalty;
                 counter = setInterval(timer, 10)
                 timer();
             });
@@ -64,7 +62,7 @@ clickCard = function(){
             sendSets(cardsID, true, false, rnd);
             $('#entertextprompt').text("You already found that set.");
             $('#set_prompt').fadeIn('fast', function(){
-                count = 200;
+                count = penalty;
                 counter = setInterval(timer, 10);
                 timer();
             });
@@ -90,15 +88,13 @@ clickCard = function(){
 
 $(document).ready(clickCard);
 
-var count = 200;
-var counter;
 
 function timer(){
     if (count <= 0)
     {
         clearInterval(counter);
         $('#set_prompt').hide();
-        document.getElementById('time_penalty').innerHTML=2.00
+        document.getElementById('time_penalty').innerHTML=penalty / 100;
         return;
      }
      count--;
