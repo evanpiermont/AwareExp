@@ -32,6 +32,7 @@ session = db.session
 handsize = 12 #number of cards per hand
 rndtime = 20 #time in seconds
 payment = 10 #payment in cents per correct anwser
+fixed_payment = 25 #fixed payment in cents
 rounds = 2 #number of rounds.
 time_penalty = 500 #length of penalty in MILIseconds
 
@@ -190,7 +191,7 @@ def QuizVal():
         session.add(j)
         session.commit()
 
-        return render_template('login.html', text='You failed the quiz.', input=False, v=False)
+        return render_template('login.html', text="We need to update this 'failed the quiz' page", input=False, v=False)
 
 ### landing page.
 
@@ -202,22 +203,21 @@ def WaitNext(subject_id,rnd):
     if rnd == 0:
 
         text = Markup("""
-            You passed the comprehension quiz and will now move on to the main part of the study.
+            <p style="text-align:left;">
+            Congratulations! You passed the comprehension quiz and will now move on to the main part of the study.
             <br><br>
-            The study consists of """+str(rounds)+""" rounds.
-            <br><br>
-            In each round, you will have """+str(rndtime) + """ seconds to form <span class=hl>SET</span>s and will be paid an
+            The study consists of """+str(rounds)+""" rounds and in each round, you will have """+str(rndtime) + """ seconds to form <span class=hl>SET</span>s and will be paid an
             additional $0."""+str(payment)+""" per correct <span class=hl>SET</span>. After  """+str(rounds)+""" rounds, you'll
             be asked to complete a brief survey. Finally, you will receive your Mturk completion code.
             <br><br>
             Any extra amount you earn will be paid via a bonus on MTurk within 3 days.
-            <br><br> Good luck! Press submit to begin.""")
+            <br><br> Click on the SUBMIT button to begin.<p/>""")
 
         return render_template('login.html', text=text, action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
     
     elif rnd < rounds:
 
-        return render_template('login.html', text='Click Submit to continue to round '+str(rnd+1)+'.', action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
+        return render_template('login.html', text='Click SUBMIT to continue to round '+str(rnd+1)+'.', action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
 
     else:
 
