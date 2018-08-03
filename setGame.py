@@ -12,7 +12,7 @@ Created on Thu May  4 09:22:04 2017
 
 import itertools, time, random, math
 import pylab
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 
 class Deck(object):
     """
