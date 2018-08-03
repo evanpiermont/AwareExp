@@ -30,7 +30,7 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 20 #time in seconds
+rndtime = 90 #time in seconds
 payment = 10 #payment in cents per correct anwser
 fixed_payment = 25 #fixed payment in cents
 rounds = 2 #number of rounds.
@@ -191,7 +191,19 @@ def QuizVal():
         session.add(j)
         session.commit()
 
-        return render_template('login.html', text="We need to update this 'failed the quiz' page", input=False, v=False)
+        hashed_id = j.hashed_id
+
+        text = Markup("""
+        You failed the quiz.
+        <br><br>
+        You total payment is $"""+str(round(j.payment/100, 2))+""".
+        <br><br>
+        Please enter the following paycode on Amazon M-Turk: 
+        <br><br><br>
+        <h1>"""+str(hashed_id)+"""</h1>"""
+         )
+
+        return render_template('login.html', text=text, v=False)
 
 ### landing page.
 

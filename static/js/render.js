@@ -3,10 +3,12 @@
 
 renderCard = function(object){
 
+    $(object).empty()
+
     var rect = object.getBoundingClientRect(); // get the bounding rectangle
     var cardW = rect.width;
     var cardH = rect.height;
-    var radius = Math.min(cardW,cardH)/8;
+    var radius = Math.min(cardW,cardH)/10;
 
     var $pos = [[cardW/3,cardH/3],[2*cardW/3,cardH/3],[cardW/3,2*cardH/3], [2*cardW/3,2*cardH/3]]; // defult for #3
     var color = $shape3; // defult for 3
@@ -57,7 +59,7 @@ renderCir = function(element, color, radius, pos){
                         .attr("r", radius)
                         .attr('stroke', '#073642')
                         .attr('fill', color)
-                        .attr('stroke-width', 2)
+                        .attr('stroke-width', 1.5)
     }
 
 }
@@ -73,7 +75,7 @@ renderSq = function(element, color, radius, pos){
                         .attr("height", radius*2)
                         .attr('stroke', '#073642')
                         .attr('fill', color)
-                        .attr('stroke-width', 2)
+                        .attr('stroke-width', 1.5)
     }
 
 }
@@ -87,7 +89,7 @@ renderTri = function(element, color, radius, pos){
                         .attr("points", points)
                         .attr('stroke', '#073642')
                         .attr('fill', color)
-                        .attr('stroke-width', 2)
+                        .attr('stroke-width', 1.5)
     }
 
 }
@@ -101,7 +103,7 @@ renderStr = function(element, color, radius, pos){
                         .attr("points", points)
                         .attr('stroke', '#073642')
                         .attr('fill', color)
-                        .attr('stroke-width', 2)
+                        .attr('stroke-width', 1.5)
     }
 
 }
@@ -143,6 +145,8 @@ renderCards = function(){
 
 
 $(document).ready(renderCards);
+$(window).resize(renderCards);
+
 
 
 

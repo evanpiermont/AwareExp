@@ -59,9 +59,9 @@ input[type="number"]{
   position: relative;
   width: 28%;
   height: 70%;
-  border: 3px solid #073642;
+  border: 2px solid #073642;
   background: #839496;
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .question{
