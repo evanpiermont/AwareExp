@@ -20,8 +20,8 @@ from sqlalchemy import create_engine
 
 
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://kmwdsiybqohzkr:48c78dc82321c614a1f2058afdcf74987c7765b22a92be753f2a156d5299ad07@ec2-54-204-39-46.compute-1.amazonaws.com:5432/d40rkj7aib44id'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/awareExp'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:231207@localhost:5432/awareExp' #Felipe's local
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/awareExp'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:231207@localhost:5432/awareExp' #Felipe's local
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -58,7 +58,7 @@ class HandByCard(db.Model):
 #returns all sets, stores which hand the sets are in, what are the three cards
 
 class Sets(db.Model):
-    __tablename__ = 'sets' 
+    __tablename__ = 'sets'
     id = Column(Integer, primary_key=True)
     hand = Column(Integer, ForeignKey("hand.id"))
     card1 = Column(Integer, ForeignKey("deck.id"))
@@ -68,7 +68,7 @@ class Sets(db.Model):
 #subjects, idcode is unique (hashed) idenifier for init and payment
 
 class Subject(db.Model):
-    __tablename__ = 'subject' 
+    __tablename__ = 'subject'
     id = Column(Integer, primary_key=True)
     idCode = Column(String(100))
     hashed_id = Column(String(100))
@@ -86,7 +86,7 @@ class Subject(db.Model):
 # who has which hand when?!?
 
 class HandByRound(db.Model):
-    __tablename__ = 'hand_by_round' 
+    __tablename__ = 'hand_by_round'
     id = Column(Integer, primary_key=True)
     subject = Column(Integer, ForeignKey("subject.id"))
     rnd = Column(Integer)
@@ -105,7 +105,7 @@ class StartTimes(db.Model):
 #sets that hae been found
 
 class Found(db.Model):
-    __tablename__ = 'found' 
+    __tablename__ = 'found'
     id = Column(Integer, primary_key=True)
     sets = Column(Integer, ForeignKey("sets.id"))
     subject = Column(Integer, ForeignKey("subject.id"))
@@ -114,7 +114,3 @@ class Found(db.Model):
     novelset = Column(Boolean, default=False)
     hand = Column(Integer, ForeignKey("hand.id"))
     rnd = Column(Integer)
-
-
-
-
