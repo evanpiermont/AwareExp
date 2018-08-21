@@ -3,7 +3,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
  
-import itertools, os
+import itertools
 
 import db_setup
 
@@ -11,7 +11,7 @@ from db_setup import DeckSQL, Hand, HandByCard, Subject, Sets, Found, db
 from setGame import Deck, getCards, isSetThreeCards, getNhands  
  
 
-
+db.drop_all()
 db.create_all()
     
 session = db.session
@@ -91,7 +91,7 @@ for hand in hands:
     for card in cards:
         cardid = session.query(DeckSQL).filter(DeckSQL.id == card.card).one()
         handarrayindex.append(cardid.id)
-    print(handarrayindex)
+    #print(handarrayindex)
 
     C = list(itertools.combinations(handarrayindex, 3))
     for i in C:

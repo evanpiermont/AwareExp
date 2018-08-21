@@ -14,7 +14,7 @@ from random import randint
 import random
 
 from db_setup import DeckSQL, Hand, HandByCard, HandByRound, StartTimes, Subject, Sets, Found, db, app
-from setGame import Deck, getCards, isSetThreeCards, getNhands, threeProperties, getSubdeckNsets
+#from setGame import Deck, getCards, isSetThreeCards, getNhands, threeProperties, getSubdeckNsets
 
 import cgi
 import collections, itertools
@@ -173,7 +173,7 @@ def QuizVal():
 
     correct = a1 + a2 + a3 + a4 + a5
 
-    if correct > 3:
+    if correct > 4:
 
         j = session.query(Subject).filter(Subject.idCode == subject_id).one()
         j.tryquiz = True
@@ -396,6 +396,8 @@ def AddSetJSON():
 
     else:
 
+        hand = session.query(HandByRound).filter(HandByRound.rnd == int(rnd), HandByRound.subject==j.id).one()
+
         newset = Found(
             subject = j.id,
             timefound = datetime.now(),
@@ -504,7 +506,7 @@ def Viz():
     return render_template('set.html', subject_id=total, handarray=handarray, handIDarray=handIDarray, foundarray=[], foundIDarray=[], diff_seconds=1000, found_sets_num=0)
 
 if __name__ == "__main__":
-    app.debug = True
+    app.debug = False
     app.run(host='0.0.0.0')
 
  

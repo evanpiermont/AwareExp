@@ -13,15 +13,14 @@ from setGame import Deck, getCards, isSetThreeCards, getNhands
  
 
 
-db.create_all()
-    
 session = db.session
 
-setX = session.query(Sets).filter(Sets.card1 == 14, Sets.card2 == 37, Sets.card3 == 52, Sets.hand==20).one()
+setX = session.query(Sets).all()
+
+for k in setX:
+    print(k.hand)
 
 
-
-print(setX)
 
 
 
