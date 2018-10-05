@@ -36,7 +36,6 @@ input{
 }
 
 
-
 #subject_id_box{
     position: fixed;
     bottom: 1%;
@@ -53,16 +52,6 @@ input{
 	left:3%;
 }
 
-#foundsets{
-	position: fixed;
-	width: 20%;
-	height: 80%;
-	top: 10%;
-	right:1%;
-    overflow-x: hidden;
-    font-size: 25%;
-    text-align: center;
-}
 
 .display_card{
 	position: absolute;
@@ -72,84 +61,6 @@ input{
 	background: #839496;
 	cursor: pointer;
 	border-radius: 5px;
-}
-
-.clicked{
-  border: 3px solid #d33682;
-  background: #657b83;
-} 
-
-#card0{
-	top: 0%;
-	left: 10%;
-}
-
-#card1{
-	top: 0%;
-	left: 40%;
-}
-
-#card2{
-	top: 0%;
-	left: 70%;
-}
-
-#card3{
-	top: 40%;
-	left: 10%;
-}
-
-#card4{
-	top: 40%;
-	left: 40%;
-}
-
-#card5{
-	top: 40%;
-	left: 70%;
-}
-
-#card6{
-	top: 80%;
-	left: 10%;
-}
-
-#card7{
-	top: 80%;
-	left: 40%;
-}
-
-#card8{
-	top: 80%;
-	left: 70%;
-}
-
-
-#output-table{ 
-	position: absolute;
-	top: 70px;
-    left: 0%;
-    width: 100%;
-	}
-
-#output-table td{ 
-		height: 50px;
-	}
-
-#output-table tr{ 
-	background: #839496;
-	}
-
-
-#output-table-header{
-	position: absolute;
-    left: 0%;
-    height: 70px;
-    width: 100%;
-    z-index: +1;
-    border-bottom: 2px solid #fdf6e3;
-    background-color: #fdf6e3;
-
 }
 
 

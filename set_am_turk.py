@@ -30,7 +30,7 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 90 #time in seconds
+rndtime = 900 #time in seconds
 payment = 10 #payment in cents per correct anwser
 fixed_payment = 25 #fixed payment in cents
 rounds = 2 #number of rounds.
@@ -70,7 +70,7 @@ def Manual():
 
     subject_id=request.form['subject_id']
 
-    return redirect(url_for('newUser', workerID=subject_id), code=302)
+    return redirect(url_for('newUser', workerId=subject_id), code=302)
 
 
 ### This is the route from M-TURK. takes the worker ID from the URL under workerID
@@ -79,7 +79,7 @@ def Manual():
 @app.route('/user/', methods=['POST', 'GET'])
 def newUser():
 
-    subject_id = request.args.get('workerID')
+    subject_id = request.args.get('workerId')
 
     if not subject_id or len(subject_id) < 5:
 
