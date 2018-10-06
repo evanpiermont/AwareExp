@@ -26,12 +26,14 @@
     border: none;
     font-size: 30%;
     cursor: pointer;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
     width: 10%;
     height: 5%;
-    top:35%;
+    top:75%;
     left:65%;
+}
+
+.loginsubmit{
+    top: 35%;
 }
 
 /* Smartphones (portrait) ----------- */
