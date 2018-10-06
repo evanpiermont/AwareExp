@@ -38,29 +38,10 @@ input{
 
 #subject_id_box{
     position: fixed;
-    bottom: 1%;
+    top: 1%;
     left: 70%;
     font-size: 25%;
     text-align: left;
-}
-
-#hand{
-	position: fixed;
-	width: 70%;
-	height: 70%;
-	top: 10%;
-	left:3%;
-}
-
-
-.display_card{
-	position: absolute;
-	width: 20%;
-	height: 25%;
-	border: 3px solid #073642;
-	background: #839496;
-	cursor: pointer;
-	border-radius: 5px;
 }
 
 
@@ -69,6 +50,19 @@ SVG {
 	height: 50px;
 	max-width: 100%;
 }
+
+@media only screen and (max-width : 500px) {
+
+#subject_id_box{
+    position: fixed;
+    top: 1%;
+    left: 50%;
+    font-size: 25%;
+    text-align: left;
+}
+
+}
+
 
 
 

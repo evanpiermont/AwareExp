@@ -30,13 +30,18 @@ $shape1 = $red;
 $shape2 = $yellow;
 $shape3 = $cyan;
 
-
 fontsize = function () {
-    var x = $(window).width() * 0.08; // 10% of container width
-    var y = $(window).height() * 0.08; // 10% of container height
+    z = 0.08
+    if (window.matchMedia("only screen and (max-width : 500px)").matches) {
+        z = 0.11
+    }
+    var x = $(window).width() * z; // z of container width
+    var y = $(window).height() * z; // z of container height
     var fontSize = Math.min(x,y);
     $("body").css('font-size', fontSize);
 };
+
+
 
 colors = function(){
     $("#background").css('background-color', $cBG);

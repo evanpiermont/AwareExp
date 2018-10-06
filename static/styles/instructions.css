@@ -37,7 +37,7 @@
     left: 15%;
     top: 15%;
     width: 70%;
-    height: 70%
+    height: 70%;
     font-size: 60%;
     overflow: visible;
     font-size: 40%;
@@ -68,6 +68,70 @@
 
 .hl{
     color: #dc322f;
+}
+
+/* Smartphones (portrait) ----------- */
+@media only screen and (max-width : 500px) {
+
+#wrap{
+    position: fixed;
+    left: 15%;
+    top: 10%;
+    width: 70%;
+    height: 70%;
+    font-size: 50%;
+    overflow: visible;
+    font-size: 40%;
+    line-height: 1.3;
+}
+
+#next{
+    position: fixed;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-left: #fdf6e3 solid 3px;
+    height: 8%;
+    top: 92%;
+    width: 50%;
+    right: 0%;
+}
+
+#prev{
+    position: fixed;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    height: 8%;
+    top: 92%;
+    width: 50%;
+    left: 0%;
+}
+
+.submit{
+    color:rgb(132,188,232);
+    position: absolute;
+    top: 110%;
+    padding-top: 6px;
+    border: none;
+    font-size: 200%;
+    cursor: pointer;
+    text-align: center;
+}
+
+.display_card{
+    position: relative;
+    width: 28%;
+    height: 55%;
+    border: 2px solid #073642;
+    background: #839496;
+    border-radius: 3px;
+}
+
+#cards_for_instructions{
+    height: 100px;
+    margin-top: 25px;
+}
+
+
 }
 
 

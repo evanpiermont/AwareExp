@@ -179,6 +179,30 @@ var counter_out = setInterval(pageTimer, 1000);
 $(document).ready(pageTimer);
 
 
+// toggle found sets, if mobile
+
+toggleFound = function(){
+
+    $("#toggle").click(function() {
+        x = "Show Found Sets"
+        y = "Hide Found Sets"
+        z = document.getElementById('toggle').innerHTML
+        if (z == x){
+            $("#foundsets").show()
+            document.getElementById('toggle').innerHTML = y
+            renderCards()
+        } else {
+            $("#foundsets").hide()
+            document.getElementById('toggle').innerHTML = x
+        };
+    });
+    
+}
+
+if (window.matchMedia("only screen and (max-width : 500px)").matches) {
+        $(document).ready(toggleFound);
+
+    }
 
 
 

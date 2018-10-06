@@ -3,6 +3,7 @@
     >
 <html lang="en">
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
     <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/login.css') }} />
     <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
@@ -23,7 +24,7 @@
     <input type="text" autocomplete="off" autofocus="autofocus"
     name="subject_id" id="word-input">
     {%endif%}
-    <input {%if not input%} style="top:80%" {%endif%} type="submit" value="Submit" class=submit id=submit>
+    <input type="submit" value="Submit" class="submit {%if input%} loginsubmit {%endif%}" id=submit>
 </form>
 {%endif%}
 

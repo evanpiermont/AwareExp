@@ -30,7 +30,7 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 900 #time in seconds
+rndtime = 90 #time in seconds
 payment = 10 #payment in cents per correct anwser
 fixed_payment = 25 #fixed payment in cents
 rounds = 2 #number of rounds.
