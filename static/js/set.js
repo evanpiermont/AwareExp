@@ -199,6 +199,20 @@ toggleFound = function(){
     
 }
 
+// check if the page has been visited before
+
+checkTime = function(rnd){
+    cardsX = JSON.stringify(cardsID);
+    formdata = '&rndX=' + rnd;
+    formdata = formdata += '&subject_id=' + $subject;
+    $.post('/_check_time', formdata, function(json){
+        console.log(json);
+    })
+}
+
+$(document).ready(checkTime);
+
+
 if (window.matchMedia("only screen and (max-width : 500px)").matches) {
         $(document).ready(toggleFound);
 

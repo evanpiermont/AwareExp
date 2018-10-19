@@ -27,7 +27,16 @@
                  
     <form method='POST' name='survey' enctype='multipart/form-data' action='/end'>
 
-    Age:  <input name="age" id="age" type="number" min="10" max="90" required />
+    Age: 
+    <input type="radio" name="age" id="18-30" value=0 required>
+    <label for="18-30"><span>18-30</span></label>
+    <input type="radio" name="age" id="31-45" value=1 required>
+    <label for="31-45"><span>31-45</span></label>
+    <input type="radio" name="age" id="46-65" value=2 required>
+    <label for="46-65"><span>46-65</span></label>
+    <input type="radio" name="age" id="65+" value=3 required>
+    <label for="65+"><span>65+</span></label>
+
 
     <br><br>
 
@@ -40,21 +49,6 @@
     <label for="other-gender"><span>Other</span></label>
 
     <br><br>
-
-    Ethnicity:
-    <input type="radio" name="race" id="asian" value=0 required>
-    <label for="asian"><span>Asian </span></label>
-    <input type="radio" name="race" id="black" value=1 required>
-    <label for="black"><span>Black </span></label>
-    <input type="radio" name="race" id="hispanic" value=2 required>
-    <label for="hispanic"><span>Hispanic </span></label>
-    <input type="radio" name="race" id="white" value=3 required>
-    <label for="white"><span>White</span></label>
-    <input type="radio" name="race" id="other" value=4 required>
-    <label for="other"><span>Other</span></label>
-
-    <br><br>
-
 
     Highest degree completed so far:
     <input type="radio" name="degree" id="highschool" value=0 required>
@@ -70,11 +64,25 @@
 
     <br><br>
 
-    Of all possible <span class=hl>SETs</span>, what percentage, from 0 to 100%, do you believe you found?:
+        Would you rather receive (A) $0.10 for each set you found or (B) have one of all possible sets
+    drawn at random, and receive $2.00 if you found that particular set?
+    <input type="radio" name="bet" id="betA" value=0 required>
+    <label for="betA"><span> A </span></label>
+    <input type="radio" name="bet" id="betB" value=0 required>
+    <label for="betB"><span> B </span></label>
+    <!--<input name="bet" id="bet" type="number" min="0" max="100" required />-->
+
+    <br><br><br>
+
+    If you anwser either of the following to questions within 5% of the true value, you will recive an additional ${{belief_payment}}.
+
+    <br><br><br>
+
+    Of all possible <span class=hl>SETs</span> from round 1, what percentage, from 0 to 100%, do you believe you found in round 1?:
     <span id="p1"></span>%
     <br><br>
     <div id=checked1>
-    <input name="percent" type="range" min="1" max="100" value="50" class="slider" id="percent1">
+    <input name="percent1" type="range" min="1" max="100" value="50" class="slider" id="percent1">
     <!-- <input name="percent" id="percent" type="number" min="0" max="100" required /> -->
     </div>
 
@@ -87,12 +95,11 @@
 
     <br><br>
 
-    On a scale from 0 to 100%, how likey do you think it is that you found at least half of all sets?:
+    Of all possible <span class=hl>SETs</span> from round 2, what percentage, from 0 to 100%, do you believe you found in round 2?: 
     <span id="p2"></span>%
     <br><br>
     <div id=checked2>
-    <input name="half" type="range" min="1" max="100" value="50" class="slider" id="percent2">
-    <!--<input name="half" id="half" type="number" min="0" max="100" required />-->
+    <input name="percent2" type="range" min="1" max="100" value="50" class="slider" id="percent2">
     </div>
 
     <script>
@@ -104,15 +111,6 @@
 
     <br><br>
 
-    Would you rather receive (A) $0.10 for each set you found or (B) have one of all possible sets
-    drawn at random, and receive $2.00 if you found that particular set?
-    <input type="radio" name="bet" id="betA" value=0 required>
-    <label for="betA"><span> A </span></label>
-    <input type="radio" name="bet" id="betB" value=0 required>
-    <label for="betB"><span> B </span></label>
-    <!--<input name="bet" id="bet" type="number" min="0" max="100" required />-->
-
-    <br><br>
 
     <!--Suppose one <span class=hl>SET</span> is drawn randomly out of all possible <span class=hl>SETs</span>.
     What is the probability it would contain at least one star symbol?:  <input name="star" id="star" type="number" min="0" max="100" required />-->    

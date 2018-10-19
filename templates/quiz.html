@@ -22,7 +22,8 @@
 <body>
     <div id='background'>
         
-        
+    {%if q==0%}
+
 
     <div class=question id=q1>
         <svg class="card c1 display_card" data-card="[0,0,0]"></svg>
@@ -54,7 +55,43 @@
         <svg class="card c3 display_card" data-card="[2,0,3]"></svg>
     </div>
 
-            <div id=adminenter>
+    {%endif%}
+    {%if q==1%}
+
+
+    <div class=question id=q1>
+        <svg class="card c1 display_card" data-card="[0,0,0]"></svg>
+        <svg class="card c2 display_card" data-card="[0,0,0]"></svg>
+        <svg class="card c3 display_card" data-card="[0,0,0]"></svg>
+    </div>
+
+    <div class=question id=q2>
+        <svg class="card c1 display_card" data-card="[1,1,1]"></svg>
+        <svg class="card c2 display_card" data-card="[1,1,1]"></svg>
+        <svg class="card c3 display_card" data-card="[1,1,1]"></svg>
+    </div>
+
+    <div class=question id=q3>
+        <svg class="card c1 display_card" data-card="[1,2,1]"></svg>
+        <svg class="card c2 display_card" data-card="[2,1,3]"></svg>
+        <svg class="card c3 display_card" data-card="[1,3,1]"></svg>
+    </div>
+
+    <div class=question id=q4>
+        <svg class="card c1 display_card" data-card="[0,1,3]"></svg>
+        <svg class="card c2 display_card" data-card="[1,2,0]"></svg>
+        <svg class="card c3 display_card" data-card="[2,3,1]"></svg>
+    </div>
+
+    <div class=question id=q5>
+        <svg class="card c1 display_card" data-card="[2,1,0]"></svg>
+        <svg class="card c2 display_card" data-card="[2,1,2]"></svg>
+        <svg class="card c3 display_card" data-card="[2,0,3]"></svg>
+    </div>
+
+    {%endif%}
+
+    <div id=adminenter>
 
                  
     <form method='POST' name='survey' enctype='multipart/form-data' action='/quizval'>
@@ -69,16 +106,16 @@
     </div>
 
     <div class=answer id=a2> 
-    <input type="radio" name="set2" id="set2" value=0 required>
+    <input type="radio" name="set2" id="set2" value=1 required>
     <label for="set2"><span>Set </span></label>
-    <input type="radio" name="set2" id="noset2" value=1 required>
+    <input type="radio" name="set2" id="noset2" value=0 required>
     <label for="noset2"><span>Not a Set </span></label>
     </div>
 
     <div class=answer id=a3> 
-    <input type="radio" name="set3" id="set3" value=0 required>
+    <input type="radio" name="set3" id="set3" value=1 required>
     <label for="set3"><span>Set </span></label>
-    <input type="radio" name="set3" id="noset3" value=1 required>
+    <input type="radio" name="set3" id="noset3" value=0 required>
     <label for="noset3"><span>Not a Set </span></label>
     </div>
 
@@ -90,9 +127,9 @@
     </div>
 
     <div class=answer id=a5> 
-    <input type="radio" name="set5" id="set5" value=0 required>
+    <input type="radio" name="set5" id="set5" value=1 required>
     <label for="set5"><span>Set </span></label>
-    <input type="radio" name="set5" id="noset5" value=1 required>
+    <input type="radio" name="set5" id="noset5" value=0 required>
     <label for="noset5"><span>Not a Set </span></label>
     </div>
 
@@ -108,5 +145,7 @@
         <div id=subject_id_box> Subject#: {{subject_id}}</div>
 
     </div>
+
+    
 </body>
 </html>

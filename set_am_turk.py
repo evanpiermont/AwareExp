@@ -30,12 +30,13 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 90 #time in seconds
-payment = 10 #payment in cents per correct anwser
+rndtime = 10 #time in seconds
+piecerate = [10,25] #payment in cents per correct anwser
 fixed_payment = 25 #fixed payment in cents
+belief_payment = 25 #elictation of beliefs bonus payment in cents
 rounds = 2 #number of rounds.
 time_penalty = 500 #length of penalty in MILIseconds
-
+quizversions = [[1,0,0,1,0],[0,0,0,0,0]] #list of correct answers for each verison of the quiz 
 
 ####
 #####
@@ -81,7 +82,7 @@ def newUser():
 
     subject_id = request.args.get('workerId')
 
-    if not subject_id or len(subject_id) < 5:
+    if len(subject_id) < 5:
 
         ### we resuse the login page as a prompt for payment, so v=true allows username entry.
 
@@ -99,11 +100,15 @@ def newUser():
         if subject_id not in subjectnames:
 
             hashed_id = hashlib.sha1(subject_id.encode("UTF-8")).hexdigest()[:8]
+            q = random.randint(0,len(quizversions)-1) #choose quiz version
+            p = random.choice(piecerate)
                     
             subject = Subject(
                 idCode= subject_id,
                 hashed_id = hashed_id,
-                payment = 25) 
+                quizversion = q,
+                piecerate = p,
+                payment = fixed_payment)    
             session.add(subject)
             session.commit()
 
@@ -120,27 +125,13 @@ def newUser():
                 session.add(new_hand_by_round)
                 session.commit()
     
-        return Instructions(subject_id)
-        #return Quiz(subject_id) 
-
-
-@app.route('/instructions/<subject_id>', methods=['POST', 'GET'])
-def Instructions(subject_id):
-
-        sub = session.query(Subject).all()
-        subjectnames = []
-        for i in sub:
-           subjectnames.append(i.idCode)
-
-        #get list of valid subject names, next we test the input name to
-        #sure the imput is valid
-
-        if subject_id not in subjectnames:
-
-            return render_template('login.html', text='Enter a valid subject number.', action='/user_manual', input=True, v=True)
-
+            return render_template('instructions.html', subject_id = subject_id, piecerate=str(round(p/100, 2)), rounds=str(rounds), fixed_payment=str(round(fixed_payment/100, 2)))
+            #return Quiz(subject_id) 
         else:
-            return render_template('instructions.html', subject_id = subject_id)
+            return render_template('login.html', text='You have already played.', action='/user_manual', v=False)
+
+
+
 
 ### just routes the guy to the quiz. we could obviously totally get around this by formatting URLS
 ### and just making the redirect from the instructions directly. but why not. 
@@ -156,7 +147,8 @@ def Quiz(subject_id):
         return render_template('login.html', text='You have already failed the quiz.', input=False, v=True)
 
     else:
-        return render_template('quiz.html', subject_id = subject_id)
+        q = j.quizversion
+        return render_template('quiz.html', subject_id = subject_id, q=q)
 
 ### now we need to make sure they passed the quiz. 
 
@@ -164,18 +156,18 @@ def Quiz(subject_id):
 def QuizVal():
 
     subject_id=str(request.form['subject_id'])
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
-    a1=int(request.form['set1'])
-    a2=int(request.form['set2'])
-    a3=int(request.form['set3'])
-    a4=int(request.form['set4'])
-    a5=int(request.form['set5'])
 
-    correct = a1 + a2 + a3 + a4 + a5
+    if j.tryquiz:
+        return render_template('login.html', text='You have already failed the quiz.', input=False, v=True)
 
-    if correct > 4:
+    quiz_ans=[int(request.form['set1']),int(request.form['set2']),int(request.form['set3']),int(request.form['set4']),int(request.form['set5'])]
+    correct = quizversions[j.quizversion]
+ 
+    print([(x+y)%2 for x, y in zip(quiz_ans, correct)])
+    if [(x+y)%2 for x, y in zip(quiz_ans, correct)] == [0,0,0,0,0]:
 
-        j = session.query(Subject).filter(Subject.idCode == subject_id).one()
         j.tryquiz = True
         j.passquiz = True
         session.add(j)
@@ -185,7 +177,6 @@ def QuizVal():
 
     else:
 
-        j = session.query(Subject).filter(Subject.idCode == subject_id).one()
         j.tryquiz = True
         j.passquiz = False
         session.add(j)
@@ -210,6 +201,7 @@ def QuizVal():
 @app.route('/waitnext/<subject_id>/<rnd>', methods=['POST'])
 def WaitNext(subject_id,rnd):
 
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
     rnd = int(rnd)
 
     if rnd == 0:
@@ -219,7 +211,7 @@ def WaitNext(subject_id,rnd):
             Congratulations! You passed the comprehension quiz and will now move on to the main part of the study.
             <br><br>
             The study consists of """+str(rounds)+""" rounds and in each round, you will have """+str(rndtime) + """ seconds to form <span class=hl>SET</span>s and will be paid an
-            additional $0."""+str(payment)+""" per correct <span class=hl>SET</span>. After  """+str(rounds)+""" rounds, you'll
+            additional $0."""+str(j.piecerate)+""" per correct <span class=hl>SET</span>. After  """+str(rounds)+""" rounds, you'll
             be asked to complete a brief survey. Finally, you will receive your Mturk completion code.
             <br><br>
             Any extra amount you earn will be paid via a bonus on MTurk within 3 days.
@@ -233,7 +225,7 @@ def WaitNext(subject_id,rnd):
 
     else:
 
-        return render_template('survey.html', subject_id=subject_id)
+        return render_template('survey.html', subject_id=subject_id, belief_payment=str(round(belief_payment/100, 2)))
 
 ####
 #####
@@ -387,7 +379,7 @@ def AddSetJSON():
         session.add(newset)
 
         if novelset:
-            j.payment += payment
+            j.payment += j.piecerate
             session.add(j)
         
         session.commit()
@@ -412,17 +404,31 @@ def AddSetJSON():
 ####
 #####
 ######
-####### Survey PAGE
+####### Check Time on Back navigation 
 ######
 #####
 ####
 
-# @app.route('/survey/<subject_id>', methods=['POST'])
-# def Survey(subject_id):
+@app.route('/_check_time', methods=['POST'])
+def CheckTimeJSON():
 
-#     subject_id=str(request.form['subject_id'])
+    subject_id=request.form['subject_id']
+    rnd=request.form['rndX']
 
-#     return render_template('survey.html', subject_id=subject_id)
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+
+
+    exptime = session.query(StartTimes).filter(StartTimes.subject == j.id, StartTimes.rnd == rnd).one()
+    diff = exptime.exptime - datetime.now()
+    diff -= timedelta(microseconds=diff.microseconds)
+    diff_seconds = diff.total_seconds()
+
+    if diff_seconds < 0:
+        return jsonify(foundarray = True)
+
+
+
+
 
 
 
@@ -438,30 +444,56 @@ def AddSetJSON():
 def End():
 
     subject_id=str(request.form['subject_id'])
+    guess_prec1 = request.form['percent1']
+    guess_prec2 = request.form['percent2']
 
     j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
+
+    #for belief elictation, calc actual precentage
+    pos_num = []
+    found_num = []
+    for i in range(rounds):
+        #first which hand
+        hand = session.query(HandByRound).filter(HandByRound.rnd == i, HandByRound.subject==j.id).one()
+        #next how many total
+        pos_num.append(session.query(Sets).filter(Sets.hand == hand.id).count())
+        #how many were found
+        found_num.append(session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == i).count())
+        #devide those MFs
+        perc_found = [round(x/y,2)*100 for x, y in zip(found_num, pos_num)]
+
+
+    hashed_id = j.hashed_id
+
+    belief_payment_achived = 0;
+
+    absdiff = [abs(x-y) for x, y in zip(perc_found, [float(guess_prec1),float(guess_prec2)])]
+    maxdiff = max(absdiff)
+    if maxdiff < 5:
+        belief_payment_achived = belief_payment
+
+    j.payment += belief_payment_achived
+    j.age = request.form['age']
     j.gender = request.form['gender']
-    j.race = request.form['race']
     j.degree = request.form['degree']
-    j.percent = request.form['percent']
-    j.half = request.form['half']
+    j.percent1 = guess_prec1
+    j.percent2 = guess_prec2
     j.bet = request.form['bet']
-    #j.star = request.form['star']
 
     session.add(j)
     session.commit()
 
-    found_num = session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True).count()
-
-    hashed_id = j.hashed_id
-
     text = Markup("""
-            Thank you.
+            Thank you. 
+            <br>
+            In round 1 you found """+str(found_num[0])+""" of """+str(pos_num[0])+""" sets: """+f'{perc_found[0]:.0f}'+"""%; your assement was """+str(guess_prec1)+"""%. 
+            <br>
+            In round 2 you found """+str(found_num[1])+""" of """+str(pos_num[1])+""" sets: """+f'{perc_found[1]:.0f}'+"""%; your assement was """+str(guess_prec2)+"""%.
+            <br>
+            You received a survey bonus of $"""+f'{(round(belief_payment_achived/100, 2)):.2f}'+""".
             <br><br>
-            You found """+str(found_num)+""" sets.
-            <br><br>
-            You total payment is $"""+str(round(j.payment/100, 2))+""".
+            You total payment is $"""+f'{(round(j.payment/100, 2)):.2f}'+""".
             <br><br>
             Please enter the following paycode on Amazon M-Turk: 
             <br><br><br>
@@ -506,7 +538,7 @@ def Viz():
     return render_template('set.html', subject_id=total, handarray=handarray, handIDarray=handIDarray, foundarray=[], foundIDarray=[], diff_seconds=1000, found_sets_num=0)
 
 if __name__ == "__main__":
-    app.debug = False
+    app.debug = True
     app.run(host='0.0.0.0')
 
  
