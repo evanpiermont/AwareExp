@@ -201,12 +201,14 @@ toggleFound = function(){
 
 // check if the page has been visited before
 
-checkTime = function(rnd){
-    cardsX = JSON.stringify(cardsID);
+checkTime = function(){
     formdata = '&rndX=' + rnd;
     formdata = formdata += '&subject_id=' + $subject;
     $.post('/_check_time', formdata, function(json){
         console.log(json);
+        if (json['reload'] == true){
+            window.location.reload(true);
+        }
     })
 }
 

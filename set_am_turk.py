@@ -36,7 +36,7 @@ fixed_payment = 25 #fixed payment in cents
 belief_payment = 25 #elictation of beliefs bonus payment in cents
 rounds = 2 #number of rounds.
 time_penalty = 500 #length of penalty in MILIseconds
-quizversions = [[1,0,0,1,0],[0,0,0,0,0]] #list of correct answers for each verison of the quiz 
+quizversions = [[1,0,0,1,0],[0,0,1,1,1],[1,1,0,0,1],[0,1,1,1,0]] #list of correct answers for each verison of the quiz 
 
 ####
 #####
@@ -88,46 +88,36 @@ def newUser():
 
         return render_template('login.html', text='Enter a valid subject number.', action='/user_manual', input=True, v=True)
 
-    else:
-        sub = session.query(Subject).all()
-        subjectnames = []
-        for i in sub:
-               subjectnames.append(i.idCode)
-    
-            #get list of valid subject names, next we test the input name to
-            #sure the imput is valid
-    
-        if subject_id not in subjectnames:
+    elif session.query(Subject).filter(Subject.idCode == subject_id).count() == 0:
 
-            hashed_id = hashlib.sha1(subject_id.encode("UTF-8")).hexdigest()[:8]
-            q = random.randint(0,len(quizversions)-1) #choose quiz version
-            p = random.choice(piecerate)
-                    
-            subject = Subject(
-                idCode= subject_id,
-                hashed_id = hashed_id,
-                quizversion = q,
-                piecerate = p,
-                payment = fixed_payment)    
-            session.add(subject)
+        hashed_id = hashlib.sha1(subject_id.encode("UTF-8")).hexdigest()[:8]
+        q = random.randint(0,len(quizversions)-1) #choose quiz version
+        p = random.choice(piecerate)
+                
+        subject = Subject(
+            idCode= subject_id,
+            hashed_id = hashed_id,
+            quizversion = q,
+            piecerate = p,
+            payment = fixed_payment)    
+        session.add(subject)
+        session.commit()
+        hands = session.query(Hand).all() #all possible hands
+        random.seed(datetime.now())
+        handarray = random.sample(hands, rounds) #random sample, 1 for each round
+        j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+        
+        for rnd in range(rounds):
+            new_hand_by_round = HandByRound(
+                subject = j.id,
+                rnd = rnd,
+                hand = handarray[rnd].id)
+            session.add(new_hand_by_round)
             session.commit()
 
-            hands = session.query(Hand).all() #all possible hands
-            random.seed(datetime.now())
-            handarray = random.sample(hands, rounds) #random sample, 1 for each round
-            j = session.query(Subject).filter(Subject.idCode == subject_id).one()
-            
-            for rnd in range(rounds):
-                new_hand_by_round = HandByRound(
-                    subject = j.id,
-                    rnd = rnd,
-                    hand = handarray[rnd].id)
-                session.add(new_hand_by_round)
-                session.commit()
-    
-            return render_template('instructions.html', subject_id = subject_id, piecerate=str(round(p/100, 2)), rounds=str(rounds), fixed_payment=str(round(fixed_payment/100, 2)))
-            #return Quiz(subject_id) 
-        else:
+        return render_template('instructions.html', subject_id = subject_id, piecerate=str(round(p/100, 2)), rounds=str(rounds), fixed_payment=str(round(fixed_payment/100, 2)))
+        #return Quiz(subject_id) 
+    else:
             return render_template('login.html', text='You have already played.', action='/user_manual', v=False)
 
 
@@ -423,8 +413,7 @@ def CheckTimeJSON():
     diff -= timedelta(microseconds=diff.microseconds)
     diff_seconds = diff.total_seconds()
 
-    if diff_seconds < 0:
-        return jsonify(foundarray = True)
+    return jsonify(reload = (diff_seconds < 0))
 
 
 
