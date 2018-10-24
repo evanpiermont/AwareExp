@@ -30,10 +30,10 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 10 #time in seconds
-piecerate = [10,25] #payment in cents per correct anwser
+rndtime = 120 #time in seconds
+piecerate = [10,35] #payment in cents per correct anwser
 fixed_payment = 25 #fixed payment in cents
-belief_payment = 25 #elictation of beliefs bonus payment in cents
+belief_payment = 50 #elictation of beliefs bonus payment in cents
 rounds = 2 #number of rounds.
 time_penalty = 500 #length of penalty in MILIseconds
 quizversions = [[1,0,0,1,0],[0,0,1,1,1],[1,1,0,0,1],[0,1,1,1,0]] #list of correct answers for each verison of the quiz 
