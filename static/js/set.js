@@ -45,7 +45,7 @@ clickCard = function(){
 
         if (isSetThreeCards(clickedSpec) == false){
             sendSets(cardsID, false, false, rnd);
-            $('#entertextprompt').text("Thats not a set.");
+            $('#entertextprompt').text("This is not a set.");
             $('#set_prompt').fadeIn('fast', function(){
                 count = penalty;
                 counter = setInterval(timer, 10)

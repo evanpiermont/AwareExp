@@ -115,7 +115,7 @@ def newUser():
             session.add(new_hand_by_round)
             session.commit()
 
-        return render_template('instructions.html', subject_id = subject_id, piecerate=str(round(p/100, 2)), rounds=str(rounds), fixed_payment=str(round(fixed_payment/100, 2)))
+        return render_template('instructions.html', subject_id = subject_id, piecerate=f'{round(p/100, 2):.2f}', rounds=str(rounds), fixed_payment=f'{round(fixed_payment/100, 2):.2f}')
         #return Quiz(subject_id) 
     else:
             return render_template('login.html', text='You have already played.', action='/user_manual', v=False)
@@ -134,7 +134,7 @@ def Quiz(subject_id):
 
     if j.tryquiz:
 
-        return render_template('login.html', text='You have already failed the quiz.', input=False, v=True)
+        return render_template('login.html', text='You have already failed the quiz.', input=False, v=False)
 
     else:
         q = j.quizversion
@@ -150,7 +150,7 @@ def QuizVal():
 
 
     if j.tryquiz:
-        return render_template('login.html', text='You have already failed the quiz.', input=False, v=True)
+        return render_template('login.html', text='You have already failed the quiz.', input=False, v=False)
 
     quiz_ans=[int(request.form['set1']),int(request.form['set2']),int(request.form['set3']),int(request.form['set4']),int(request.form['set5'])]
     correct = quizversions[j.quizversion]
@@ -215,7 +215,8 @@ def WaitNext(subject_id,rnd):
 
     else:
 
-        return render_template('survey.html', subject_id=subject_id, belief_payment=str(round(belief_payment/100, 2)))
+        return render_template('login.html', text='Click SUBMIT to continue to complete the study.', action=url_for('Survey', subject_id=subject_id,  belief_payment=str(round(belief_payment/100, 2))), input=False, v=True)
+
 
 ####
 #####
@@ -416,6 +417,18 @@ def CheckTimeJSON():
     return jsonify(reload = (diff_seconds < 0))
 
 
+####
+#####
+######
+####### Check Time on Back navigation 
+######
+#####
+####
+
+@app.route('/survey/<subject_id>/<belief_payment>', methods=['POST', 'GET'])
+def Survey(subject_id,belief_payment):
+
+    return render_template('survey.html', subject_id=subject_id, belief_payment=belief_payment)
 
 
 
@@ -443,10 +456,10 @@ def End():
     pos_num = []
     found_num = []
     for i in range(rounds):
-        #first which hand
+        #first which hand (is a HandByRound thing, so we need to take the .hand of it to get the hand id)
         hand = session.query(HandByRound).filter(HandByRound.rnd == i, HandByRound.subject==j.id).one()
         #next how many total
-        pos_num.append(session.query(Sets).filter(Sets.hand == hand.id).count())
+        pos_num.append(session.query(Sets).filter(Sets.hand == hand.hand).count())
         #how many were found
         found_num.append(session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == i).count())
         #devide those MFs
