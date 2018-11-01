@@ -177,7 +177,7 @@ def QuizVal():
         text = Markup("""
         You failed the quiz.
         <br><br>
-        You total payment is $"""+str(round(j.payment/100, 2))+""".
+        You total payment is $"""+f'{round(j.payment/100, 2):.2f}'+""".
         <br><br>
         Please enter the following paycode on Amazon M-Turk: 
         <br><br><br>
@@ -201,7 +201,7 @@ def WaitNext(subject_id,rnd):
             Congratulations! You passed the comprehension quiz and will now move on to the main part of the study.
             <br><br>
             The study consists of """+str(rounds)+""" rounds and in each round, you will have """+str(rndtime) + """ seconds to form <span class=hl>SET</span>s and will be paid an
-            additional $0."""+str(j.piecerate)+""" per correct <span class=hl>SET</span>. After  """+str(rounds)+""" rounds, you'll
+            additional $"""+f'{round(j.piecerate/100, 2):.2f}'+""" per correct <span class=hl>SET</span>. After  """+str(rounds)+""" rounds, you'll
             be asked to complete a brief survey. Finally, you will receive your Mturk completion code.
             <br><br>
             Any extra amount you earn will be paid via a bonus on MTurk within 3 days.
