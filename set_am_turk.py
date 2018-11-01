@@ -211,11 +211,28 @@ def WaitNext(subject_id,rnd):
     
     elif rnd < rounds:
 
-        return render_template('login.html', text='Click SUBMIT to continue to round '+str(rnd+1)+'.', action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
+        hand = session.query(HandByRound).filter(HandByRound.rnd == rnd-1, HandByRound.subject==j.id).one()
+        found_num = session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == rnd-1).count()
+
+        text = Markup("""
+            In the last round you found """+ str(found_num) +""" sets.
+            <br><br>
+            Click SUBMIT to continue to round """+str(rnd+1)+""".
+            """)
+        return render_template('login.html', text=text, action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
 
     else:
 
-        return render_template('login.html', text='Click SUBMIT to continue to complete the study.', action=url_for('Survey', subject_id=subject_id,  belief_payment=str(round(belief_payment/100, 2))), input=False, v=True)
+        hand = session.query(HandByRound).filter(HandByRound.rnd == rnd-1, HandByRound.subject==j.id).one()
+        found_num = session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == rnd-1).count()
+
+        text = Markup("""
+            In the last round you found """+ str(found_num) +""" sets.
+            <br><br>
+            Click SUBMIT to finsih the study.
+            """)
+
+        return render_template('login.html', text=text, action=url_for('Survey', subject_id=subject_id,  belief_payment=str(round(belief_payment/100, 2))), input=False, v=True)
 
 
 ####
