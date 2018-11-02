@@ -200,7 +200,7 @@ def WaitNext(subject_id,rnd):
             <p style="text-align:left;">
             Congratulations! You passed the comprehension quiz and will now move on to the main part of the study.
             <br><br>
-            The study consists of """+str(rounds)+""" rounds and in each round, you will have """+str(rndtime) + """ seconds to form <span class=hl>SET</span>s and will be paid an
+            The study consists of """+str(rounds)+""" rounds and in each round you will have """+str(rndtime) + """ seconds to form <span class=hl>SET</span>s. You will be paid an
             additional $"""+f'{round(j.piecerate/100, 2):.2f}'+""" per correct <span class=hl>SET</span>. After  """+str(rounds)+""" rounds, you'll
             be asked to complete a brief survey. Finally, you will receive your Mturk completion code.
             <br><br>
