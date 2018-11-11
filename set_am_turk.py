@@ -30,7 +30,7 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 120 #time in seconds
+rndtime = 10 #time in seconds
 piecerate = [10,35] #payment in cents per correct anwser
 fixed_payment = 25 #fixed payment in cents
 belief_payment = 50 #elictation of beliefs bonus payment in cents
@@ -232,7 +232,7 @@ def WaitNext(subject_id,rnd):
             Click SUBMIT to finsih the study.
             """)
 
-        return render_template('login.html', text=text, action=url_for('Survey', subject_id=subject_id,  belief_payment=str(round(belief_payment/100, 2))), input=False, v=True)
+        return render_template('login.html', text=text, action=url_for('Survey', subject_id=subject_id,  belief_payment=belief_payment), input=False, v=True)
 
 
 ####
@@ -445,7 +445,7 @@ def CheckTimeJSON():
 @app.route('/survey/<subject_id>/<belief_payment>', methods=['POST', 'GET'])
 def Survey(subject_id,belief_payment):
 
-    return render_template('survey.html', subject_id=subject_id, belief_payment=belief_payment)
+    return render_template('survey.html', subject_id=subject_id, belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}')
 
 
 
@@ -488,8 +488,8 @@ def End():
     belief_payment_achived = 0;
 
     absdiff = [abs(x-y) for x, y in zip(perc_found, [float(guess_prec1),float(guess_prec2)])]
-    maxdiff = max(absdiff)
-    if maxdiff < 5:
+    mindiff = min(absdiff)
+    if mindiff < 5:
         belief_payment_achived = belief_payment
 
     j.payment += belief_payment_achived
@@ -498,7 +498,6 @@ def End():
     j.degree = request.form['degree']
     j.percent1 = guess_prec1
     j.percent2 = guess_prec2
-    j.bet = request.form['bet']
 
     session.add(j)
     session.commit()
