@@ -489,7 +489,7 @@ def End():
 
     absdiff = [abs(x-y) for x, y in zip(perc_found, [float(guess_prec1),float(guess_prec2)])]
     mindiff = min(absdiff)
-    if mindiff < 5:
+    if mindiff <= 5:
         belief_payment_achived = belief_payment
 
     j.payment += belief_payment_achived
