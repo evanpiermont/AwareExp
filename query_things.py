@@ -15,15 +15,12 @@ from setGame import Deck, getCards, isSetThreeCards, getNhands
 
 session = db.session
 
-subject_id = 'sdvfbgnbefsd'
+subject_id = 'ssdddd'
 i = 1
-j = session.query(Subject).filter(Subject.idCode == subject_id).one()
-hand = session.query(HandByRound).filter(HandByRound.rnd == i, HandByRound.subject==j.id).one()
-#next how many total
-sets = session.query(Sets).filter(Sets.hand == hand.hand).all()
+j = session.query(Subject).all()
 
-for k in sets:
-    print(k.id)
+for k in j:
+    print(k.idCode, k.mobile)
 
 
 

@@ -341,6 +341,25 @@ def CreateSets(subject_id,rnd):
     
                 return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=handIDarray, foundarray=foundarray, foundIDarray=foundIDarray, diff_seconds=diff_seconds, found_sets_num=found_sets_num, action=url_for('WaitNext', subject_id=subject_id, rnd=next_rnd),rnd=rnd, time_penalty=time_penalty)
 
+
+@app.route('/_is_mobile', methods=['POST'])
+def isMobile():
+
+    subject_id=request.form['subject_id']
+    isMobile=request.form['isMobileX']
+
+    isMobile = int(isMobile)
+
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+    j.mobile = isMobile
+
+    session.add(j)
+    session.commit()
+    
+    return('set_mobile')
+
+
+
 ### this next route is just a lil json thing to add new found sets to the database (and keep everything in sync, 
 ### which is probably unnecessary. so sloppy)
 

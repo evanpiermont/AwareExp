@@ -36,3 +36,18 @@ $("#prev").click(function() {
 });
 
 });
+
+
+// is mobile:
+
+isMobile = function(){
+    formdata = '&subject_id=' + $subject;
+    formdata += '&isMobileX=' + '1';
+    $.post('/_is_mobile', formdata, function(json){
+        console.log(json);
+    })
+}
+
+if (window.matchMedia("only screen and (max-width : 500px)").matches) {
+        $(document).ready(isMobile);
+    }

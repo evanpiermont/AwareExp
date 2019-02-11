@@ -214,10 +214,8 @@ checkTime = function(){
 
 $(document).ready(checkTime);
 
-
 if (window.matchMedia("only screen and (max-width : 500px)").matches) {
         $(document).ready(toggleFound);
-
     }
 
 

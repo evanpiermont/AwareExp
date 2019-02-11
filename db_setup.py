@@ -83,6 +83,7 @@ class Subject(db.Model):
     bet = Column(Integer)
     piecerate = Column(Integer, default=10)
     payment = Column(Integer, default=0)
+    mobile = Column(Integer, default=0) #1 if mobile device, 0 if desktop
 
 # who has which hand when?!?
 
@@ -115,3 +116,5 @@ class Found(db.Model):
     novelset = Column(Boolean, default=False)
     hand = Column(Integer, ForeignKey("hand.id"))
     rnd = Column(Integer)
+
+
