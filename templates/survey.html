@@ -22,8 +22,9 @@
         
         <div id=adminenter>
                  
-    <form method='POST' name='survey' enctype='multipart/form-data' action='/end'>
+    <form method='POST' name='survey' enctype='multipart/form-data' action={{action}}>
 
+    {%if end_survey%}
     Age: 
     <input type="radio" name="age" id="18-30" value=0 required>
     <label for="18-30"><span>18-30</span></label>
@@ -58,44 +59,34 @@
     <label for="masters"><span>Masters</span></label>
     <input type="radio" name="degree" id="doctorate" value=4 required>
     <label for="doctorate"><span>Ph.D.</span></label>
+    {%endif%}
 
+    {%if be%}
+    In the last round you found {{found_num}} sets.
 
-    <br><br><br>
-
-    If you answer either of the following two questions within 5% of the true value, you will recive an additional ${{belief_payment}}.
-
-    <br><br><br>
-
-    Of all possible <span class=hl>SETs</span> from round 1, what percentage, from 0 to 100%, do you believe you found in round 1?:
-    <span id="p1"></span>%
     <br><br>
-    <div id=checked1>
-    <input name="percent1" type="range" min="1" max="100" value="50" class="slider" id="percent1">
+
+
+    If you answer the following question within 5% of the true value, you will recive an additional ${{belief_payment}}.
+
+    <br><br>
+
+    Of all possible <span class=hl>SETs</span> from the previous round, what percentage, from 0 to 100%, do you believe you found?:
+    <span id="p"></span>%
+    <br><br>
+    <div id=checked>
+    <input name="percent" type="range" min="1" max="100" value="50" class="slider" id="percent">
     <!-- <input name="percent" id="percent" type="number" min="0" max="100" required /> -->
     </div>
 
     <script>
-    document.getElementById("percent1").oninput = function() {
-        document.getElementById("p1").innerHTML = this.value;
-        document.getElementById("checked1").classList.add("checked")
+    document.getElementById("percent").oninput = function() {
+        document.getElementById("p").innerHTML = this.value;
+        document.getElementById("checked").classList.add("checked")
         };
     </script>
 
-    <br><br>
-
-    Of all possible <span class=hl>SETs</span> from round 2, what percentage, from 0 to 100%, do you believe you found in round 2?: 
-    <span id="p2"></span>%
-    <br><br>
-    <div id=checked2>
-    <input name="percent2" type="range" min="1" max="100" value="50" class="slider" id="percent2">
-    </div>
-
-    <script>
-    document.getElementById("percent2").oninput = function() {
-        document.getElementById("p2").innerHTML = this.value;
-        document.getElementById("checked2").classList.add("checked")
-        };
-    </script>
+    {%endif%}
 
     <br><br>
 

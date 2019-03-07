@@ -30,7 +30,7 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 120 #time in seconds
+rndtime = 10 #time in seconds
 piecerate = [10,35] #payment in cents per correct anwser
 fixed_payment = 50 #fixed payment in cents
 belief_payment = 50 #elictation of beliefs bonus payment in cents
@@ -110,7 +110,7 @@ def newUser():
         for rnd in range(rounds):
             new_hand_by_round = HandByRound(
                 subject = j.id,
-                rnd = rnd,
+                rnd = rnd+1,
                 hand = handarray[rnd].id)
             session.add(new_hand_by_round)
             session.commit()
@@ -155,8 +155,7 @@ def QuizVal():
     quiz_ans=[int(request.form['set1']),int(request.form['set2']),int(request.form['set3']),int(request.form['set4']),int(request.form['set5'])]
     correct = quizversions[j.quizversion]
  
-    print([(x+y)%2 for x, y in zip(quiz_ans, correct)])
-    if [(x+y)%2 for x, y in zip(quiz_ans, correct)] == [0,0,0,0,0]:
+    if [(x+y)%2 for x, y in zip(quiz_ans, correct)].count(1) < 2:
 
         j.tryquiz = True
         j.passquiz = True
@@ -188,11 +187,33 @@ def QuizVal():
 
 ### landing page.
 
+@app.route('/be/<subject_id>/<rnd>', methods=['POST'])
+def BeliefElicit(subject_id,rnd):
+
+    rnd = int(rnd)
+
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+
+    hand = session.query(HandByRound).filter(HandByRound.rnd == rnd, HandByRound.subject==j.id).one()
+    found_num = session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == rnd).count()
+
+            
+
+    return render_template('survey.html', 
+        subject_id=subject_id, 
+        belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
+        action=url_for('WaitNext', subject_id=subject_id, rnd=rnd), 
+        rnd=rnd,
+        found_num = found_num,
+        be=True)
+
+
 @app.route('/waitnext/<subject_id>/<rnd>', methods=['POST'])
 def WaitNext(subject_id,rnd):
 
     j = session.query(Subject).filter(Subject.idCode == subject_id).one()
     rnd = int(rnd)
+    next_rnd = rnd + 1
 
     if rnd == 0:
 
@@ -207,32 +228,46 @@ def WaitNext(subject_id,rnd):
             Any extra amount you earn will be paid via a bonus on MTurk within 3 days.
             <br><br> Click on the SUBMIT button to begin.<p/>""")
 
-        return render_template('login.html', text=text, action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
+        return render_template('login.html',
+            text=text, 
+            action=url_for('CreateSets', subject_id=subject_id, rnd=next_rnd), 
+            input=False, 
+            v=True)
     
     elif rnd < rounds:
 
-        hand = session.query(HandByRound).filter(HandByRound.rnd == rnd-1, HandByRound.subject==j.id).one()
-        found_num = session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == rnd-1).count()
+        j.percent1 = request.form['percent']
+        session.add(j)
+        session.commit()
 
         text = Markup("""
-            In the last round you found """+ str(found_num) +""" sets.
-            <br><br>
-            Click SUBMIT to continue to round """+str(rnd+1)+""".
+            Click SUBMIT to continue to round """+str(next_rnd)+""".
             """)
-        return render_template('login.html', text=text, action=url_for('CreateSets', subject_id=subject_id, rnd=rnd), input=False, v=True)
+        return render_template('login.html',
+            text=text,
+            action=url_for('CreateSets', 
+                subject_id=subject_id,
+                rnd=next_rnd),
+            input=False,
+            v=True)
 
     else:
 
-        hand = session.query(HandByRound).filter(HandByRound.rnd == rnd-1, HandByRound.subject==j.id).one()
-        found_num = session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == rnd-1).count()
+        j.percent2 = request.form['percent']
+        session.add(j)
+        session.commit()
+
 
         text = Markup("""
-            In the last round you found """+ str(found_num) +""" sets.
-            <br><br>
             Click SUBMIT to finsih the study.
             """)
 
-        return render_template('login.html', text=text, action=url_for('Survey', subject_id=subject_id,  belief_payment=belief_payment), input=False, v=True)
+        return render_template('login.html',
+            text=text, 
+            action=url_for('Survey', 
+                subject_id=subject_id,  
+                belief_payment=belief_payment), 
+            input=False, v=True)
 
 
 ####
@@ -336,10 +371,19 @@ def CreateSets(subject_id,rnd):
     
                 found_sets_num = len(foundIDarray)
 
-                rnd = int(rnd)
-                next_rnd = rnd + 1
     
-                return render_template('set.html', subject_id = subject_id, handarray=handarray, handIDarray=handIDarray, foundarray=foundarray, foundIDarray=foundIDarray, diff_seconds=diff_seconds, found_sets_num=found_sets_num, action=url_for('WaitNext', subject_id=subject_id, rnd=next_rnd),rnd=rnd, time_penalty=time_penalty)
+                return render_template('set.html', 
+                    subject_id = subject_id, 
+                    handarray=handarray, 
+                    handIDarray=handIDarray, 
+                    foundarray=foundarray, 
+                    foundIDarray=foundIDarray, 
+                    diff_seconds=diff_seconds, 
+                    found_sets_num=found_sets_num, 
+                    action=url_for('BeliefElicit', subject_id=subject_id, rnd=rnd),
+                    rnd=rnd,
+                    time_penalty=time_penalty,
+                    end_survey=True,)
 
 
 @app.route('/_is_mobile', methods=['POST'])
@@ -464,7 +508,11 @@ def CheckTimeJSON():
 @app.route('/survey/<subject_id>/<belief_payment>', methods=['POST', 'GET'])
 def Survey(subject_id,belief_payment):
 
-    return render_template('survey.html', subject_id=subject_id, belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}')
+    return render_template('survey.html',
+        subject_id=subject_id,
+        belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
+        end_survey = True,
+        action='/end')
 
 
 
@@ -482,16 +530,17 @@ def Survey(subject_id,belief_payment):
 def End():
 
     subject_id=str(request.form['subject_id'])
-    guess_prec1 = request.form['percent1']
-    guess_prec2 = request.form['percent2']
 
     j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
+    guess_prec1 = j.percent1
+    guess_prec2 = j.percent2
 
     #for belief elictation, calc actual precentage
     pos_num = []
     found_num = []
     for i in range(rounds):
+        i+=1
         #first which hand (is a HandByRound thing, so we need to take the .hand of it to get the hand id)
         hand = session.query(HandByRound).filter(HandByRound.rnd == i, HandByRound.subject==j.id).one()
         #next how many total
@@ -515,8 +564,6 @@ def End():
     j.age = request.form['age']
     j.gender = request.form['gender']
     j.degree = request.form['degree']
-    j.percent1 = guess_prec1
-    j.percent2 = guess_prec2
 
     session.add(j)
     session.commit()
