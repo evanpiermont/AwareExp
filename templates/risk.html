@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd"
+    >
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/risk.css') }} />
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/instructions.css') }} />
+     <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
+    <script src={{ url_for('static', filename='js/bg.js') }} language="Javascript" type="text/javascript"></script>   
+    <script src={{ url_for('static', filename='js/risk.js') }} language="Javascript" type="text/javascript"></script>   
+    <script type="text/javascript" src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script type="text/javascript">
+        var $subject = '{{subject_id}}';
+    </script>
+    
+    <title> </title>
+</head>
+
+<body>
+    <div id='background'>
+
+        <div id=wrap>
+        <div class="inst" id=pane-1>
+            <header><h4>Thanks for participating in our research!</h4></header>
+            <br>     
+            <p>This study is comprised of a short task and some questions. It's conducted by researchers
+            at the University of Pittsburgh (USA) and Royal Holloway University (UK). Our goal is to learn
+            more about decision-making. It should take more or less 8 minutes to complete.</p>
+            <br>
+            <p> Your participation is voluntary and your responses are anonymous. No one will be able to
+            track your answers back to you. Please make sure to mark your Amazon Profile as private if you
+            do not want to be identified from your worker ID.</p>
+            <br>
+            <p>Questions? Please contact Felipe A. Araujo at f.araujo@pitt.edu</p>
+        </div>
+
+
+        
+    <div class="inst" id=pane-2>
+        <div id=adminenter>
+                     
+        <form method='POST' name='risk' enctype='multipart/form-data' action={{action}}>
+
+        {% for i in range(11) %}
+            <input type="radio" name="mpl{{i}}" id="C-mpl{{i}}" value=0 required>
+            <label for="C-mpl{{i}}" class=mpl_button><span>${{'%0.2f'| format(i/2|float)}}</span></label>
+            <input type="radio" name="mpl{{i}}" id="L-mpl{{i}}" value=1 required>
+            <label for="L-mpl{{i}}" class=mpl_button><span>Lottery X</span></label>
+            <br>
+        {% endfor %}    
+
+        <br><br>
+      
+
+        <input type="hidden" name="subject_id" value={{ subject_id }}>
+
+
+        </form>
+        </div>
+    </div>
+    
+    <div class="submit" id=prev>Prev</div>
+    <div class="submit" id=next>Next</div>
+
+    </div>
+
+    <div id=subject_id_box> Subject#: {{subject_id}}</div>
+
+    </div>
+</body>
+</html>

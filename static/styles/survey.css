@@ -11,6 +11,8 @@ input[type="radio"] {
     opacity: 0;
 }
 
+
+
 input[type="radio"] + label span {
     cursor:pointer;
     display: inline-block;
@@ -21,6 +23,8 @@ input[type="radio"] + label span {
     text-align: center;
     margin-top: 3px;
 }
+
+
 
 #adminenter{
   position: fixed;

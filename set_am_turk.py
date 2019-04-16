@@ -30,11 +30,12 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 120 #time in seconds
-piecerate = [10,35] #payment in cents per correct anwser
+rndtime = 10 #time in seconds
+#piecerate = [10,35] #payment in cents per correct anwser
+piecerate = [10] #payment in cents per correct anwser
 fixed_payment = 50 #fixed payment in cents
 belief_payment = 50 #elictation of beliefs bonus payment in cents
-rounds = 2 #number of rounds.
+rounds = 1 #number of rounds.
 time_penalty = 500 #length of penalty in MILIseconds
 quizversions = [[1,0,0,1,0],[0,0,1,1,1],[1,1,0,0,1],[0,1,1,1,0]] #list of correct answers for each verison of the quiz 
 
@@ -197,15 +198,12 @@ def BeliefElicit(subject_id,rnd):
     hand = session.query(HandByRound).filter(HandByRound.rnd == rnd, HandByRound.subject==j.id).one()
     found_num = session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == rnd).count()
 
-            
-
-    return render_template('survey.html', 
+    return render_template('risk.html', 
         subject_id=subject_id, 
         belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
         action=url_for('WaitNext', subject_id=subject_id, rnd=rnd), 
         rnd=rnd,
-        found_num = found_num,
-        be=True)
+        found_num = found_num,)
 
 
 @app.route('/waitnext/<subject_id>/<rnd>', methods=['POST'])
