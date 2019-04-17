@@ -7,55 +7,102 @@
     border-radius: 4px;
 }
 
-input[type="radio"] {
-    opacity: 0;
+.inst{
+   display: none;
+   height: 100%;
+   
 }
 
-input[type="radio"] + label span {
-    cursor:pointer;
-    display: inline-block;
-    width: 50%;
-    font-size: 150%;
-    color:#b58900;
-    border: 2px solid;
-    background-color:#002b36;
-    text-align: center;
-    margin-right: -7px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-
-}
-
-
-#adminenter{
-      backround-color:#002b36;
-
+.al{
   position: fixed;
-  min-height: 10%;
-  width: 80%;
-  left: 10%;
-  top: 10%;
-  font-size: 50%
+  width: 30%;
+  height: 15%;
+  top: 30%;
+  text-align: center;
 }
 
-
-input[type="radio"]:checked + label span{
-     background-color:#b58900;
-     color: #002b36;
-     border: 2px solid #b58900;
+#C-al{
+  left: 18%;
 }
 
-
-input[type="number"]{
-    display: inline-block;
-    border-radius:  5px;
-    margin-left: 10px;
-    color:#b58900;
-    padding: 4px;
-    text-align: center;
-    font-size: 100%
+#L-al{
+  right: 18%;
 }
 
+#out{
+  position: fixed;
+  height: 20%;
+  top: 55%
+}
+
+.al span{
+  font-size: 200%;
+}
+
+input[type="range"]:focus{
+    outline: none;
+    border-bottom: none;
+}
+
+input[type="range"]:focus::-webkit-slider-thumb{
+    background-color:#b58900;
+}
+
+input[type="range"]:focus::-moz-range-thumb{
+    background-color:#b58900;
+}
+
+.submit{
+  font-size: 100%;
+}
+
+.hl{
+    color: #dc322f;
+}
+
+.slidecontainer {
+    width: 50%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.5;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 0.7;
+}
+
+.checked .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 20px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 15px;
+    height: 20px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.checked .slider::-moz-range-thumb {
+    width: 15px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+}
 
 
 @media only screen and (max-width : 500px) {

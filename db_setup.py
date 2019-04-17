@@ -18,7 +18,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy import create_engine
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://kmwdsiybqohzkr:48c78dc82321c614a1f2058afdcf74987c7765b22a92be753f2a156d5299ad07@ec2-54-204-39-46.compute-1.amazonaws.com:5432/d40rkj7aib44id'
+app.config['SQLALCHEMY_DATABASE_URI'] =  'postgres://whukbqquojrfir:0fc8a41872ce98be75cefdf2c36976e073253bf84de41e701a08f9b4abedcbca@ec2-54-225-95-183.compute-1.amazonaws.com:5432/d4h2fvsonq7ele'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/awareExp'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:231207@localhost:5432/awareExp' #Felipe's local
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -72,14 +72,18 @@ class Subject(db.Model):
     id = Column(Integer, primary_key=True)
     idCode = Column(String(100))
     hashed_id = Column(String(100))
+    treatment = Column(Integer, default=1) # 0-3 (does not include number of sets, that is encoded by the HandByRound table or by asset_den below)
     quizversion = Column(Integer, default=1)
     tryquiz = Column(Boolean, default=False)
     passquiz = Column(Boolean, default=False)
     age = Column(Integer)
     gender = Column(Integer)
     degree = Column(Integer)
-    percent1 = Column(Integer)
-    percent2 = Column(Integer)
+    #percent1 = Column(Integer)
+    #percent2 = Column(Integer)
+    risk_aversion = Column(Integer) #percentage on slider, needs to be converted expost
+    asset_numerator = Column(Integer) #== number of sets found
+    asset_denominator = Column(Integer) #== total number of sets   
     bet = Column(Integer)
     piecerate = Column(Integer, default=10)
     payment = Column(Integer, default=0)

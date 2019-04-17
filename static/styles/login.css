@@ -3,12 +3,13 @@
 #entertextprompt{
     width: 70%;
     height: 15%;
-    top: 25%;
+    top: 20%;
     left: 15%;
     text-align: center;
     position: fixed;
     font-size: 40%;
 }
+
 
 #word-input{
     width: 38%;
@@ -28,8 +29,47 @@
     cursor: pointer;
     width: 10%;
     height: 5%;
-    top:75%;
+    top:80%;
     left:65%;
+}
+
+#set_feedback{
+    display: flex;
+    flex-wrap: wrap;
+    position: fixed;
+    left: 10%;
+    top: 25%;
+    width: 90%;
+}
+
+.set_fb{
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    display: flex;
+    max-width: 18%;
+    height: 5%;
+    background: black;
+    margin: 2px;
+    border: 2px solid #002b36;
+
+}
+
+.display_card{
+    width: 33%;
+    height: 10px;
+    border: 2px solid #073642;
+    background: #839496;
+    border-radius: 3px;
+}
+
+.found{
+    background: #d00505;
+    border: 2px solid #d00505;
+}
+
+.found .display_card{
+    border: 2px solid #d00505;
 }
 
 .loginsubmit{

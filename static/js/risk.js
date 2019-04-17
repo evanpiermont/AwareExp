@@ -6,6 +6,7 @@ $(document).ready(function() { //we need to re aqquire the window sizes
 $("#next").click(function() {
 
 	var pane_len = $('.inst').length;
+  console.log(pane_len)
 
 		if (current_pane < pane_len) {
 
@@ -14,7 +15,7 @@ $("#next").click(function() {
       $('#prev').show();
       //renderCards();
 
-      if (current_pane = pane_len - 1) {
+      if (current_pane == pane_len - 1) {
         $("#next").text('Submit');
         $("#prev").text('Instructions');
       };
@@ -22,10 +23,12 @@ $("#next").click(function() {
       current_pane+=1; 
 
   	} else {
-      if($('input:radio[name="mpl0"]').is(':checked')){
-        $("form[name='risk']").submit();
+        if(document.getElementById("p").innerHTML == "??"){
+          alert("You must move the slider.");
+        }else{
+          $("form[name='risk']").submit();
+        };
       };
-  	}
 });
 
 $("#prev").click(function() {
@@ -44,17 +47,18 @@ $("#prev").click(function() {
   	}
 });
 
-$("input:radio").on("click", function() { 
-
-    var $switch = parseInt(this.id.slice(5), 10);
-    var $value = this.value
-    for (i = 0; i < $switch; i++) { 
-        $('[name=mpl'+i+']#L-mpl'+i).prop('checked', true);
-      }
-    for (i = $switch + 1; i < 11; i++) { 
-        $('[name=mpl'+i+']#C-mpl'+i).prop('checked', true);
-      }
-});
+    document.getElementById("percent").oninput = function() {
+      var $perc = this.value
+      var $LAl = Math.floor($perc)
+      var $CAl = 100 - $LAl
+      var $win = "$" + ($LAl/100).toFixed(2) + "*" + $prize_multiplier + " + $" + ($CAl/100).toFixed(2) + " = $" + (($LAl*$prize_multiplier + $CAl)/100).toFixed(2)
+      var $lose = "$" + ($CAl/100).toFixed(2)
+      document.getElementById("p").innerHTML = $LAl;
+      document.getElementById("q").innerHTML = $CAl;
+      document.getElementById("win").innerHTML = $win;
+      document.getElementById("lose").innerHTML = $lose;
+      document.getElementById("checked").classList.add("checked")
+      };
 
 });
 
