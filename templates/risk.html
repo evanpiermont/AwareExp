@@ -1,0 +1,114 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd"
+    >
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/risk.css') }} />
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/instructions.css') }} />
+     <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
+     <script type="text/javascript" language="Javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.min.js"></script>
+    <script src={{ url_for('static', filename='js/bg.js') }} language="Javascript" type="text/javascript"></script>   
+    <script src={{ url_for('static', filename='js/risk.js') }} language="Javascript" type="text/javascript"></script>   
+    <script type="text/javascript">
+        var $subject = '{{subject_id}}';
+        var $prize_multiplier = '{{prize_multiplier}}';
+        var $token_value = '{{token_value}}';
+
+    </script>
+    
+    <title> </title>
+</head>
+
+<body>
+    <div id='background'>
+
+    <div id=wrap>
+  
+            <div class="inst" id=pane-1>
+                <header><h4>Part 2: Investment Task</h4></header>
+    
+                <br>     
+    
+                You will now have the oppertunity to invest upto 100 tokens in an asset.
+    
+                <br><br>
+                 &#8226;  Each token you invest buys 1 share of the asset.
+                 <br>
+                 &#8226;  Each token you do not invest will be converted to $0.0{{token_value}}.
+                 </p>
+                <br>
+                
+            </div>
+    
+            <div class="inst" id=pane-2>
+                <br>     
+    
+                The value of one share of the asset is worth either $0.00 or $0.0{{prize_multiplier}}, depending    on chance. 
+    
+                <br><br><br>
+    
+                {%if not PAlottery%}
+                We will randomly draw one set from all possible sets you could have found. 
+                <br><br>
+                 &#8226;  If you found the randomly selected set, each share is worth $0.0{{prize_multiplier}}.
+                 <br>
+                 &#8226;  If you did NOT find the randomly selected set, each share is worth $0.00.
+                <br>
+                
+                Recall, you found {{num}} sets{%if feedback%} out of {{den}}{%endif%}.
+                
+                
+                {%endif%}
+                {%if PAlottery%}
+                We will randomly draw a number between 1 and 100.  
+                <br><br>
+                 &#8226;  If the random number is equal to or below {{prob}}, each share is worth   $0.0{{prize_multiplier}}.
+                 <br>
+                 &#8226;  If you random number is above {{prob}}, each share is worth $0.00.
+                <br>
+                {%endif%}
+                
+            </div>
+    
+            <div class="inst" id=pane-3>
+                Randomization will be done by public and verifiable means. For details contact Felipe A. Araujo at  f.araujo@pitt.edu
+            </div>
+    
+            
+            <div class="inst" id=pane-4>
+                         
+            <form method='POST' name='risk' enctype='multipart/form-data' action={{action}}>
+    
+                  Please use the slider to allocate a share of the 100 tokens to the invesement:
+        
+            <br><br>
+                <div id=checked>
+                    <input name="percent" type="range" min="0" max="100" value="50" class="slider" id="percent">
+                </div>
+                
+        
+            <input type="hidden" name="subject_id" value={{ subject_id }}>
+    
+            </form>
+    
+            <div class=al id=L-al>Invest in the asset: <br><span id="p">??</span></div>
+            <div class=al id=C-al>Keep in cash: <br> <span id="q">??</span></div>
+            <div id=out>If {{payment_condition}}, you will receive: <span id="win">??</span> <br>
+                Otherwise, you will receive: <span id="lose">??</span> <br>
+            </div>
+    
+    
+            </div>
+    
+        <div class="submit" id=prev>Prev</div>
+        <div class="submit" id=next>Next</div>
+
+    </div>
+
+    <div id=subject_id_box> Subject#: {{subject_id}}</div>
+
+    </div>
+</body>
+</html>

@@ -47,7 +47,7 @@ input{
 
 SVG {
 	position: relative;
-	height: 50px;
+	min-height: 50px;
 	max-width: 100%;
 }
 

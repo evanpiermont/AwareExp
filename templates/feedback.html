@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+    "http://www.w3.org/TR/html4/strict.dtd"
+    >
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
+    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/login.css') }} />
+    <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
+    <script type="text/javascript" language="Javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.min.js"></script>
+    <script src={{ url_for('static', filename='js/bg.js') }} language="Javascript" type="text/javascript"></script>
+    <script src={{ url_for('static', filename='js/render.js') }} language="Javascript" type="text/javascript"></script>
+
+    
+    <title> </title>
+</head>
+
+<body>
+    <div id='background'>
+        
+        
+        <div id='entertextprompt'>{{text}}</div>
+        
+        {%if feedback%}
+            <div id='set_feedback'>
+                
+            {% for sets in setarray %}
+    
+            <div class="set_fb{%if sets[3]==1%} found{%endif%}">
+                    <svg class="card display_card" data-card='{{sets[0]}}'></svg>
+                    <svg class="card display_card" data-card='{{sets[1]}}'></svg>
+                    <svg class="card display_card" data-card='{{sets[2]}}'></svg>
+            </div>      
+            {% endfor %}
+            </div>
+        {%endif%}
+
+<form method='POST' enctype='multipart/form-data' action={{action}}>
+    <input type="submit" value="Continue" class="submit {%if input%} loginsubmit {%endif%}" id=submit>
+</form>
+
+
+        
+    </div>
+</body>
+</html>

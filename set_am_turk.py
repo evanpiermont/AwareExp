@@ -30,13 +30,24 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 120 #time in seconds
-piecerate = [10,35] #payment in cents per correct anwser
+rndtime = 10 #time in seconds
+#piecerate = [10,35] #payment in cents per correct anwser
+piecerate = [10] #payment in cents per correct anwser
 fixed_payment = 50 #fixed payment in cents
 belief_payment = 50 #elictation of beliefs bonus payment in cents
-rounds = 2 #number of rounds.
+rounds = 1 #number of rounds.
 time_penalty = 500 #length of penalty in MILIseconds
 quizversions = [[1,0,0,1,0],[0,0,1,1,1],[1,1,0,0,1],[0,1,1,1,0]] #list of correct answers for each verison of the quiz 
+token_value = 1 #value of token, cents
+prize_multiplier = 3 #investment task lottery prize, multiplier
+
+
+####treatments: 0-3
+### 0: pure risk, lottery based on PA lottery
+### 1: risk, lottery based on sets found (number known ahead of time)
+### 2: unawareness, information revealed 
+### 3: unawreness, infomration not revealed, ambiguity 
+
 
 ####
 #####
@@ -93,13 +104,15 @@ def newUser():
         hashed_id = hashlib.sha1(subject_id.encode("UTF-8")).hexdigest()[:8]
         q = random.randint(0,len(quizversions)-1) #choose quiz version
         p = random.choice(piecerate)
+        t = random.randint(0,3) # choose treatment version
                 
         subject = Subject(
             idCode= subject_id,
             hashed_id = hashed_id,
             quizversion = q,
             piecerate = p,
-            payment = fixed_payment)    
+            payment = fixed_payment,
+            asset_numerator = 0,)    
         session.add(subject)
         session.commit()
         hands = session.query(Hand).all() #all possible hands
@@ -194,18 +207,37 @@ def BeliefElicit(subject_id,rnd):
 
     j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
-    hand = session.query(HandByRound).filter(HandByRound.rnd == rnd, HandByRound.subject==j.id).one()
-    found_num = session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == rnd).count()
+    t = j.treatment
+    num = j.asset_numerator
+    den = j.asset_denominator
+    prob = int((num*100)/den)
 
-            
+    feedback = True # reveal feedback; true for treatment 0,1,2
 
-    return render_template('survey.html', 
+    if t == 4: 
+        feedback = False
+
+    PAlottery = False # objective risk; true for treatment 0
+
+    if t == 0: 
+        feedback = True
+
+    payment_condition = "you found the selected set"
+    #condition = "a number below 28"
+    #condition = "a number below 10"
+    return render_template('risk.html', 
         subject_id=subject_id, 
         belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
         action=url_for('WaitNext', subject_id=subject_id, rnd=rnd), 
         rnd=rnd,
-        found_num = found_num,
-        be=True)
+        prize_multiplier = prize_multiplier,
+        token_value = token_value,
+        payment_condition = payment_condition,
+        feedback=feedback,
+        PAlottery=PAlottery,
+        num=num,
+        den=den,
+        prob=prob,)
 
 
 @app.route('/waitnext/<subject_id>/<rnd>', methods=['POST'])
@@ -234,26 +266,75 @@ def WaitNext(subject_id,rnd):
             input=False, 
             v=True)
     
-    elif rnd < rounds:
+    #multi round issues:: not needed for current setup
+    # elif rnd < rounds:
 
-        j.percent1 = request.form['percent']
+    #     j.percent1 = request.form['percent']
+    #     session.add(j)
+    #     session.commit()
+
+    #     text = Markup("""
+    #         Click SUBMIT to continue to round """+str(next_rnd)+""".
+    #         """)
+    #     return render_template('login.html',
+    #         text=text,
+    #         action=url_for('CreateSets', 
+    #             subject_id=subject_id,
+    #             rnd=next_rnd),
+    #         input=False,
+    #         v=True)
+
+    elif rnd == 1:
+
+        t = j.treatment
+        num = j.asset_numerator
+
+        #create sets array for feedback screen
+
+        setarray = []
+        
+        hand = session.query(HandByRound).filter(HandByRound.subject == j.id, HandByRound.rnd == rnd).one()
+        sets = session.query(Sets).filter(Sets.hand == hand.hand).all()
+
+        #enter how many sets there are in total
+        den = len(sets)
+        j.asset_denominator = den
         session.add(j)
         session.commit()
 
-        text = Markup("""
-            Click SUBMIT to continue to round """+str(next_rnd)+""".
-            """)
-        return render_template('login.html',
-            text=text,
-            action=url_for('CreateSets', 
-                subject_id=subject_id,
-                rnd=next_rnd),
-            input=False,
-            v=True)
+        feedback = True # reveal feedback; true for treatment 0,1,2
+
+        if t == 4: 
+            feedback = False
+
+        if feedback:
+            
+            text = "You found " + str(num) + " sets out of " + str(den) + "."
+    
+        
+            for s in sets:
+                card1 = session.query(DeckSQL).filter(DeckSQL.id == s.card1).one()
+                card2 = session.query(DeckSQL).filter(DeckSQL.id == s.card2).one()
+                card3 = session.query(DeckSQL).filter(DeckSQL.id == s.card3).one()
+    
+                found = session.query(Found).filter(Found.subject == j.id, Found.rnd == 1, Found.isset==True, Found.novelset==True, Found.sets==s.id).count()
+                if found:
+                    setarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number], 1])
+                else:
+                    setarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number], 0])
+        else:
+            text = "You found " + num + " sets."
+
+        return render_template('feedback.html',
+            text=text, 
+            action=url_for('BeliefElicit', subject_id=subject_id, rnd=next_rnd), 
+            setarray = setarray,
+            feedback = feedback,
+            )
 
     else:
 
-        j.percent2 = request.form['percent']
+        j.risk_aversion = request.form['percent']
         session.add(j)
         session.commit()
 
@@ -380,7 +461,7 @@ def CreateSets(subject_id,rnd):
                     foundIDarray=foundIDarray, 
                     diff_seconds=diff_seconds, 
                     found_sets_num=found_sets_num, 
-                    action=url_for('BeliefElicit', subject_id=subject_id, rnd=rnd),
+                    action=url_for('WaitNext', subject_id=subject_id, rnd=rnd),
                     rnd=rnd,
                     time_penalty=time_penalty,
                     end_survey=True,)
@@ -451,6 +532,7 @@ def AddSetJSON():
 
         if novelset:
             j.payment += j.piecerate
+            j.asset_numerator += 1
             session.add(j)
         
         session.commit()
@@ -533,34 +615,30 @@ def End():
 
     j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
-    guess_prec1 = j.percent1
-    guess_prec2 = j.percent2
 
-    #for belief elictation, calc actual precentage
-    pos_num = []
-    found_num = []
-    for i in range(rounds):
-        i+=1
-        #first which hand (is a HandByRound thing, so we need to take the .hand of it to get the hand id)
-        hand = session.query(HandByRound).filter(HandByRound.rnd == i, HandByRound.subject==j.id).one()
-        #next how many total
-        pos_num.append(session.query(Sets).filter(Sets.hand == hand.hand).count())
-        #how many were found
-        found_num.append(session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == i).count())
-        #devide those MFs
-        perc_found = [round(x/y,2)*100 for x, y in zip(found_num, pos_num)]
+    # #for belief elictation, calc actual precentage
+    # pos_num = []
+    # found_num = []
+    # for i in range(rounds):
+    #     i+=1
+    #     #first which hand (is a HandByRound thing, so we need to take the .hand of it to get the hand id)
+    #     hand = session.query(HandByRound).filter(HandByRound.rnd == i, HandByRound.subject==j.id).one()
+    #     #next how many total
+    #     pos_num.append(session.query(Sets).filter(Sets.hand == hand.hand).count())
+    #     #how many were found
+    #     found_num.append(session.query(Found).filter(Found.subject == j.id, Found.isset == True, Found.novelset == True, Found.rnd == i).count())
+    #     #devide those MFs
+    #     perc_found = [round(x/y,2)*100 for x, y in zip(found_num, pos_num)]
 
 
-    hashed_id = j.hashed_id
 
-    belief_payment_achived = 0;
+    # belief_payment_achived = 0;
 
-    absdiff = [abs(x-y) for x, y in zip(perc_found, [float(guess_prec1),float(guess_prec2)])]
-    mindiff = min(absdiff)
-    if mindiff <= 5:
-        belief_payment_achived = belief_payment
+    # absdiff = [abs(x-y) for x, y in zip(perc_found, [float(guess_prec1),float(guess_prec2)])]
+    # mindiff = min(absdiff)
+    # if mindiff <= 5:
+    #     belief_payment_achived = belief_payment
 
-    j.payment += belief_payment_achived
     j.age = request.form['age']
     j.gender = request.form['gender']
     j.degree = request.form['degree']
@@ -568,16 +646,12 @@ def End():
     session.add(j)
     session.commit()
 
+    hashed_id = j.hashed_id
+
+
     text = Markup("""
-            Thank you. 
-            <br>
-            In round 1 you found """+str(found_num[0])+""" of """+str(pos_num[0])+""" sets: """+f'{perc_found[0]:.0f}'+"""%; your assement was """+str(guess_prec1)+"""%. 
-            <br>
-            In round 2 you found """+str(found_num[1])+""" of """+str(pos_num[1])+""" sets: """+f'{perc_found[1]:.0f}'+"""%; your assement was """+str(guess_prec2)+"""%.
-            <br>
-            You received a survey bonus of $"""+f'{(round(belief_payment_achived/100, 2)):.2f}'+""".
-            <br><br>
-            You total payment is $"""+f'{(round(j.payment/100, 2)):.2f}'+""".
+            Thank you. Randomization and payment will be made within 3 days.
+
             <br><br>
             Please enter the following paycode on Amazon M-Turk: 
             <br><br><br>
