@@ -139,6 +139,9 @@ appendset = function(cardsX){
 
     d3.selectAll("tr .card").each(function() {
         renderCard(this)
+
+    var foundnum = $("#output-table").find("tr").length;
+    $('#setcount').text(foundnum)
     });
        
 

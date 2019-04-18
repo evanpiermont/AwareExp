@@ -63,6 +63,10 @@
     
 </table>
     </div>
+
+    {%if aware%}
+    <div id=aware>You have found <span id=setcount>{{found_sets_num}}</span> of {{den}} sets.</div>
+    {%endif%}
     
 <div id=set_prompt><div id=entertextprompt>This is not a set!</div><div id=time_penalty>00</div></div>
 

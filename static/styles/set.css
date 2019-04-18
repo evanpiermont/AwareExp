@@ -180,18 +180,14 @@
 
 }
 
-.inst{
-    display: none;
+#aware{
     position: fixed;
-    left: 15%;
-    top: 15%;
-    height: 70%;
-    width: 70%;
-    font-size: 60%;
-}
-
-#pane-1{
-    display: block;
+    width: 60%;
+    top: 3%;
+    left:10%;
+    overflow-x: hidden;
+    font-size: 50%;
+    text-align: center; 
 }
 
 @media only screen and (max-width : 500px) {

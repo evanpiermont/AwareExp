@@ -30,7 +30,7 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 10 #time in seconds
+rndtime = 15 #time in seconds
 #piecerate = [10,35] #payment in cents per correct anwser
 piecerate = [10] #payment in cents per correct anwser
 fixed_payment = 50 #fixed payment in cents
@@ -105,14 +105,17 @@ def newUser():
         q = random.randint(0,len(quizversions)-1) #choose quiz version
         p = random.choice(piecerate)
         t = random.randint(0,3) # choose treatment version
-                
+       
+        subject_id += "xx" + str(t) 
+
         subject = Subject(
             idCode= subject_id,
             hashed_id = hashed_id,
             quizversion = q,
             piecerate = p,
             payment = fixed_payment,
-            asset_numerator = 0,)    
+            asset_numerator = 0,
+            treatment = t)    
         session.add(subject)
         session.commit()
         hands = session.query(Hand).all() #all possible hands
@@ -214,17 +217,14 @@ def BeliefElicit(subject_id,rnd):
 
     feedback = True # reveal feedback; true for treatment 0,1,2
 
-    if t == 4: 
+    if t == 3: 
         feedback = False
 
     PAlottery = False # objective risk; true for treatment 0
 
     if t == 0: 
-        feedback = True
+        PAlottery = True
 
-    payment_condition = "you found the selected set"
-    #condition = "a number below 28"
-    #condition = "a number below 10"
     return render_template('risk.html', 
         subject_id=subject_id, 
         belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
@@ -232,7 +232,6 @@ def BeliefElicit(subject_id,rnd):
         rnd=rnd,
         prize_multiplier = prize_multiplier,
         token_value = token_value,
-        payment_condition = payment_condition,
         feedback=feedback,
         PAlottery=PAlottery,
         num=num,
@@ -294,21 +293,16 @@ def WaitNext(subject_id,rnd):
         setarray = []
         
         hand = session.query(HandByRound).filter(HandByRound.subject == j.id, HandByRound.rnd == rnd).one()
-        sets = session.query(Sets).filter(Sets.hand == hand.hand).all()
-
-        #enter how many sets there are in total
-        den = len(sets)
-        j.asset_denominator = den
-        session.add(j)
-        session.commit()
+        sets = session.query(Sets).filter(Sets.hand == hand.hand).all()        
 
         feedback = True # reveal feedback; true for treatment 0,1,2
 
-        if t == 4: 
+        if t == 3: 
             feedback = False
 
         if feedback:
             
+            den = j.asset_denominator
             text = "You found " + str(num) + " sets out of " + str(den) + "."
     
         
@@ -323,7 +317,7 @@ def WaitNext(subject_id,rnd):
                 else:
                     setarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number], 0])
         else:
-            text = "You found " + num + " sets."
+            text = "You found " + str(num) + " sets."
 
         return render_template('feedback.html',
             text=text, 
@@ -419,6 +413,14 @@ def CreateSets(subject_id,rnd):
             else:
 
                 hand = session.query(HandByRound).filter(HandByRound.subject == j.id, HandByRound.rnd == rnd).one()
+                sets = session.query(Sets).filter(Sets.hand == hand.hand).all()
+
+                #enter how many sets there are in total
+                den = len(sets)
+                j.asset_denominator = den
+                session.add(j)
+                session.commit()
+                
 
                 cards = session.query(HandByCard).filter(HandByCard.hand == hand.hand).all()
     
@@ -452,7 +454,11 @@ def CreateSets(subject_id,rnd):
     
                 found_sets_num = len(foundIDarray)
 
-    
+                t = j.treatment
+                aware = False
+                if t == 1:
+                    aware = True
+
                 return render_template('set.html', 
                     subject_id = subject_id, 
                     handarray=handarray, 
@@ -464,7 +470,9 @@ def CreateSets(subject_id,rnd):
                     action=url_for('WaitNext', subject_id=subject_id, rnd=rnd),
                     rnd=rnd,
                     time_penalty=time_penalty,
-                    end_survey=True,)
+                    end_survey=True,
+                    aware=aware,
+                    den=den)
 
 
 @app.route('/_is_mobile', methods=['POST'])
