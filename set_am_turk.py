@@ -42,12 +42,15 @@ token_value = 1 #value of token, cents
 prize_multiplier = 3 #investment task lottery prize, multiplier
 
 
-####treatments: 0-3
-### 0: pure risk, lottery based on PA lottery
-### 1: risk, lottery based on sets found (number known ahead of time)
-### 2: unawareness, information revealed 
-### 3: unawreness, infomration not revealed, ambiguity 
+####treatment_aware: 0-2
+### 0: Full, (number known ahead of time)
+### 1: Surpirse, information revealed after game 
+### 2: No-Feedback, infomration not revealed, ambiguity 
 
+
+####treatment_context: 0-2
+### 0: In, (lottery based on number of sets)
+### 1: Out, (lottery based on randon number)
 
 ####
 #####
@@ -104,10 +107,11 @@ def newUser():
         hashed_id = hashlib.sha1(subject_id.encode("UTF-8")).hexdigest()[:8]
         q = random.randint(0,len(quizversions)-1) #choose quiz version
         p = random.choice(piecerate)
-        t = random.randint(0,3) # choose treatment version
-       
-        subject_id += "xx" + str(t) 
+        t_a = random.randint(0,2) # choose treatment awareness version
+        t_c = random.randint(0,1) # choose treatment context 
 
+        treatment_version = "xx" + str(t_a) + "xx" + str(t_c)
+       
         subject = Subject(
             idCode= subject_id,
             hashed_id = hashed_id,
@@ -115,7 +119,8 @@ def newUser():
             piecerate = p,
             payment = fixed_payment,
             asset_numerator = 0,
-            treatment = t)    
+            treatment_aware = t_a,
+            treatment_context = t_c)    
         session.add(subject)
         session.commit()
         hands = session.query(Hand).all() #all possible hands
@@ -131,10 +136,18 @@ def newUser():
             session.add(new_hand_by_round)
             session.commit()
 
-        return render_template('instructions.html', subject_id = subject_id, piecerate=f'{round(p/100, 2):.2f}', rounds=str(rounds), fixed_payment=f'{round(fixed_payment/100, 2):.2f}')
+        return render_template('instructions.html',
+            subject_id = subject_id, 
+            piecerate=f'{round(p/100, 2):.2f}', 
+            rounds=str(rounds), 
+            fixed_payment=f'{round(fixed_payment/100, 2):.2f}',
+            treatment_version = treatment_version)
         #return Quiz(subject_id) 
     else:
-            return render_template('login.html', text='You have already played.', action='/user_manual', v=False)
+            return render_template('login.html',
+                text='You have already played.',
+                action='/user_manual',
+                v=False)
 
 
 
@@ -210,20 +223,21 @@ def BeliefElicit(subject_id,rnd):
 
     j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
-    t = j.treatment
+    t_a = j.treatment_aware
+    t_c = j.treatment_context
     num = j.asset_numerator
     den = j.asset_denominator
     prob = int((num*100)/den)
 
     feedback = True # reveal feedback; true for treatment 0,1,2
 
-    if t == 3: 
+    if t_a == 2: 
         feedback = False
 
-    PAlottery = False # objective risk; true for treatment 0
+    context = True # true == in context, based on sets
 
-    if t == 0: 
-        PAlottery = True
+    if t_c == 1: 
+        context = False #false == out of context, based on random number
 
     return render_template('risk.html', 
         subject_id=subject_id, 
@@ -233,7 +247,7 @@ def BeliefElicit(subject_id,rnd):
         prize_multiplier = prize_multiplier,
         token_value = token_value,
         feedback=feedback,
-        PAlottery=PAlottery,
+        context=context,
         num=num,
         den=den,
         prob=prob,)
@@ -285,7 +299,7 @@ def WaitNext(subject_id,rnd):
 
     elif rnd == 1:
 
-        t = j.treatment
+        t_a = j.treatment_aware
         num = j.asset_numerator
 
         #create sets array for feedback screen
@@ -295,9 +309,9 @@ def WaitNext(subject_id,rnd):
         hand = session.query(HandByRound).filter(HandByRound.subject == j.id, HandByRound.rnd == rnd).one()
         sets = session.query(Sets).filter(Sets.hand == hand.hand).all()        
 
-        feedback = True # reveal feedback; true for treatment 0,1,2
+        feedback = True # reveal feedback; true for treatment 0,1
 
-        if t == 3: 
+        if t_a == 2: 
             feedback = False
 
         if feedback:
@@ -454,9 +468,9 @@ def CreateSets(subject_id,rnd):
     
                 found_sets_num = len(foundIDarray)
 
-                t = j.treatment
-                aware = False
-                if t == 1:
+                t_a = j.treatment_aware
+                aware = False #if aware the full awareness treatment, i.e, 0
+                if t_a == 0:
                     aware = True
 
                 return render_template('set.html', 

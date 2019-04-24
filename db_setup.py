@@ -72,7 +72,8 @@ class Subject(db.Model):
     id = Column(Integer, primary_key=True)
     idCode = Column(String(100))
     hashed_id = Column(String(100))
-    treatment = Column(Integer, default=1) # 0-3 (does not include number of sets, that is encoded by the HandByRound table or by asset_den below)
+    treatment_aware = Column(Integer, default=1) # 0-2 (see the set_am_turk file preamble for explanation)
+    treatment_context = Column(Integer, default=1) # 0-1 
     quizversion = Column(Integer, default=1)
     tryquiz = Column(Boolean, default=False)
     passquiz = Column(Boolean, default=False)
@@ -84,7 +85,6 @@ class Subject(db.Model):
     risk_aversion = Column(Integer) #percentage on slider, needs to be converted expost
     asset_numerator = Column(Integer) #== number of sets found
     asset_denominator = Column(Integer) #== total number of sets   
-    bet = Column(Integer)
     piecerate = Column(Integer, default=10)
     payment = Column(Integer, default=0)
     mobile = Column(Integer, default=0) #1 if mobile device, 0 if desktop
