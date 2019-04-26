@@ -80,8 +80,6 @@ class Subject(db.Model):
     age = Column(Integer)
     gender = Column(Integer)
     degree = Column(Integer)
-    #percent1 = Column(Integer)
-    #percent2 = Column(Integer)
     risk_aversion = Column(Integer) #percentage on slider, needs to be converted expost
     asset_numerator = Column(Integer) #== number of sets found
     asset_denominator = Column(Integer) #== total number of sets   
@@ -121,4 +119,12 @@ class Found(db.Model):
     hand = Column(Integer, ForeignKey("hand.id"))
     rnd = Column(Integer)
 
+#set of sets for the lottery drawing selection
+
+class Selection(db.Model):
+    __tablename__ = 'selection'
+    id = Column(Integer, primary_key=True)
+    sets = Column(Integer, ForeignKey("sets.id"))
+    subject = Column(Integer, ForeignKey("subject.id"))
+    found = Column(Boolean, default=False)
 

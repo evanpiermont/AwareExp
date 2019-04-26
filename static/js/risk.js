@@ -13,7 +13,7 @@ $("#next").click(function() {
       $('#pane-'+current_pane).hide();
       $('#pane-'+(current_pane+1)).show();
       $('#prev').show();
-      //renderCards();
+      renderCards();
 
       if (current_pane == pane_len - 1) {
         $("#next").text('Submit');
@@ -36,7 +36,7 @@ $("#prev").click(function() {
 
       $('#pane-'+current_pane).hide();
       $('#pane-'+(current_pane-1)).show();
-      //renderCards();
+      renderCards();
       $("#next").text('Next');
       $("#prev").text('Prev');
 

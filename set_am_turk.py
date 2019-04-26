@@ -13,7 +13,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from random import randint
 import random
 
-from db_setup import DeckSQL, Hand, HandByCard, HandByRound, StartTimes, Subject, Sets, Found, db, app
+from db_setup import DeckSQL, Hand, HandByCard, HandByRound, StartTimes, Selection, Subject, Sets, Found, db, app
 #from setGame import Deck, getCards, isSetThreeCards, getNhands, threeProperties, getSubdeckNsets
 
 import cgi
@@ -65,7 +65,11 @@ prize_multiplier = 3 #investment task lottery prize, multiplier
 def Login():
 
 
-        return render_template('login.html', text='Enter a subject number.', action='/user_manual', input=True, v=True)
+        return render_template('login.html',
+            text='Enter a subject number.',
+            action='/user_manual',
+            input=True,
+            v=True)
 
 
 ####
@@ -100,7 +104,11 @@ def newUser():
 
         ### we resuse the login page as a prompt for payment, so v=true allows username entry.
 
-        return render_template('login.html', text='Enter a valid subject number.', action='/user_manual', input=True, v=True)
+        return render_template('login.html',
+            text='Enter a valid subject number.',
+            action='/user_manual',
+            input=True,
+            v=True)
 
     elif session.query(Subject).filter(Subject.idCode == subject_id).count() == 0:
 
@@ -163,11 +171,16 @@ def Quiz(subject_id):
 
     if j.tryquiz:
 
-        return render_template('login.html', text='You have already failed the quiz.', input=False, v=False)
+        return render_template('login.html',
+            text='You have already failed the quiz.',
+            input=False,
+            v=False)
 
     else:
         q = j.quizversion
-        return render_template('quiz.html', subject_id = subject_id, q=q)
+        return render_template('quiz.html',
+            subject_id = subject_id,
+            q=q)
 
 ### now we need to make sure they passed the quiz. 
 
@@ -179,9 +192,15 @@ def QuizVal():
 
 
     if j.tryquiz:
-        return render_template('login.html', text='You have already failed the quiz.', input=False, v=False)
+        return render_template('login.html',
+            text='You have already failed the quiz.',
+            input=False, v=False)
 
-    quiz_ans=[int(request.form['set1']),int(request.form['set2']),int(request.form['set3']),int(request.form['set4']),int(request.form['set5'])]
+    quiz_ans=[int(request.form['set1']),
+              int(request.form['set2']),
+              int(request.form['set3']),
+              int(request.form['set4']),
+              int(request.form['set5'])]
     correct = quizversions[j.quizversion]
  
     if [(x+y)%2 for x, y in zip(quiz_ans, correct)].count(1) < 2:
@@ -227,7 +246,9 @@ def BeliefElicit(subject_id,rnd):
     t_c = j.treatment_context
     num = j.asset_numerator
     den = j.asset_denominator
-    prob = int((num*100)/den)
+    #prob = int((num*100)/den)
+    #exogenously set prob of winning to .5
+    prob = 50
 
     feedback = True # reveal feedback; true for treatment 0,1,2
 
@@ -239,6 +260,30 @@ def BeliefElicit(subject_id,rnd):
     if t_c == 1: 
         context = False #false == out of context, based on random number
 
+    #construct slection for lottery
+    sel_array = []
+    selection = session.query(Selection).filter(Selection.subject == j.id).all()
+    select_len = len(selection)
+    for s in selection:
+        found_set = session.query(Sets).filter(Sets.id == s.sets).one()
+        card1 = session.query(DeckSQL).filter(DeckSQL.id == found_set.card1).one()
+        card2 = session.query(DeckSQL).filter(DeckSQL.id == found_set.card2).one()
+        card3 = session.query(DeckSQL).filter(DeckSQL.id == found_set.card3).one()
+        if s.found:       
+            sel_array.append([
+                [card1.color,card1.symbol,card1.number],
+                [card2.color,card2.symbol,card2.number],
+                [card3.color,card3.symbol,card3.number],
+                1])
+        else:
+            sel_array.append([
+                [card1.color,card1.symbol,card1.number],
+                [card2.color,card2.symbol,card2.number],
+                [card3.color,card3.symbol,card3.number],
+                0])
+
+    random.shuffle(sel_array)
+
     return render_template('risk.html', 
         subject_id=subject_id, 
         belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
@@ -248,6 +293,8 @@ def BeliefElicit(subject_id,rnd):
         token_value = token_value,
         feedback=feedback,
         context=context,
+        sel_array=sel_array,
+        select_len=select_len,
         num=num,
         den=den,
         prob=prob,)
@@ -303,11 +350,77 @@ def WaitNext(subject_id,rnd):
         num = j.asset_numerator
 
         #create sets array for feedback screen
+        #here we also create the 'selection' table with the sets that will be chosen from
+        #later in the risk elicitation. 
 
         setarray = []
+        selection_array = []
+        not_found_array = []
         
-        hand = session.query(HandByRound).filter(HandByRound.subject == j.id, HandByRound.rnd == rnd).one()
-        sets = session.query(Sets).filter(Sets.hand == hand.hand).all()        
+        #get the hand of the individual, then the list of all sets
+        hand = session.query(HandByRound).filter(HandByRound.subject == j.id,
+                                                 HandByRound.rnd == rnd).one()
+        sets = session.query(Sets).filter(Sets.hand == hand.hand).all()
+
+        #get number of sets, for now this is always 28, but might be diff later
+
+        sets_len = len(sets)
+
+        #how many sets to find
+
+        select_len = sets_len
+
+        if num < (sets_len / 2):
+            select_len = num*2
+
+
+        for s in sets:
+                card1 = session.query(DeckSQL).filter(DeckSQL.id == s.card1).one()
+                card2 = session.query(DeckSQL).filter(DeckSQL.id == s.card2).one()
+                card3 = session.query(DeckSQL).filter(DeckSQL.id == s.card3).one()
+    
+                found = session.query(Found).filter(Found.subject == j.id,
+                                                    Found.rnd == 1,
+                                                    Found.isset==True,
+                                                    Found.novelset==True,
+                                                    Found.sets==s.id).count()
+                if found:
+                    #add to setarray to be displayed in feedback
+                    setarray.append([
+                        [card1.color,card1.symbol,card1.number],
+                        [card2.color,card2.symbol,card2.number],
+                        [card3.color,card3.symbol,card3.number],
+                        1])
+                else:
+                    setarray.append([
+                        [card1.color,card1.symbol,card1.number],
+                        [card2.color,card2.symbol,card2.number],
+                        [card3.color,card3.symbol,card3.number],
+                        0])
+                    #potentials to add to table so that it can be used for lottery construction.
+                    not_found_array.append(s)
+
+        #make sure we havent done this before (then there would be falses)
+        is_selected = session.query(Selection).filter(Selection.subject == j.id,
+                                                      Selection.found==False).count()
+        print(is_selected)
+        if not is_selected:
+            #take a selection of the not found ones for lottery
+            not_found_array = random.choices(not_found_array, k=select_len - num)
+
+            for s in not_found_array:
+                select = Selection(
+                    sets = s.id,
+                    subject = j.id,
+                    found = False)
+                session.add(select)
+                session.commit()
+
+
+
+
+        #set feeback text based on treatement, 
+        #the 'feedback' boolean also controls if the subject sees all sets.
 
         feedback = True # reveal feedback; true for treatment 0,1
 
@@ -315,21 +428,8 @@ def WaitNext(subject_id,rnd):
             feedback = False
 
         if feedback:
-            
             den = j.asset_denominator
-            text = "You found " + str(num) + " sets out of " + str(den) + "."
-    
-        
-            for s in sets:
-                card1 = session.query(DeckSQL).filter(DeckSQL.id == s.card1).one()
-                card2 = session.query(DeckSQL).filter(DeckSQL.id == s.card2).one()
-                card3 = session.query(DeckSQL).filter(DeckSQL.id == s.card3).one()
-    
-                found = session.query(Found).filter(Found.subject == j.id, Found.rnd == 1, Found.isset==True, Found.novelset==True, Found.sets==s.id).count()
-                if found:
-                    setarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number], 1])
-                else:
-                    setarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number], 0])
+            text = "You found " + str(num) + " out of " + str(den) + " sets."
         else:
             text = "You found " + str(num) + " sets."
 
@@ -382,7 +482,11 @@ def CreateSets(subject_id,rnd):
 
         if subject_id not in subjectnames:
 
-            return render_template('login.html', text='Enter a valid subject number.', action='/user_manual', input=True, v=True)
+            return render_template('login.html',
+                text='Enter a valid subject number.',
+                action='/user_manual',
+                input=True,
+                v=True)
 
         else:
 
@@ -398,8 +502,10 @@ def CreateSets(subject_id,rnd):
 
             ### if a timer has alread been set for this subject/round, calculate the remaining time
 
-            if session.query(StartTimes).filter(StartTimes.subject == j.id, StartTimes.rnd == rnd).count() > 0:
-                exptime = session.query(StartTimes).filter(StartTimes.subject == j.id, StartTimes.rnd == rnd).one()
+            if session.query(StartTimes).filter(StartTimes.subject == j.id,
+                                                StartTimes.rnd == rnd).count() > 0:
+                exptime = session.query(StartTimes).filter(StartTimes.subject == j.id,
+                                                           StartTimes.rnd == rnd).one()
                 diff = exptime.exptime - datetime.now()
                 diff = diff - timedelta(microseconds=diff.microseconds)
                 diff_seconds = diff.total_seconds()
@@ -418,15 +524,21 @@ def CreateSets(subject_id,rnd):
 
             if diff_seconds < 0:
                 
-                return render_template('login.html', text='You have already played.', action='/user_manual', v=False)
+                return render_template('login.html',
+                    text='You have already played.',
+                    action='/user_manual',
+                    v=False)
 
             elif not j.passquiz:
 
-                return render_template('login.html', text='Sorry, you have failed the quiz', v=False)
+                return render_template('login.html',
+                    text='Sorry, you have failed the quiz',
+                    v=False)
 
             else:
 
-                hand = session.query(HandByRound).filter(HandByRound.subject == j.id, HandByRound.rnd == rnd).one()
+                hand = session.query(HandByRound).filter(HandByRound.subject == j.id,
+                                                         HandByRound.rnd == rnd).one()
                 sets = session.query(Sets).filter(Sets.hand == hand.hand).all()
 
                 #enter how many sets there are in total
@@ -456,14 +568,19 @@ def CreateSets(subject_id,rnd):
                 foundarray = []
                 foundIDarray = []
     
-                found = session.query(Found).filter(Found.subject == j.id, Found.rnd == rnd, Found.isset==True, Found.novelset==True).all()
+                found = session.query(Found).filter(Found.subject == j.id,
+                    Found.rnd == rnd,
+                    Found.isset==True,
+                    Found.novelset==True).all()
     
                 for s in found:
                     setX = session.query(Sets).filter(Sets.id == s.sets).one()
                     card1 = session.query(DeckSQL).filter(DeckSQL.id == setX.card1).one()
                     card2 = session.query(DeckSQL).filter(DeckSQL.id == setX.card2).one()
                     card3 = session.query(DeckSQL).filter(DeckSQL.id == setX.card3).one()
-                    foundarray.append([[card1.color,card1.symbol,card1.number],[card2.color,card2.symbol,card2.number],[card3.color,card3.symbol,card3.number]])
+                    foundarray.append([[card1.color,card1.symbol,card1.number],
+                                       [card2.color,card2.symbol,card2.number],
+                                       [card3.color,card3.symbol,card3.number]])
                     foundIDarray.append([setX.card1,setX.card2,setX.card3])
     
                 found_sets_num = len(foundIDarray)
@@ -538,9 +655,13 @@ def AddSetJSON():
 
     if isset:
 
-        hand = session.query(HandByRound).filter(HandByRound.rnd == int(rnd), HandByRound.subject==j.id).one()
+        hand = session.query(HandByRound).filter(HandByRound.rnd == int(rnd),
+                                                 HandByRound.subject==j.id).one()
 
-        setX = session.query(Sets).filter(Sets.card1 == cardsID[0], Sets.card2 == cardsID[1], Sets.card3 == cardsID[2], Sets.hand==hand.hand).one()
+        setX = session.query(Sets).filter(Sets.card1 == cardsID[0],
+                                          Sets.card2 == cardsID[1],
+                                          Sets.card3 == cardsID[2],
+                                          Sets.hand==hand.hand).one()
 
         newset = Found(
             sets = setX.id,
@@ -556,6 +677,14 @@ def AddSetJSON():
             j.payment += j.piecerate
             j.asset_numerator += 1
             session.add(j)
+
+            #add to slection table, for lottery construction.
+            select = Selection(
+                sets = setX.id,
+                subject = j.id,
+                found = True)
+            session.add(select)
+            session.commit()
         
         session.commit()
     
@@ -563,7 +692,8 @@ def AddSetJSON():
 
     else:
 
-        hand = session.query(HandByRound).filter(HandByRound.rnd == int(rnd), HandByRound.subject==j.id).one()
+        hand = session.query(HandByRound).filter(HandByRound.rnd == int(rnd),
+                                                 HandByRound.subject==j.id).one()
 
         newset = Found(
             subject = j.id,
@@ -593,7 +723,8 @@ def CheckTimeJSON():
     j = session.query(Subject).filter(Subject.idCode == subject_id).one()
 
 
-    exptime = session.query(StartTimes).filter(StartTimes.subject == j.id, StartTimes.rnd == rnd).one()
+    exptime = session.query(StartTimes).filter(StartTimes.subject == j.id,
+                                               StartTimes.rnd == rnd).one()
     diff = exptime.exptime - datetime.now()
     diff -= timedelta(microseconds=diff.microseconds)
     diff_seconds = diff.total_seconds()

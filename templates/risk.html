@@ -6,11 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/main.css') }} />
     <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/risk.css') }} />
-    <link type="text/css" rel="stylesheet" href={{ url_for('static', filename='styles/instructions.css') }} />
      <script type="text/javascript" language="Javascript" src="https://code.jquery.com/jquery-3.0.0.min.js""></script>
      <script type="text/javascript" language="Javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.9.2/d3.min.js"></script>
     <script src={{ url_for('static', filename='js/bg.js') }} language="Javascript" type="text/javascript"></script>   
-    <script src={{ url_for('static', filename='js/risk.js') }} language="Javascript" type="text/javascript"></script>   
+    <script src={{ url_for('static', filename='js/risk.js') }} language="Javascript" type="text/javascript"></script> 
+    <script src={{ url_for('static', filename='js/render.js') }} language="Javascript" type="text/javascript"></script>   
     <script type="text/javascript">
         var $subject = '{{subject_id}}';
         var $prize_multiplier = '{{prize_multiplier}}';
@@ -38,29 +38,53 @@
                  <br>
                  &#8226;  Each token you do not invest will be converted to $0.0{{token_value}}.
                  </p>
-                <br>
+                <br><br>
+
+                The value of one share of the asset is worth either $0.00 or $0.0{{prize_multiplier}}, depending  on chance. 
                 
             </div>
-    
+
             <div class="inst" id=pane-2>
+
+            
+            {%if context%}
+
+            We will randomly draw one set from the following collection of {{select_len}} sets. The sets you found in the prior task are highlighted. If you found the set that is randomly selected, the asset will pay $0.0{{prize_multiplier}}.
+
+            <div id='set_feedback'>
+                    
+                {% for sets in sel_array %}
+        
+                <div class="set_fb{%if sets[3]==1%} found{%endif%}">
+                        <svg class="card display_card" data-card='{{sets[0]}}'></svg>
+                        <svg class="card display_card" data-card='{{sets[1]}}'></svg>
+                        <svg class="card display_card" data-card='{{sets[2]}}'></svg>
+                </div>      
+                {% endfor %}
+                </div>
+            
+            {%endif%}
+            {%if not context%}
+                We will randomly draw a number between 1 and 100. If the random number is equal to or below {{prob}}, each share is worth $0.0{{prize_multiplier}}.
+            {%endif%}
+            </div>
+    
+            <div class="inst" id=pane-3>
                 <br>     
     
-                The value of one share of the asset is worth either $0.00 or $0.0{{prize_multiplier}}, depending  on chance. 
+                Therefore:
     
                 <br><br><br>
     
                 {%if context%}
-                We will randomly draw one set from all possible sets you could have found. 
+                We will randomly draw one set from the collection of {{select_len}} sets shown on the last page. 
                 <br><br>
-                 &#8226;  If you found the randomly selected set, each share is worth $0.0{{prize_multiplier}}.
+                 &#8226;  If in the prior task you found the randomly selected set, each share is worth $0.0{{prize_multiplier}}.
                  <br>
-                 &#8226;  If you did NOT find the randomly selected set, each share is worth $0.00.
+                 &#8226;  If in the prior task you did NOT find the randomly selected set, each share is worth $0.00.
                 <br>
                 
                 <br><br>
-                Recall, you found {{num}} sets{%if feedback%} out of {{den}}{%endif%}.
-                
-                
                 {%endif%}
 
 
@@ -75,12 +99,12 @@
                 
             </div>
     
-            <div class="inst" id=pane-3>
+            <div class="inst" id=pane-4>
                 Randomization will be done by public and verifiable means. For details contact Felipe A. Araujo at  f.araujo@pitt.edu
             </div>
     
             
-            <div class="inst" id=pane-4>
+            <div class="inst" id=pane-5>
                          
             <form method='POST' name='risk' enctype='multipart/form-data' action={{action}}>
     
