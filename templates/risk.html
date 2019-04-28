@@ -33,15 +33,16 @@
                 <h4>How does it work?</h4>
                 <br>
                 <ol>
-                    <li>You just received an additional $ 1.00 for passing the comprehension quiz</li>
-                    <li>You must decide how much of this additional $ 1.00 to <b>keep safe</b> and how much to <b>bet</b> in a lottery</li>
-                    <li>You can bet any amount from $ 0.00 to $1.00</li>
+                    <li>You just received an additional $1.00 for passing the comprehension quiz</li>
+                    <li>You must decide how much of this additional $1.00 to <b>keep safe</b> and how much to <b>bet</b> in a lottery</li>
+                    <li>You can bet any amount from $0.00 to $1.00</li>
                 </ol>
                 <br>
                 <h4> How do you earn money?</h4>
                 <br>
                 The amount of money you make will depend on your choices and on chance. You never lose the amount you <b>keep safe</b>,
                 but there are two possible outcomes for the amount you <b>bet</b>:
+                <br>
                 <ul>
                     <li>GOOD outcome: you earn <b>two and a half times</b> the amount you bet</li>
                     <li>BAD outcome: you <b>lose</b> the amount you bet</li>
@@ -55,17 +56,17 @@
                 
                 <h4>Example 1</h4>
                 <br>
-                You <b>bet</b> $ 0.10 and <b>keep safe</b> the remaining $ 0.90:
+                You <b>bet</b> $0.10 and <b>keep safe</b> the remaining $0.90:
                 <ul>
-                    <li>In the GOOD outcome you end up with $ 0.10 * 2.5 + $ 0.90 = $1.15</li>
-                    <li>And in the BAD outcome you end up with $ 0.90</li>
+                    <li>In the GOOD outcome you end up with $0.10 * 2.5 + $0.90 = $1.15</li>
+                    <li>In the BAD outcome you end up with $0.90</li>
                 </ul>
                 <br>
                 <h4>Example 2</h4>
-                You <b>bet</b> $ 0.90 and <b>keep safe</b> the remaining $ 0.10:
+                You <b>bet</b> $0.90 and <b>keep safe</b> the remaining $0.10:
                 <ul>
-                    <li>In the GOOD outcome you end up with $ 0.90 * 2.5 + $ 0.10 = $2.35</li>
-                    <li>And in the BAD outcome you end up with $ 0.10</li>
+                    <li>In the GOOD outcome you end up with $0.90 * 2.5 + $0.10 = $2.35</li>
+                    <li>In the BAD outcome you end up with $0.10</li>
                 </ul>
                 <br>
                 The next page explains the chance component of the lottery.
@@ -74,24 +75,17 @@
     
             <div class="inst" id=pane-3>
 
-            {%if treatment_aware == 0%}
-
-                FULL AWARENESS
-                
-            {%endif%}
-            
-            {%if treatment_aware == 1%}
-
-                SURPRISE AWARENESS
-                
-            {%endif%}
-            
-            {%if treatment_aware == 2%}
+            {%if unaware%}
 
                 UNAWARENESS
                 
             {%endif%}
+            
+            {%if not unaware%}
 
+                SURPRISE AWARENESS or FULL AWARENESS
+                
+            {%endif%}
             
             {%if context%}
             
@@ -165,7 +159,7 @@
                          
             <form method='POST' name='risk' enctype='multipart/form-data' action={{action}}>
     
-                  Please use the slider to allocate a share of the 100 tokens to the invesement:
+                  Please use the slider to decide how much of the 100 to <b>keep safe</b> and how much to <b>bet</b>
         
             <br><br>
                 <div id=checked>
@@ -177,18 +171,18 @@
     
             </form>
     
-            <div class=al id=L-al>Invest in the asset: <br><span id="p">??</span></div>
-            <div class=al id=C-al>Keep in cash: <br> <span id="q">??</span></div>
+            <div class=al id=L-al><b>Bet</b><br><span id="p">??</span></div>
+            <div class=al id=C-al><b>Keep safe</b>: <br> <span id="q">??</span></div>
             <div id=out>
                 <br><br>
                 {%if context%}
-                If you found the randomly selected set,
+                If randomly selected set is one you found,
                 {%endif%} 
                 {%if not context%}
-                If the random number is equal to or below {{prob}},
+                If coin toss turn up heads,
                 {%endif%}
-                you will receive: <span id="win">??</span> <br>
-                Otherwise, you will receive: <span id="lose">??</span> <br>
+                you will make: <span id="win">??</span> <br>
+                Otherwise, you will make: <span id="lose">??</span> <br>
             </div>
     
     

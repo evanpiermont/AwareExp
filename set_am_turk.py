@@ -590,6 +590,10 @@ def CreateSets(subject_id,rnd):
                 aware = False #if aware the full awareness treatment, i.e, 0
                 if t_a == 0:
                     aware = True
+                    
+                unaware = False #dummy for unawareness treatment, i.e, 2
+                if t_a == 2:
+                    unaware = True
 
                 return render_template('set.html', 
                     subject_id = subject_id, 
