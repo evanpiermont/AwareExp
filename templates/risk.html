@@ -55,15 +55,20 @@
              <div class="inst" id=pane-2>
                 
                 <h4>Example 1</h4>
+                
                 <br>
+                
                 You <b>bet</b> $0.10 and <b>keep safe</b> the remaining $0.90:
                 <ul>
                     <li>In the GOOD outcome you end up with $0.10 * 2.5 + $0.90 = $1.15</li>
                     <li>In the BAD outcome you end up with $0.90</li>
                 </ul>
                 <br>
+                
                 <h4>Example 2</h4>
+                
                 <br>
+                
                 You <b>bet</b> $0.90 and <b>keep safe</b> the remaining $0.10:
                 <ul>
                     <li>In the GOOD outcome you end up with $0.90 * 2.5 + $0.10 = $2.35</li>
@@ -75,29 +80,22 @@
             </div>
     
             <div class="inst" id=pane-3>
-
-            {%if unaware%}
-
-            Recall that you found {{select_len / 2}} SETs. 
-                
-            {%endif%}
-            
-            {%if not unaware%}
-
-            Recall that you found {{select_len / 2}} SETs out of 28 possible SETs.
-            
-            {%endif%}
-            
-            <br>
-            Below you can see {{select_len}} SETs, half of which you found and half of which you did not find. 
             
             {%if context%}
             
-            Recall that you found {{select_len / 2}} SETs out of 28 possible SETs. Below is 
+                {%if unaware%}
 
-            <p>Total number of sets: {{select_len}}</p>
+                <p>Recall that you found <span id=setcount>{{found_sets_num}}</span> SETs.</p>
+                
+                {%endif%}
             
-            <p>Payoff in the good state: $0.0{{prize_multiplier}}.</p>
+                {%if not unaware%}
+
+                <p>Recall that you found <span id=setcount>{{found_sets_num}}</span> SETs out of {{den}} possible SETs.</p>
+            
+                {%endif%}
+                        
+            <p>Below you can see {{select_len}} SETs, half of which you found and half of which you did not find. </p>
 
             <div id='set_feedback'>
                     
@@ -111,21 +109,19 @@
                 {% endfor %}
             </div>
             
-            <br>
+            <br><br><br><br><br><br>
             
-            We will randomly select 1 of the {{select_len}}. If the randomly selected SETs is one you found,
-            the GOOD outcomes realizes and the amount you bet gets multiplied by 2.5. If the randomly selected
-            SET is not one you found, the BAD outcome realized and you lose any amount bet.
+            We will randomly select 1 of the {{select_len}}. Each SET has the same chance of being selected. If the randomly selected SET is one you found,
+            the GOOD outcome realizes. If the randomly selected SET is not one you found, the BAD outcome realizes. 
         
             {%endif%}
             
             {%if not context%}
                             
-            <p>We will toss a virtual and fair coin to determine which outcomes realizes.</p>
+            <p>We will toss a virtual and fair coin to determine which outcome realizes.</p>
                 
             <p>
-                If the coin turns up <b>heads</b>, the GOOD outcomes realizes and you earn <b>two and a half times</b> the amount bet
-                plus the amount you kept safe.
+                If the coin turns up <b>heads</b>, the GOOD outcomes realizes.
             </p>
             <br>
             <div>
@@ -135,7 +131,7 @@
             </div>
             <br>
             <p>
-                If the coin turns up <b>tails</b>, the BAD outcomes realizes and you lose the amount bet, and earn only the amount you kept safe.
+                If the coin turns up <b>tails</b>, the BAD outcomes realizes.
             <div>
                 
                 <img src="https://s3.us-east-2.amazonaws.com/araujofa/TAILS.png" alt="Tails">
@@ -146,13 +142,13 @@
             </div>
     
             <div class="inst" id=pane-4>
-                
-                <br>
-                
-                The actual randomization will be done using public and verifiable means. Especifically, it will use future results
-                from the Pennsylvania Lottery. For more detailes, please e-mail Felipe A. Araujo at f.araujo@pitt.edu or
-                check this study registration at the American Economic Association website.
-                
+                                
+                <p>
+                    The actual randomization will be done using public and verifiable means. Especifically, it will use future results from the Pennsylvania Lottery.
+                </p>
+                <p>
+                    For more detailes, please e-mail Felipe A. Araujo at f.araujo@pitt.edu or check this study registration at the American Economic Association website.
+                </p>
             </div>    
             
             <div class="inst" id=pane-5>
