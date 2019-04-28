@@ -85,7 +85,7 @@
             
                 {%if unaware%}
 
-                <p>Recall that you found {{select_len / 2}} SETs.</p>
+                <p>Recall that you found {{(select_len / 2).toFixed(0)}} SETs.</p>
                 
                 {%endif%}
             
@@ -111,8 +111,11 @@
             
             <br><br><br><br><br><br><br><br><br><br><br><br><br>
             
-            We will randomly select 1 of the {{select_len}} SETs. Each SET has the same chance of being selected. If the randomly selected SET is one you found,
-            the GOOD outcome realizes. If the randomly selected SET is not one you found, the BAD outcome realizes. 
+            We will randomly select 1 of the {{select_len}} SETs. Each SET has the same chance of being selected.
+            <ul>
+                <li>If randomly selected SET is one you found, the GOOD outcome realizes.</li>
+                <li>If randomly selected SET is not one you found, the BAD outcome realizes.</li>
+            </ul>  
         
             {%endif%}
             
@@ -175,7 +178,7 @@
             <div id=out>
                 <br><br>
                 {%if context%}
-                If randomly selected set is one you found,
+                If randomly selected SET is one you found,
                 {%endif%} 
                 {%if not context%}
                 If coin toss turns up heads,
