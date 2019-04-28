@@ -63,6 +63,7 @@
                 </ul>
                 <br>
                 <h4>Example 2</h4>
+                <br>
                 You <b>bet</b> $0.90 and <b>keep safe</b> the remaining $0.10:
                 <ul>
                     <li>In the GOOD outcome you end up with $0.90 * 2.5 + $0.10 = $2.35</li>
@@ -108,32 +109,33 @@
                         <svg class="card display_card" data-card='{{sets[2]}}'></svg>
                 </div>      
                 {% endfor %}
-                </div>
+            </div>
+            
             <br>
             
             We will randomly select 1 of the {{select_len}}. If the randomly selected SETs is one you found,
             the GOOD outcomes realizes and the amount you bet gets multiplied by 2.5. If the randomly selected
             SET is not one you found, the BAD outcome realized and you lose any amount bet.
-            <br>
-            The actual randomization will be done using public and verifiable means. Especifically, it will use future results
-            from the Pennsylvania Lottery. For more detailes, please e-mail Felipe A. Araujo at f.araujo@pitt.edu or
-            check this study registration at the American Economic Association website. 
-            
+        
             {%endif%}
             
             {%if not context%}
-                
                             
-            <p>Number on lottery or probability of winning: {{prob}}</p>
+            <p>We will toss a virtual and fair coin to determine which outcomes realizes.</p>
                 
-            <p>Payoff in the good state: $0.0{{prize_multiplier}}.</p>
-            
+            <p>
+                If the coin turns up <b>heads</b>, the GOOD outcomes realizes and you earn <b>two and a half times</b> the amount bet
+                plus the amount you kept safe.
+            </p>
+            <br>
             <div>
                 
                 <img src="https://s3.us-east-2.amazonaws.com/araujofa/HEADS.png" alt="Heads">
                 
             </div>
-            
+            <br>
+            <p>
+                If the coin turns up <b>tails</b>, the BAD outcomes realizes and you lose the amount bet, and earn only the amount you kept safe.
             <div>
                 
                 <img src="https://s3.us-east-2.amazonaws.com/araujofa/TAILS.png" alt="Tails">
@@ -144,44 +146,16 @@
             </div>
     
             <div class="inst" id=pane-4>
-                <br>     
-    
-                SECOND PAGE, MORE EXPLANATION AND (MAYBE) EXAMPLES:
-    
-                <br><br><br>
-    
-                {%if context%}
-                IN-CONTEXT
-                <p>Total number of sets: {{select_len}}</p>
                 
-                <br><br>
-                 &#8226;  Payoff in good state: $0.0{{prize_multiplier}}.
-                 <br>
-                 &#8226;  Payoff in bad state is: $0.00.
                 <br>
                 
-                <br><br>
-                {%endif%}
-
-
-                {%if not context%}
-                OUT-OF-CONTEXT
-                <p>Describe lottery out of context</p>
-                <br><br>
-                 &#8226;  Number or probability: {{prob}}; Payoff in good state: $0.0{{prize_multiplier}}.
-                 <br>
-                 &#8226;  Number or probability: {{prob}}; Payoff in bad state is: $0.00.
-                <br>
-                {%endif%}
+                The actual randomization will be done using public and verifiable means. Especifically, it will use future results
+                from the Pennsylvania Lottery. For more detailes, please e-mail Felipe A. Araujo at f.araujo@pitt.edu or
+                check this study registration at the American Economic Association website.
                 
-            </div>
-    
-            <div class="inst" id=pane-5>
-                Randomization will be done by public and verifiable means. For details contact Felipe A. Araujo at  f.araujo@pitt.edu
-            </div>
-    
+            </div>    
             
-            <div class="inst" id=pane-6>
+            <div class="inst" id=pane-5>
                          
             <form method='POST' name='risk' enctype='multipart/form-data' action={{action}}>
     
