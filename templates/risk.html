@@ -85,16 +85,17 @@
             
                 {%if unaware%}
 
-                <p>Recall that you found {{(select_len / 2).toFixed(0)}} SETs.</p>
+                <p>Recall that you found {{Math.round(select_len / 2)}} SETs.</p>
                 
                 {%endif%}
             
                 {%if not unaware%}
 
-                <p>Recall that you found {{select_len / 2}} SETs out of {{den}} possible SETs.</p>
+                <p>Recall that you found {{Math.round(select_len / 2)}} SETs out of {{den}} possible SETs.</p>
             
                 {%endif%}
                         
+            <br>            
             <p>Below you can see {{select_len}} SETs, half of which you found and half of which you did not find. </p>
 
             <div id='set_feedback'>
@@ -124,7 +125,7 @@
             <p>We will toss a virtual and fair coin to determine which outcome realizes.</p>
             <br>
             <p>
-                If the coin turns up <b>heads</b>, the GOOD outcomes realizes.
+                If the coin turns up <b>heads</b>, the GOOD outcome realizes.
             </p>
             <br>
             <div>
@@ -134,7 +135,7 @@
             </div>
             <br>
             <p>
-                If the coin turns up <b>tails</b>, the BAD outcomes realizes.
+                If the coin turns up <b>tails</b>, the BAD outcome realizes.
             </p>
             <br>
             <div>
