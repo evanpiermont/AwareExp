@@ -77,15 +77,18 @@
 
             {%if unaware%}
 
-                UNAWARENESS
+            Recall that you found {{select_len / 2}} SETs. 
                 
             {%endif%}
             
             {%if not unaware%}
 
-                SURPRISE AWARENESS or FULL AWARENESS
-                
+            Recall that you found {{select_len / 2}} SETs out of 28 possible SETs.
+            
             {%endif%}
+            
+            <br>
+            Below you can see {{select_len}} SETs, half of which you found and half of which you did not find. 
             
             {%if context%}
             
@@ -106,14 +109,37 @@
                 </div>      
                 {% endfor %}
                 </div>
+            <br>
+            
+            We will randomly select 1 of the {{select_len}}. If the randomly selected SETs is one you found,
+            the GOOD outcomes realizes and the amount you bet gets multiplied by 2.5. If the randomly selected
+            SET is not one you found, the BAD outcome realized and you lose any amount bet.
+            <br>
+            The actual randomization will be done using public and verifiable means. Especifically, it will use future results
+            from the Pennsylvania Lottery. For more detailes, please e-mail Felipe A. Araujo at f.araujo@pitt.edu or
+            check this study registration at the American Economic Association website. 
             
             {%endif%}
+            
             {%if not context%}
-                OUT-OF-CONTEXT
                 
-                <p>Number on lottery or probability of winning: {{prob}}</p>
+                            
+            <p>Number on lottery or probability of winning: {{prob}}</p>
                 
-                <p>Payoff in the good state: $0.0{{prize_multiplier}}.</p>
+            <p>Payoff in the good state: $0.0{{prize_multiplier}}.</p>
+            
+            <div>
+                
+                <img src="https://s3.us-east-2.amazonaws.com/araujofa/HEADS.png" alt="Heads">
+                
+            </div>
+            
+            <div>
+                
+                <img src="https://s3.us-east-2.amazonaws.com/araujofa/TAILS.png" alt="Tails">
+                
+            </div>
+            
             {%endif%}
             </div>
     
@@ -159,7 +185,7 @@
                          
             <form method='POST' name='risk' enctype='multipart/form-data' action={{action}}>
     
-                  Please use the slider to decide how much of the 100 to <b>keep safe</b> and how much to <b>bet</b>
+                  Please use the slider to decide how much of the 100 cents to <b>keep safe</b> and how much to <b>bet</b>
         
             <br><br>
                 <div id=checked>
