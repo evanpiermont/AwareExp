@@ -40,38 +40,62 @@
                 <br>
                 <h4> How do you earn money?</h4>
                 <br>
-                The amount of money you make will depend on your decision and on chance. There are two possible scenarios:
+                The amount of money you make will depend on your choices and on chance. You never lose the amount you <b>keep safe</b>,
+                but there are two possible outcomes for the amount you <b>bet</b>:
                 <ul>
-                    <li>In the GOOD scenario, you earn <b>two and a half times</b> the amount you bet</li>
-                    <li>In the BAD scenario, you lose the amount you bet but keep the amount you did not bet</li>
+                    <li>GOOD outcome: you earn <b>two and a half times</b> the amount you bet</li>
+                    <li>BAD outcome: you <b>lose</b> the amount you bet</li>
                 </ul>
+                <br>
+                See examples on the next page.
                 
             </div>
              
              <div class="inst" id=pane-2>
                 
-                <h4>Examples</h4>
+                <h4>Example 1</h4>
                 <br>
-                Suppose you decide to <b>bet</b> $ 0.10 and to <b>keep safe</b> the remaining $ 0.90:
+                You <b>bet</b> $ 0.10 and <b>keep safe</b> the remaining $ 0.90:
                 <ul>
-                    <li>In the GOOD scenario you end up with $ 0.10 * 2.5 + $ 0.90 = $1.15</li>
-                    <li>And in the BAD scenarion you end up with $ 0.90</li>
+                    <li>In the GOOD outcome you end up with $ 0.10 * 2.5 + $ 0.90 = $1.15</li>
+                    <li>And in the BAD outcome you end up with $ 0.90</li>
                 </ul>
                 <br>
-                Now, suppose you decide to <b>bet</b> $ 0.90 and to <b>keep safe</b> the remaining $ 0.10:
+                <h4>Example 2</h4>
+                You <b>bet</b> $ 0.90 and <b>keep safe</b> the remaining $ 0.10:
                 <ul>
-                    <li>In the GOOD scenario you end up with $ 0.90 * 2.5 + $ 0.10 = $2.35</li>
-                    <li>And in the BAD scenario you end up with $ 0.10</li>
+                    <li>In the GOOD outcome you end up with $ 0.90 * 2.5 + $ 0.10 = $2.35</li>
+                    <li>And in the BAD outcome you end up with $ 0.10</li>
                 </ul>
                 <br>
-                The next page will provide more details about the chance component of the lottery.
+                The next page explains the chance component of the lottery.
                 
             </div>
     
             <div class="inst" id=pane-3>
 
+            {%if treatment_aware == 0%}
+
+                FULL AWARENESS
+                
+            {%endif%}
+            
+            {%if treatment_aware == 1%}
+
+                SURPRISE AWARENESS
+                
+            {%endif%}
+            
+            {%if treatment_aware == 2%}
+
+                UNAWARENESS
+                
+            {%endif%}
+
             
             {%if context%}
+            
+            Recall that you found {{select_len / 2}} SETs out of 28 possible SETs. Below is 
 
             <p>Total number of sets: {{select_len}}</p>
             
