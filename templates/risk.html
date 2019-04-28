@@ -26,30 +26,48 @@
 
     <div id=wrap>
   
-<!--            <div class="inst" id=pane-1>
-                <header><h4>Task 2</h4></header>
-    
-                <br>     
-    
-                You will now have the oppertunity to invest upto 100 tokens in an asset.
-    
-                <br><br>
-                 &#8226;  Each token you invest buys 1 share of the asset.
-                 <br>
-                 &#8226;  Each token you do not invest will be converted to $0.0{{token_value}}.
-                 </p>
-                <br><br>
-
-                The value of one share of the asset is worth either $0.00 or $0.0{{prize_multiplier}}, depending  on chance. 
+             <div class="inst" id=pane-1>
+                
+                <h2>Task 2</h2>
+            
+                <h4>How does it work?</h4>
+            
+                <ol>
+                    <li>You received an additional $ 1.00 for passing the comprehension quiz</li>
+                    <li>You must decide how much of this additional $ 1.00 to <b>keep safely</b> and how much to <b>bet</b> in a lottery</li>
+                    <li>You can bet any amount from $ 0.00 to $1.00</li>
+                </ol>
+            
+                <h4> How do you earn money?</h4>
+            
+                The amount of money you make will depend on your decision and on chance. There are two possible scenarios:
+                <ol>
+                    <li>In the GOOD scenario, you earn <b>two and a half times</b> the amount you bet</li>
+                    <li>If the BAD scenario, you lose the amount you bet and keep the amount you did not bet</li>
+                </ol>
+                
+                <h4>Examples</h4>
+                
+                Suppose you decided to <b>bet</b> $ 0.10 and to <b>keep safely</b> the remaining $ 0.90:
+                <ul>
+                    <li>In the GOOD scenario you end up with $ 0.10 * 2.5 + $ 0.90 = $1.15</li>
+                    <li>And in the BAD scenarion you end up with $ 0.90</li>
+                </ul>
+                
+                Now, supposed you decided to <b>bet</b> $ 0.90 and to <b>keep safely</b> the remaining $ 0.10:
+                <ul>
+                    <li>In the GOOD scenario you end up with $ 0.90 * 2.5 + $ 0.10 = $2.35</li>
+                    <li>And in the BAD scenarion you end up with $ 0.10</li>
+                </ul>
+                
+                The next page will provide more details about the chance component of the lottery.
                 
             </div>
--->
+    
             <div class="inst" id=pane-1>
 
             
             {%if context%}
-            
-            IN-CONTEXT
 
             <p>Total number of sets: {{select_len}}</p>
             
