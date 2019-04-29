@@ -258,7 +258,7 @@ def WaitNext(subject_id,rnd):
             receive instructions for Task 2. Following Task 2, you will be asked to answer a few survey questions. Finally, you will
             receive your Mturk completion code.
             <br><br>
-            Any extra amount you earn will be paid via a bonus on MTurk within 3 days.
+            Any extra amount you earn will be paid via a bonus on MTurk within 5 days.
             <br><br> Click on the SUBMIT button to begin.<p/>""")
 
         return render_template('login.html',
