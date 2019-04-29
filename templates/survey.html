@@ -22,10 +22,11 @@
         
         <div id=adminenter>
                  
-    <form method='POST' name='survey' enctype='multipart/form-data' action={{action}}>
+    <form method='POST' name='survey' id='surveyform' enctype='multipart/form-data' action={{action}}>
 
     {%if end_survey%}
     Age: 
+    <br>
     <input type="radio" name="age" id="18-30" value=0 required>
     <label for="18-30"><span>18-30</span></label>
     <input type="radio" name="age" id="31-45" value=1 required>
@@ -39,6 +40,7 @@
     <br><br>
 
     Gender:
+    <br>
     <input type="radio" name="gender" id="female" value=0 required>
     <label for="female"><span>Female</span></label>
     <input type="radio" name="gender" id="male" value=1 required>
@@ -49,6 +51,7 @@
     <br><br>
 
     Highest degree completed so far:
+    <br>
     <input type="radio" name="degree" id="highschool" value=0 required>
     <label for="highschool"><span>High School</span></label>
     <input type="radio" name="degree" id="somecollege" value=1 required>
@@ -62,17 +65,21 @@
     {%endif%}
 
     {%if be%}
-    In the last round you found {{found_num}} <span class=hl>SET</span>s.
+
+
+    {%if aware%}
+    Please click Submit to continue to Task 2.
+    {%endif%}
+    {%if not aware%}
+
+    In the last round you found {{num}} sets.
+
 
     <br><br>
 
 
-    If you answer the following question within 5% of the true value, you will recive an additional ${{belief_payment}}.
-
-    <br><br>
-
-    Of all possible <span class=hl>SETs</span> from the previous round, what percentage, from 0 to 100%, do you believe you found?:
-    <span id="p"></span>%
+    Of all possible sets from the previous round, what percentage, from 0 to 100%, do you believe you found?:
+    <span id="p">??</span>%
     <br><br>
     <div id=checked>
     <input name="percent" type="range" min="1" max="100" value="50" class="slider" id="percent">
@@ -84,8 +91,16 @@
         document.getElementById("p").innerHTML = this.value;
         document.getElementById("checked").classList.add("checked")
         };
+
+    document.querySelector("#surveyform").addEventListener("submit", function(e){
+    if(document.getElementById("p").innerHTML == "??"){
+        e.preventDefault();
+        alert('Please use the slider to select an anwser.')
+    }
+    });
     </script>
 
+    {%endif%}
     {%endif%}
 
     <br><br>

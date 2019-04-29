@@ -76,10 +76,11 @@ class Subject(db.Model):
     treatment_context = Column(Integer, default=1) # 0-1 
     quizversion = Column(Integer, default=1)
     tryquiz = Column(Boolean, default=False)
-    passquiz = Column(Boolean, default=False)
+    passquiz = Column(Integer, default=0) #number of quiz questions correct. must be 4 or more to continue.
     age = Column(Integer)
     gender = Column(Integer)
     degree = Column(Integer)
+    belief = Column(Integer) #percentage on slider, belief about percentage many sets were found
     risk_aversion = Column(Integer) #percentage on slider, needs to be converted expost
     asset_numerator = Column(Integer) #== number of sets found
     asset_denominator = Column(Integer) #== total number of sets   

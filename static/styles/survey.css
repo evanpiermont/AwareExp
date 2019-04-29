@@ -29,10 +29,10 @@ input[type="radio"] + label span {
 #adminenter{
   position: fixed;
   min-height: 30%;
-  width: 90%;
-  left: 10%;
+  width: 70%;
+  left: 15%;
   top: 10%;
-  font-size: 30%
+  font-size: 45%
 }
 
 
@@ -79,7 +79,7 @@ input[type="range"]:focus::-moz-range-thumb{
 
 .slider {
     -webkit-appearance: none;
-    width: 80%;
+    width: 100%;
     height: 15px;
     background: #d3d3d3;
     outline: none;

@@ -30,7 +30,7 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 15 #time in seconds
+rndtime = 45 #time in seconds
 #piecerate = [10,35] #payment in cents per correct anwser
 piecerate = [10] #payment in cents per correct anwser
 fixed_payment = 50 #fixed payment in cents
@@ -51,6 +51,7 @@ prize_multiplier = 3 #investment task lottery prize, multiplier
 ####treatment_context: 0-2
 ### 0: In, (lottery based on number of sets)
 ### 1: Out, (lottery based on randon number)
+### 2: Out, but the subject found 0 sets, so was forced to be in the out group
 
 ####
 #####
@@ -116,7 +117,7 @@ def newUser():
         q = random.randint(0,len(quizversions)-1) #choose quiz version
         p = random.choice(piecerate)
         t_a = random.randint(0,2) # choose treatment awareness version
-        t_c = random.randint(0,1) # choose treatment context 
+        t_c = random.randint(0,1) # choose treatment context (cannot chose t_c = 2 (reserved for 0 set finders))
 
         treatment_version = "xx" + str(t_a) + "xx" + str(t_c)
        
@@ -202,11 +203,13 @@ def QuizVal():
               int(request.form['set4']),
               int(request.form['set5'])]
     correct = quizversions[j.quizversion]
+
+    num_correct = [(x+y)%2 for x, y in zip(quiz_ans, correct)].count(0)
  
-    if [(x+y)%2 for x, y in zip(quiz_ans, correct)].count(1) < 2:
+    if num_correct > 3:
 
         j.tryquiz = True
-        j.passquiz = True
+        j.passquiz = num_correct
         session.add(j)
         session.commit()
 
@@ -215,7 +218,7 @@ def QuizVal():
     else:
 
         j.tryquiz = True
-        j.passquiz = False
+        j.passquiz = num_correct
         session.add(j)
         session.commit()
 
@@ -235,69 +238,6 @@ def QuizVal():
 
 ### landing page.
 
-@app.route('/be/<subject_id>/<rnd>', methods=['POST'])
-def BeliefElicit(subject_id,rnd):
-
-    rnd = int(rnd)
-
-    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
-
-    t_a = j.treatment_aware
-    t_c = j.treatment_context
-    num = j.asset_numerator
-    den = j.asset_denominator
-    #prob = int((num*100)/den)
-    #exogenously set prob of winning to .5
-    prob = 50
-
-    feedback = True # reveal feedback; true for treatment 0,1,2
-
-    if t_a == 2: 
-        feedback = False
-
-    context = True # true == in context, based on sets
-
-    if t_c == 1: 
-        context = False #false == out of context, based on random number
-
-    #construct slection for lottery
-    sel_array = []
-    selection = session.query(Selection).filter(Selection.subject == j.id).all()
-    select_len = len(selection)
-    for s in selection:
-        found_set = session.query(Sets).filter(Sets.id == s.sets).one()
-        card1 = session.query(DeckSQL).filter(DeckSQL.id == found_set.card1).one()
-        card2 = session.query(DeckSQL).filter(DeckSQL.id == found_set.card2).one()
-        card3 = session.query(DeckSQL).filter(DeckSQL.id == found_set.card3).one()
-        if s.found:       
-            sel_array.append([
-                [card1.color,card1.symbol,card1.number],
-                [card2.color,card2.symbol,card2.number],
-                [card3.color,card3.symbol,card3.number],
-                1])
-        else:
-            sel_array.append([
-                [card1.color,card1.symbol,card1.number],
-                [card2.color,card2.symbol,card2.number],
-                [card3.color,card3.symbol,card3.number],
-                0])
-
-    random.shuffle(sel_array)
-
-    return render_template('risk.html', 
-        subject_id=subject_id, 
-        belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
-        action=url_for('WaitNext', subject_id=subject_id, rnd=rnd), 
-        rnd=rnd,
-        prize_multiplier = prize_multiplier,
-        token_value = token_value,
-        feedback=feedback,
-        context=context,
-        sel_array=sel_array,
-        select_len=select_len,
-        num=num,
-        den=den,
-        prob=prob,)
 
 
 @app.route('/waitnext/<subject_id>/<rnd>', methods=['POST'])
@@ -347,8 +287,22 @@ def WaitNext(subject_id,rnd):
 
     elif rnd == 1:
 
+
+
+
+
         t_a = j.treatment_aware
         num = j.asset_numerator
+
+        if t_a > 0: #if not the full aware group (they do not do the elicitation method)
+            j.belief = request.form['percent']
+            session.add(j)
+            session.commit()
+
+        if num==0:
+            j.treatment_context = 2
+            session.add(j)
+            session.commit()
 
         #create sets array for feedback screen
         #here we also create the 'selection' table with the sets that will be chosen from
@@ -404,7 +358,6 @@ def WaitNext(subject_id,rnd):
         #make sure we havent done this before (then there would be falses)
         is_selected = session.query(Selection).filter(Selection.subject == j.id,
                                                       Selection.found==False).count()
-        print(is_selected)
         if not is_selected:
             #take a selection of the not found ones for lottery
             not_found_array = random.choices(not_found_array, k=select_len - num)
@@ -432,24 +385,18 @@ def WaitNext(subject_id,rnd):
             den = j.asset_denominator
             text = "You found " + str(num) + " out of " + str(den) + " sets."
         else:
-            text = "You found " + str(num) + " sets."
+            text = "You found " + str(num) + " sets. Please continue to Task 2."
 
         return render_template('feedback.html',
             text=text, 
-            action=url_for('BeliefElicit', subject_id=subject_id, rnd=next_rnd), 
+            action=url_for('RiskElicit', subject_id=subject_id, rnd=next_rnd), 
             setarray = setarray,
             feedback = feedback,
             )
 
     else:
-
-        j.risk_aversion = request.form['percent']
-        session.add(j)
-        session.commit()
-
-
         text = Markup("""
-            Click SUBMIT to finsih the study.
+            The study is over.
             """)
 
         return render_template('login.html',
@@ -457,7 +404,7 @@ def WaitNext(subject_id,rnd):
             action=url_for('Survey', 
                 subject_id=subject_id,  
                 belief_payment=belief_payment), 
-            input=False, v=True)
+            input=False, v=False)
 
 
 ####
@@ -530,7 +477,7 @@ def CreateSets(subject_id,rnd):
                     action='/user_manual',
                     v=False)
 
-            elif not j.passquiz:
+            elif j.passquiz < 4:
 
                 return render_template('login.html',
                     text='Sorry, you have failed the quiz',
@@ -603,12 +550,104 @@ def CreateSets(subject_id,rnd):
                     foundIDarray=foundIDarray, 
                     diff_seconds=diff_seconds, 
                     found_sets_num=found_sets_num, 
-                    action=url_for('WaitNext', subject_id=subject_id, rnd=rnd),
+                    action=url_for('BeliefElicit', subject_id=subject_id, rnd=rnd),
                     rnd=rnd,
                     time_penalty=time_penalty,
                     end_survey=True,
                     aware=aware,
                     den=den)
+
+
+####belief elicitation page
+@app.route('/be/<subject_id>/<rnd>', methods=['POST'])
+def BeliefElicit(subject_id,rnd):
+
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+    rnd = int(rnd)
+
+    num = j.asset_numerator
+    t_a = j.treatment_aware
+
+    aware = True
+    if t_a > 0: #if not the full aware group (they do not do the elicitation method)
+        aware = False
+
+    return render_template('survey.html',
+        subject_id=subject_id,
+        end_survey = False,
+        num =num,
+        be = True,
+        aware = aware,
+        action=url_for('WaitNext', subject_id=subject_id, rnd=rnd),)
+
+
+
+####risk elicitation page
+@app.route('/re/<subject_id>/<rnd>', methods=['POST'])
+def RiskElicit(subject_id,rnd):
+
+    rnd = int(rnd)
+
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+
+    t_a = j.treatment_aware
+    t_c = j.treatment_context
+    num = j.asset_numerator
+    den = j.asset_denominator
+    #prob = int((num*100)/den)
+    #exogenously set prob of winning to .5
+    prob = 50
+
+    feedback = True # reveal feedback; true for treatment 0,1,2
+
+    if t_a == 2: 
+        feedback = False
+
+    context = True # true == in context, based on sets
+
+    if t_c > 0: #i.e, t_c is treatment 1 or 2
+        context = False #false == out of context, based on random number
+
+    #construct slection for lottery
+    sel_array = []
+    selection = session.query(Selection).filter(Selection.subject == j.id).all()
+    select_len = len(selection)
+    for s in selection:
+        found_set = session.query(Sets).filter(Sets.id == s.sets).one()
+        card1 = session.query(DeckSQL).filter(DeckSQL.id == found_set.card1).one()
+        card2 = session.query(DeckSQL).filter(DeckSQL.id == found_set.card2).one()
+        card3 = session.query(DeckSQL).filter(DeckSQL.id == found_set.card3).one()
+        if s.found:       
+            sel_array.append([
+                [card1.color,card1.symbol,card1.number],
+                [card2.color,card2.symbol,card2.number],
+                [card3.color,card3.symbol,card3.number],
+                1])
+        else:
+            sel_array.append([
+                [card1.color,card1.symbol,card1.number],
+                [card2.color,card2.symbol,card2.number],
+                [card3.color,card3.symbol,card3.number],
+                0])
+
+    random.shuffle(sel_array)
+
+    return render_template('risk.html', 
+        subject_id=subject_id, 
+        #belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
+        action=url_for('Survey',subject_id=subject_id,),
+        rnd=rnd,
+        prize_multiplier = prize_multiplier,
+        token_value = token_value,
+        feedback=feedback,
+        context=context,
+        sel_array=sel_array,
+        select_len=select_len,
+        num=num,
+        den=den,
+        prob=prob,)
+
+
 
 
 @app.route('/_is_mobile', methods=['POST'])
@@ -745,12 +784,17 @@ def CheckTimeJSON():
 #####
 ####
 
-@app.route('/survey/<subject_id>/<belief_payment>', methods=['POST', 'GET'])
-def Survey(subject_id,belief_payment):
+@app.route('/survey/<subject_id>', methods=['POST', 'GET'])
+def Survey(subject_id,):
+
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+
+    j.risk_aversion = request.form['percent']
+    session.add(j)
+    session.commit()
 
     return render_template('survey.html',
         subject_id=subject_id,
-        belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
         end_survey = True,
         action='/end')
 

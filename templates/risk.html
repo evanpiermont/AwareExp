@@ -85,18 +85,27 @@
             
                 {%if unaware%}
 
-                <p>Recall that you found {{select_len / 2}} SETs.</p>
+                <p>Recall that you found {{num}} SETs.</p>
                 
                 {%endif%}
             
                 {%if not unaware%}
 
-                <p>Recall that you found {{select_len / 2}} SETs out of {{den}} possible SETs.</p>
+                <p>Recall that you found {{num}} SETs out of {{den}} possible SETs.</p>
             
                 {%endif%}
                         
+            <br>    
+                    
+            <p>Below you can see {{select_len}} SETs{%if select_len < 15%}, half of which you found and half of which you did not find{%endif%}. </p>
+            We will randomly select one of the {{select_len}} SETs. Each SET has the same chance of being selected.
             <br>            
-            <p>Below you can see {{select_len}} SETs, half of which you found and half of which you did not find. </p>
+            <br>            
+            <ul>
+                <li>If randomly selected SET is one you found, the GOOD outcome realizes.</li>
+                <li>If randomly selected SET is not one you found, the BAD outcome realizes.</li>
+            </ul>  
+
 
             <div id='set_feedback'>
                     
@@ -110,13 +119,8 @@
                 {% endfor %}
             </div>
             
-            <br><br><br><br><br><br><br><br><br><br><br><br><br>
+
             
-            We will randomly select one of the {{select_len}} SETs. Each SET has the same chance of being selected.
-            <ul>
-                <li>If randomly selected SET is one you found, the GOOD outcome realizes.</li>
-                <li>If randomly selected SET is not one you found, the BAD outcome realizes.</li>
-            </ul>  
         
             {%endif%}
             
