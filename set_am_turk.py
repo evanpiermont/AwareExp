@@ -251,7 +251,7 @@ def WaitNext(subject_id,rnd):
 
         text = Markup("""
             <p style="text-align:left;">
-            Congratulations! You passed the comprehension quiz and will now move on to the main part of the study, which consists of 2 tasks.
+            Congratulations! You passed the comprehension quiz and will now move on to the main part of the study.
             <br><br>
             In Task 1 you will have """+str(rndtime) + """ seconds to form <span class=hl>SET</span>s. You will be paid an
             additional $"""+f'{round(j.piecerate/100, 2):.2f}'+""" per correct <span class=hl>SET</span>. After completing Task 1 you will
