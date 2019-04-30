@@ -851,8 +851,9 @@ def End():
 
 
     text = Markup("""
-            Thank you. Randomization and payment will be made within 3 days.
-
+            Thank you!
+            <br><br>
+            Any bonus payments will be made within 5 days.
             <br><br>
             Please enter the following paycode on Amazon M-Turk: 
             <br><br><br>
