@@ -83,6 +83,7 @@
             
             {%if context%}
             
+            <div id='top_ctx'>
                 {%if unaware%}
 
                 <p>Recall that you found {{num}} <span class=hl>SET</span>s.</p>
@@ -100,16 +101,7 @@
             <p>Below you can see {{select_len}} <span class=hl>SET</span>s{%if select_len < 29%}, half of which you found and half of
             which you did not find{%endif%}.</p>
             
-            <br><br><br><br><br><br><br><br><br>
-            
-            We will randomly select one of the {{select_len}} <span class=hl>SET</span>s. Each <span class=hl>SET</span> has the same chance of being selected.
-            <br>            
-            <br>            
-            <ul>
-                <li>If randomly selected <span class=hl>SET</span> is one you found, the GOOD outcome realizes.</li>
-                <li>If randomly selected <span class=hl>SET</span> is not one you found, the BAD outcome realizes.</li>
-            </ul>  
-
+            </div>
 
             <div id='set_feedback'>
                     
@@ -122,6 +114,19 @@
                 </div>      
                 {% endfor %}
             </div>
+            
+            <div id='bot_ctx'>
+
+            We will randomly select one of the {{select_len}} <span class=hl>SET</span>s. Each <span class=hl>SET</span> has the same chance of being selected.
+            <br>            
+            <br>            
+            <ul>
+                <li>If randomly selected <span class=hl>SET</span> is one you found, the GOOD outcome realizes.</li>
+                <li>If randomly selected <span class=hl>SET</span> is not one you found, the BAD outcome realizes.</li>
+            </ul>  
+
+            </div>
+            
             
 
             

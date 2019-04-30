@@ -69,11 +69,11 @@
 }
 
 #C-al{
-  right: 18%;
+  left: 18%;
 }
 
 #L-al{
-  left: 18%;
+  right: 18%;
 }
 
 #out{
@@ -147,13 +147,21 @@ input[type="range"]:focus::-moz-range-thumb{
     cursor: pointer;
 }
 
+#top_ctx{
+  margin-bottom: 20px;
+  font-size: 90%;
+}
+
+#bot_ctx{
+  font-size: 90%;
+  margin-top: 20px;
+}
+
 #set_feedback{
     display: flex;
     flex-wrap: wrap;
-    position: fixed;
     left: 15%;
-    top: 42%;
-    width: 70%;
+    width: 100%;
     }
 
 .set_fb{

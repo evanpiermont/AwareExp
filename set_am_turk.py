@@ -294,10 +294,9 @@ def WaitNext(subject_id,rnd):
         t_a = j.treatment_aware
         num = j.asset_numerator
 
-        if t_a > 0: #if not the full aware group (they do not do the elicitation method)
-            j.belief = request.form['percent']
-            session.add(j)
-            session.commit()
+        j.belief = request.form['percent']
+        session.add(j)
+        session.commit()
 
         if num==0:
             j.treatment_context = 2
@@ -538,9 +537,6 @@ def CreateSets(subject_id,rnd):
                 if t_a == 0:
                     aware = True
                     
-                unaware = False #dummy for unawareness treatment, i.e, 2
-                if t_a == 2:
-                    unaware = True
 
                 return render_template('set.html', 
                     subject_id = subject_id, 
@@ -632,6 +628,10 @@ def RiskElicit(subject_id,rnd):
 
     random.shuffle(sel_array)
 
+    unaware = False #dummy for unawareness treatment, i.e, 2
+    if t_a == 2:
+        unaware = True
+
     return render_template('risk.html', 
         subject_id=subject_id, 
         #belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
@@ -645,6 +645,7 @@ def RiskElicit(subject_id,rnd):
         select_len=select_len,
         num=num,
         den=den,
+        unaware=unaware,
         prob=prob)
 
 
