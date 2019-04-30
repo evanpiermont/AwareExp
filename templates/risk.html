@@ -44,7 +44,7 @@
                 but there are two possible outcomes for the amount you <b>bet</b>:
                 <br>
                 <ul>
-                    <li>GOOD outcome: you earn <b>two and a half times</b> the amount you bet</li>
+                    <li>GOOD outcome: you earn <b>three times</b> the amount you bet</li>
                     <li>BAD outcome: you <b>lose</b> the amount you bet</li>
                 </ul>
                 <br>
@@ -60,7 +60,7 @@
                 
                 You <b>bet</b> $0.10 and <b>keep safe</b> the remaining $0.90:
                 <ul>
-                    <li>In the GOOD outcome you end up with $0.10 * 2.5 + $0.90 = $1.15</li>
+                    <li>In the GOOD outcome you end up with $0.10 * 3 + $0.90 = $1.20</li>
                     <li>In the BAD outcome you end up with $0.90</li>
                 </ul>
                 <br>
@@ -71,7 +71,7 @@
                 
                 You <b>bet</b> $0.90 and <b>keep safe</b> the remaining $0.10:
                 <ul>
-                    <li>In the GOOD outcome you end up with $0.90 * 2.5 + $0.10 = $2.35</li>
+                    <li>In the GOOD outcome you end up with $0.90 * 3 + $0.10 = $2.80</li>
                     <li>In the BAD outcome you end up with $0.10</li>
                 </ul>
                 <br>
@@ -85,25 +85,29 @@
             
                 {%if unaware%}
 
-                <p>Recall that you found {{num}} SETs.</p>
+                <p>Recall that you found {{num}} <span class=hl>SET</span>s.</p>
                 
                 {%endif%}
             
                 {%if not unaware%}
 
-                <p>Recall that you found {{num}} SETs out of {{den}} possible SETs.</p>
+                <p>Recall that you found {{num}} <span class=hl>SET</span>s out of {{den}} possible <span class=hl>SET</span>s.</p>
             
                 {%endif%}
                         
             <br>    
                     
-            <p>Below you can see {{select_len}} SETs{%if select_len < 15%}, half of which you found and half of which you did not find{%endif%}. </p>
-            We will randomly select one of the {{select_len}} SETs. Each SET has the same chance of being selected.
+            <p>Below you can see {{select_len}} <span class=hl>SET</span>s{%if select_len < 29%}, half of which you found and half of
+            which you did not find{%endif%}.</p>
+            
+            <br><br><br><br><br><br><br><br><br>
+            
+            We will randomly select one of the {{select_len}} <span class=hl>SET</span>s. Each <span class=hl>SET</span> has the same chance of being selected.
             <br>            
             <br>            
             <ul>
-                <li>If randomly selected SET is one you found, the GOOD outcome realizes.</li>
-                <li>If randomly selected SET is not one you found, the BAD outcome realizes.</li>
+                <li>If randomly selected <span class=hl>SET</span> is one you found, the GOOD outcome realizes.</li>
+                <li>If randomly selected <span class=hl>SET</span> is not one you found, the BAD outcome realizes.</li>
             </ul>  
 
 
@@ -183,7 +187,7 @@
             <div id=out>
                 <br><br>
                 {%if context%}
-                If randomly selected SET is one you found,
+                If randomly selected <span class=hl>SET</span> is one you found,
                 {%endif%} 
                 {%if not context%}
                 If coin toss turns up heads,
