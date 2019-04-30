@@ -645,6 +645,7 @@ def RiskElicit(subject_id,rnd):
         select_len=select_len,
         num=num,
         den=den,
+        unaware=unaware,
         prob=prob,)
 
 
