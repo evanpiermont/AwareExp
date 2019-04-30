@@ -645,9 +645,7 @@ def RiskElicit(subject_id,rnd):
         select_len=select_len,
         num=num,
         den=den,
-        prob=prob,
-        unaware=unaware)
-
+        prob=prob)
 
 
 @app.route('/_is_mobile', methods=['POST'])
