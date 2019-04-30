@@ -18,7 +18,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy import create_engine
 
-app.config['SQLALCHEMY_DATABASE_URI'] =  'postgres://whukbqquojrfir:0fc8a41872ce98be75cefdf2c36976e073253bf84de41e701a08f9b4abedcbca@ec2-54-225-95-183.compute-1.amazonaws.com:5432/d4h2fvsonq7ele'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://whukbqquojrfir:0fc8a41872ce98be75cefdf2c36976e073253bf84de41e701a08f9b4abedcbca@ec2-54-225-95-183.compute-1.amazonaws.com:5432/d4h2fvsonq7ele'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/awareExp'
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:231207@localhost:5432/awareExp' #Felipe's local
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False

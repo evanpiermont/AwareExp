@@ -17,6 +17,7 @@ from setGame import Deck, getCards, isSetThreeCards, getNhands
 HandByRound.__table__.drop(db.engine, checkfirst=True)
 StartTimes.__table__.drop(db.engine, checkfirst=True)
 Found.__table__.drop(db.engine, checkfirst=True)
+Selection.__table__.drop(db.engine, checkfirst=True)
 Subject.__table__.drop(db.engine, checkfirst=True)
 
 
@@ -24,6 +25,8 @@ Subject.__table__.create(db.engine, checkfirst=True)
 HandByRound.__table__.create(db.engine, checkfirst=True)
 StartTimes.__table__.create(db.engine, checkfirst=True)
 Found.__table__.create(db.engine, checkfirst=True)
+Selection.__table__.create(db.engine, checkfirst=True)
+
 
 session = db.session
 
