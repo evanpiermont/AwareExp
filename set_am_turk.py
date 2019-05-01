@@ -116,11 +116,11 @@ def newUser():
         hashed_id = hashlib.sha1(subject_id.encode("UTF-8")).hexdigest()[:8]
         q = random.randint(0,len(quizversions)-1) #choose quiz version
         p = random.choice(piecerate)
-        # t_a = random.randint(0,2) # choose treatment awareness version
-        t_a = 2 # choose treatment awareness version
-        # t_c = random.randint(0,1) # choose treatment context (cannot chose t_c = 2 (reserved for 0 set finders))
-        t_c = 0 # choose treatment context (cannot chose t_c = 2 (reserved for 0 set finders))
-        
+        t_a = random.randint(0,2) # choose treatment awareness version
+        # t_a = 2 # choose treatment awareness version
+        t_c = random.randint(0,1) # choose treatment context (cannot chose t_c = 2 (reserved for 0 set finders))
+        # t_c = 0 # choose treatment context (cannot chose t_c = 2 (reserved for 0 set finders))
+
         treatment_version = "xx" + str(t_a) + "xx" + str(t_c)
        
         subject = Subject(
@@ -597,7 +597,7 @@ def RiskElicit(subject_id,rnd):
     #exogenously set prob of winning to .5
     prob = 50
 
-    feedback = True # reveal feedback; true for treatment 0,1,2
+    feedback = True # reveal feedback; true for treatment 0,1
 
     if t_a == 2: 
         feedback = False
