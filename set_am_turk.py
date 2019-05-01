@@ -254,9 +254,10 @@ def WaitNext(subject_id,rnd):
             Congratulations! You passed the comprehension quiz and will now move on to the main part of the study.
             <br><br>
             In Task 1 you will have """+str(rndtime) + """ seconds to form <span class=hl>SET</span>s. You will be paid an
-            additional $"""+f'{round(j.piecerate/100, 2):.2f}'+""" per correct <span class=hl>SET</span>. After completing Task 1 you will
-            receive instructions for Task 2. Following Task 2, you will be asked to answer a few survey questions. Finally, you will
-            receive your Mturk completion code.
+            additional $"""+f'{round(j.piecerate/100, 2):.2f}'+""" per correct <span class=hl>SET</span>.
+            <br><br>
+            After completing Task 1 you will receive instructions for Task 2. Following Task 2, you will be asked to answer
+            a few survey questions. Finally, you will receive your Mturk completion code.
             <br><br>
             Any extra amount you earn will be paid via a bonus on MTurk within 5 days.
             <br><br> Click on the SUBMIT button to begin.<p/>""")
