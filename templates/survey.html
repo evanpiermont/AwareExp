@@ -25,6 +25,8 @@
     <form method='POST' name='survey' id='surveyform' enctype='multipart/form-data' action={{action}}>
 
     {%if end_survey%}
+    Please answer a few questions about yourself
+    <br>
     Age: 
     <br>
     <input type="radio" name="age" id="18-30" value=0 required>
@@ -71,7 +73,10 @@
     <br><br>
 
 
-    Of all possible sets from the previous round, what percentage, from 0 to 100%, do you believe you found?:
+    Of all possible sets from the previous round, what percentage, from 0 to 100%, do you believe you found?
+    <br>
+    Please indicate your answer using the slider below:
+    <br>
     <span id="p">??</span>%
     <br><br>
     <div id=checked>
