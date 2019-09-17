@@ -35,7 +35,7 @@ fontsize = function () {
     if (window.matchMedia("only screen and (max-width : 500px)").matches) {
         z = 0.11
     }
-    var x = $(window).width() * z; // z of container width
+    var x = $(window).width() * z * .8; // z of container width
     var y = $(window).height() * z; // z of container height
     var fontSize = Math.min(x,y);
     $("body").css('font-size', fontSize);
