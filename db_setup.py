@@ -83,7 +83,8 @@ class Subject(db.Model):
     belief = Column(Integer) #percentage on slider, belief about percentage many sets were found
     risk_aversion = Column(Integer) #percentage on slider, needs to be converted expost
     asset_numerator = Column(Integer) #== number of sets found
-    asset_denominator = Column(Integer) #== total number of sets   
+    asset_denominator = Column(Integer) #== total number of sets
+    prob_assess = Column(Integer) #== assesment of the probability of the good outcome      
     piecerate = Column(Integer, default=10)
     payment = Column(Integer, default=0)
     mobile = Column(Integer, default=0) #1 if mobile device, 0 if desktop

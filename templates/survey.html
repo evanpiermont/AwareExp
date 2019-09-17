@@ -26,7 +26,7 @@
 
     {%if end_survey%}
     Please answer a few questions about yourself
-    <br>
+    <br><br>
     Age: 
     <br>
     <input type="radio" name="age" id="18-30" value=0 required>
@@ -99,6 +99,20 @@
     </script>
     
     {%endif%}
+
+    {%if pe%}
+    What is the probability of the good outcome occuring. Please enter an number between 0 and 100.
+
+    <br><br>
+
+    If you get this question correct you will receinve and additional $0.50 bonus payment.
+
+    <br><br>
+
+    <input type="number" name="prob_assess" id="prob_assess" min="0" max="100">
+    {%endif%}
+
+
 
     <br><br>
 

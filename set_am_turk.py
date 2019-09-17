@@ -30,7 +30,7 @@ session = db.session
 ####
 
 handsize = 12 #number of cards per hand
-rndtime = 20 #time in seconds
+rndtime = 120 #time in seconds
 #piecerate = [10,35] #payment in cents per correct anwser
 piecerate = [10] #payment in cents per correct anwser
 fixed_payment = 50 #fixed payment in cents
@@ -576,6 +576,7 @@ def BeliefElicit(subject_id,rnd):
         end_survey = False,
         num =num,
         be = True,
+        pe = False,
         aware = aware,
         action=url_for('WaitNext', subject_id=subject_id, rnd=rnd),)
 
@@ -638,7 +639,7 @@ def RiskElicit(subject_id,rnd):
     return render_template('risk.html', 
         subject_id=subject_id, 
         #belief_payment=f'{(round(int(belief_payment)/100, 2)):.2f}', 
-        action=url_for('Survey',subject_id=subject_id,),
+        action=url_for('ProbElicit',subject_id=subject_id,rnd=rnd),
         rnd=rnd,
         prize_multiplier = prize_multiplier,
         token_value = token_value,
@@ -650,6 +651,25 @@ def RiskElicit(subject_id,rnd):
         den=den,
         unaware=unaware,
         prob=prob)
+
+####probabilty elicitation page
+@app.route('/pe/<subject_id>/<rnd>', methods=['POST'])
+def ProbElicit(subject_id,rnd):
+
+    j = session.query(Subject).filter(Subject.idCode == subject_id).one()
+    rnd = int(rnd)
+
+    j.risk_aversion = request.form['percent']
+    session.add(j)
+    session.commit()
+
+    return render_template('survey.html',
+        subject_id=subject_id,
+        end_survey = False,
+        be=False,
+        pe = True,
+        action=url_for('Survey',subject_id=subject_id,))
+
 
 
 @app.route('/_is_mobile', methods=['POST'])
@@ -790,14 +810,18 @@ def CheckTimeJSON():
 def Survey(subject_id,):
 
     j = session.query(Subject).filter(Subject.idCode == subject_id).one()
-
-    j.risk_aversion = request.form['percent']
+    prob_assess = request.form['prob_assess']
+    j.prob_assess = prob_assess
+    if prob_assess == 50:
+        j.payment += 50
     session.add(j)
     session.commit()
 
     return render_template('survey.html',
         subject_id=subject_id,
         end_survey = True,
+        be = False,
+        pe = False,
         action='/end')
 
 

@@ -19,7 +19,7 @@ session = db.session
 j = session.query(Subject).all()
 
 for k in j:
-    print(k.idCode, k.treatment_aware, k.treatment_context, k.belief, k.risk_aversion, k.passquiz, k.asset_numerator)
+    print(k.idCode, k.treatment_aware, k.treatment_context, k.belief, k.prob_assess, k.risk_aversion)
 
 
 
