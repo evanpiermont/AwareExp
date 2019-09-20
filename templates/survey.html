@@ -101,15 +101,13 @@
     {%endif%}
 
     {%if pe%}
-    What is the probability of the good outcome occuring. Please enter an number between 0 and 100.
-
+    What is the chance of the GOOD outcome occurring?
     <br><br>
-
-    If you get this question correct you will receinve and additional $0.50 bonus payment.
-
+    Please enter a number between 0 and 100, where 0 means 0% chance and 100 means 100% chance.
     <br><br>
-
-    <input type="number" name="prob_assess" id="prob_assess" min="0" max="100">
+    If you get this question right, you will receive an additional $0.50 as bonus on Mturk.
+    <br><br>
+    <input type="number" name="prob_assess" id="prob_assess" min="0" max="100" required>
     {%endif%}
 
 
